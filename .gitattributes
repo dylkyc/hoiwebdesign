@@ -1,0 +1,22 @@
+# 统一换行符：仓库内一律存 LF，检出也用 LF
+# （本项目是纯文本的 Web 项目，Windows 上的 core.autocrlf=true 会反复产生
+#  "LF will be replaced by CRLF" 警告，这里显式规范掉）
+* text=auto eol=lf
+
+# 二进制文件不做任何转换与 diff
+*.xlsx binary
+*.xls  binary
+*.png  binary
+*.jpg  binary
+*.jpeg binary
+*.gif  binary
+*.webp binary
+*.ico  binary
+*.woff binary
+*.woff2 binary
+*.ttf  binary
+*.zip  binary
+*.pdf  binary
+
+# 生成的数据文件在 diff/统计中折叠显示
+data/bundle.js linguist-generated=true -diff
