@@ -1,0 +1,3652 @@
+{
+ "old_guard": {
+  "id": "old_guard",
+  "sourceFile": "00_traits.txt",
+  "type": "land",
+  "trait_type": "personality_trait",
+  "new_commander_weight": {
+   "factor": 1,
+   "modifier": [
+    {
+     "FROM": {
+      "has_idea": "best_of_the_best_spirit"
+     },
+     "factor": 0
+    },
+    {
+     "FROM": {
+      "has_idea": "academy_scholarships_spirit"
+     },
+     "factor": 0
+    },
+    {
+     "FROM": {
+      "has_idea": "SOV_purged_junior_army_officers_3"
+     },
+     "factor": 0
+    }
+   ]
+  },
+  "modifier": {
+   "max_dig_in": 1
+  },
+  "nonSharedModifier": {
+   "experience_gain_factor": -0.25
+  }
+ },
+ "brilliant_strategist": {
+  "id": "brilliant_strategist",
+  "sourceFile": "00_traits.txt",
+  "type": "land",
+  "trait_type": "personality_trait",
+  "attack_skill": 1,
+  "planning_skill": 1,
+  "attack_skill_factor": 1,
+  "planning_skill_factor": 1,
+  "new_commander_weight": {
+   "factor": 1,
+   "modifier": [
+    {
+     "FROM": {
+      "has_idea": "best_of_the_best_spirit"
+     },
+     "factor": 0
+    },
+    {
+     "FROM": {
+      "has_idea": "academy_scholarships_spirit"
+     },
+     "factor": 0
+    },
+    {
+     "FROM": {
+      "has_idea": "SOV_purged_junior_army_officers_3"
+     },
+     "factor": 0
+    }
+   ]
+  }
+ },
+ "inflexible_strategist": {
+  "id": "inflexible_strategist",
+  "sourceFile": "00_traits.txt",
+  "type": "land",
+  "trait_type": "personality_trait",
+  "defense_skill": 1,
+  "logistics_skill": 1,
+  "defense_skill_factor": 1,
+  "logistics_skill_factor": 1,
+  "new_commander_weight": {
+   "factor": 1,
+   "modifier": [
+    {
+     "is_army_leader": true,
+     "FROM": {
+      "has_idea": "best_of_the_best_spirit"
+     },
+     "factor": 0
+    },
+    {
+     "FROM": {
+      "has_idea": "academy_scholarships_spirit"
+     },
+     "factor": 0
+    },
+    {
+     "FROM": {
+      "has_idea": "SOV_purged_junior_army_officers_3"
+     },
+     "factor": 0
+    }
+   ]
+  }
+ },
+ "politically_connected": {
+  "id": "politically_connected",
+  "sourceFile": "00_traits.txt",
+  "type": "land",
+  "trait_type": "personality_trait",
+  "logistics_skill_factor": 1,
+  "planning_skill_factor": 1,
+  "new_commander_weight": {
+   "factor": 1,
+   "modifier": [
+    {
+     "is_army_leader": true,
+     "FROM": {
+      "has_idea": "best_of_the_best_spirit"
+     },
+     "factor": 0
+    },
+    {
+     "is_navy_leader": true,
+     "FROM": {
+      "has_idea": "best_of_the_best_naval_academy_spirit"
+     },
+     "factor": 0
+    },
+    {
+     "FROM": {
+      "has_idea": "academy_scholarships_spirit"
+     },
+     "factor": 0
+    },
+    {
+     "FROM": {
+      "has_idea": "naval_academy_scholarships_spirit"
+     },
+     "factor": 0
+    }
+   ]
+  },
+  "nonSharedModifier": {
+   "experience_gain_factor": -0.1,
+   "promote_cost_factor": -0.5
+  }
+ },
+ "brave": {
+  "id": "brave",
+  "sourceFile": "00_traits.txt",
+  "type": "land",
+  "trait_type": "personality_trait",
+  "defense_skill": 1,
+  "new_commander_weight": {
+   "factor": 0
+  },
+  "modifier": {
+   "org_loss_at_low_org_factor": -0.1
+  }
+ },
+ "war_hero": {
+  "id": "war_hero",
+  "sourceFile": "00_traits.txt",
+  "type": [
+   "land",
+   "navy"
+  ],
+  "trait_type": "personality_trait",
+  "attack_skill_factor": 1,
+  "planning_skill_factor": 1,
+  "new_commander_weight": {
+   "factor": 0
+  },
+  "nonSharedModifier": {
+   "promote_cost_factor": -0.5,
+   "reassignment_duration_factor": 0.5
+  }
+ },
+ "career_officer": {
+  "id": "career_officer",
+  "sourceFile": "00_traits.txt",
+  "type": "land",
+  "trait_type": "personality_trait",
+  "logistics_skill_factor": 1,
+  "planning_skill_factor": 1,
+  "new_commander_weight": {
+   "factor": 1,
+   "modifier": [
+    {
+     "FROM": {
+      "has_idea": "best_of_the_best_spirit"
+     },
+     "factor": 0
+    },
+    {
+     "FROM": {
+      "has_idea": "academy_scholarships_spirit"
+     },
+     "factor": 0
+    },
+    {
+     "FROM": {
+      "has_idea": "SOV_purged_junior_army_officers_3"
+     },
+     "factor": 0
+    }
+   ]
+  },
+  "nonSharedModifier": {
+   "promote_cost_factor": -0.25
+  }
+ },
+ "trait_cautious": {
+  "id": "trait_cautious",
+  "sourceFile": "00_traits.txt",
+  "type": "land",
+  "trait_type": "personality_trait",
+  "leader_default_proximity_offset": 1,
+  "defense_skill_factor": 1,
+  "logistics_skill_factor": 1,
+  "new_commander_weight": {
+   "factor": 1,
+   "modifier": [
+    {
+     "has_trait": "trait_reckless",
+     "factor": 0
+    },
+    {
+     "FROM": {
+      "has_idea": "best_of_the_best_spirit"
+     },
+     "factor": 0
+    },
+    {
+     "FROM": {
+      "has_idea": "academy_scholarships_spirit"
+     },
+     "factor": 0
+    },
+    {
+     "FROM": {
+      "has_idea": "SOV_purged_junior_army_officers_3"
+     },
+     "factor": 0
+    }
+   ]
+  },
+  "modifier": {
+   "planning_speed": -0.2,
+   "wounded_chance_factor": -0.5
+  }
+ },
+ "trait_reckless": {
+  "id": "trait_reckless",
+  "sourceFile": "00_traits.txt",
+  "type": "land",
+  "trait_type": "personality_trait",
+  "leader_default_proximity_offset": -1,
+  "attack_skill_factor": 1,
+  "defense_skill_factor": -1,
+  "planning_skill_factor": 1,
+  "new_commander_weight": {
+   "factor": 1,
+   "modifier": [
+    {
+     "has_trait": "trait_cautious",
+     "factor": 0
+    },
+    {
+     "FROM": {
+      "has_idea": "best_of_the_best_spirit"
+     },
+     "factor": 0
+    },
+    {
+     "FROM": {
+      "has_idea": "academy_scholarships_spirit"
+     },
+     "factor": 0
+    },
+    {
+     "FROM": {
+      "has_idea": "SOV_purged_junior_army_officers_3"
+     },
+     "factor": 0
+    }
+   ]
+  },
+  "modifier": {
+   "planning_speed": 0.2,
+   "wounded_chance_factor": 0.5
+  }
+ },
+ "media_personality": {
+  "id": "media_personality",
+  "sourceFile": "00_traits.txt",
+  "type": "land",
+  "trait_type": "personality_trait",
+  "attack_skill_factor": 1,
+  "defense_skill_factor": 1,
+  "new_commander_weight": {
+   "factor": 1,
+   "modifier": [
+    {
+     "FROM": {
+      "has_idea": "best_of_the_best_spirit"
+     },
+     "factor": 0
+    },
+    {
+     "FROM": {
+      "has_idea": "academy_scholarships_spirit"
+     },
+     "factor": 0
+    },
+    {
+     "FROM": {
+      "has_idea": "SOV_purged_junior_army_officers_3"
+     },
+     "factor": 0
+    }
+   ]
+  },
+  "nonSharedModifier": {
+   "reassignment_duration_factor": 1
+  }
+ },
+ "harsh_leader": {
+  "id": "harsh_leader",
+  "sourceFile": "00_traits.txt",
+  "type": "land",
+  "trait_type": "personality_trait",
+  "attack_skill": 1,
+  "attack_skill_factor": 1,
+  "logistics_skill_factor": 1,
+  "new_commander_weight": {
+   "factor": 1,
+   "modifier": [
+    {
+     "FROM": {
+      "has_idea": "best_of_the_best_spirit"
+     },
+     "factor": 0
+    },
+    {
+     "FROM": {
+      "has_idea": "academy_scholarships_spirit"
+     },
+     "factor": 0
+    },
+    {
+     "FROM": {
+      "has_idea": "SOV_purged_junior_army_officers_3"
+     },
+     "factor": 0
+    }
+   ]
+  },
+  "modifier": {
+   "army_morale_factor": -0.1
+  }
+ },
+ "bearer_of_artillery": {
+  "id": "bearer_of_artillery",
+  "sourceFile": "00_traits.txt",
+  "type": "corps_commander",
+  "trait_type": "personality_trait",
+  "new_commander_weight": {
+   "factor": 0
+  },
+  "modifier": {
+   "army_artillery_attack_factor": 0.15
+  }
+ },
+ "infantry_officer": {
+  "id": "infantry_officer",
+  "sourceFile": "00_traits.txt",
+  "type": "land",
+  "trait_type": "personality_trait",
+  "defense_skill_factor": 1,
+  "planning_skill_factor": 1,
+  "trait_xp_factor": {
+   "infantry_leader": 1
+  },
+  "new_commander_weight": {
+   "factor": 1,
+   "modifier": [
+    {
+     "FROM": {
+      "has_idea": "mass_assault_academy_spirit"
+     },
+     "factor": 2
+    },
+    {
+     "FROM": {
+      "has_idea": "best_of_the_best_spirit"
+     },
+     "factor": 0
+    },
+    {
+     "FROM": {
+      "has_idea": "academy_scholarships_spirit"
+     },
+     "factor": 0
+    },
+    {
+     "FROM": {
+      "has_idea": "SOV_purged_junior_army_officers_3"
+     },
+     "factor": 0
+    },
+    {
+     "FROM": {
+      "has_dlc": "By Blood Alone"
+     },
+     "factor": 0
+    }
+   ]
+  }
+ },
+ "cavalry_officer": {
+  "id": "cavalry_officer",
+  "sourceFile": "00_traits.txt",
+  "type": "land",
+  "trait_type": "personality_trait",
+  "attack_skill_factor": 1,
+  "logistics_skill_factor": 1,
+  "trait_xp_factor": {
+   "cavalry_leader": 1
+  },
+  "new_commander_weight": {
+   "factor": 1,
+   "modifier": [
+    {
+     "FROM": {
+      "has_idea": "best_of_the_best_spirit"
+     },
+     "factor": 0
+    },
+    {
+     "FROM": {
+      "has_idea": "academy_scholarships_spirit"
+     },
+     "factor": 0
+    },
+    {
+     "FROM": {
+      "has_idea": "SOV_purged_junior_army_officers_3"
+     },
+     "factor": 0
+    },
+    {
+     "FROM": {
+      "has_dlc": "By Blood Alone"
+     },
+     "factor": 0
+    }
+   ]
+  }
+ },
+ "armor_officer": {
+  "id": "armor_officer",
+  "sourceFile": "00_traits.txt",
+  "type": "land",
+  "trait_type": "personality_trait",
+  "attack_skill_factor": 1,
+  "planning_skill_factor": 1,
+  "trait_xp_factor": {
+   "panzer_leader": 1
+  },
+  "new_commander_weight": {
+   "factor": 1,
+   "modifier": [
+    {
+     "FROM": {
+      "has_idea": "mobile_warfare_academy_spirit"
+     },
+     "factor": 2
+    },
+    {
+     "FROM": {
+      "has_idea": "best_of_the_best_spirit"
+     },
+     "factor": 0
+    },
+    {
+     "FROM": {
+      "has_idea": "academy_scholarships_spirit"
+     },
+     "factor": 0
+    },
+    {
+     "FROM": {
+      "has_idea": "SOV_purged_junior_army_officers_3"
+     },
+     "factor": 0
+    },
+    {
+     "FROM": {
+      "has_dlc": "By Blood Alone"
+     },
+     "factor": 0
+    }
+   ]
+  }
+ },
+ "engineer_officer": {
+  "id": "engineer_officer",
+  "sourceFile": "00_traits.txt",
+  "type": "land",
+  "trait_type": "personality_trait",
+  "attack_skill_factor": 1,
+  "planning_skill_factor": 1,
+  "trait_xp_factor": {
+   "trait_engineer": 1
+  },
+  "new_commander_weight": {
+   "factor": 1,
+   "modifier": [
+    {
+     "FROM": {
+      "has_idea": "superior_firepower_academy_spirit"
+     },
+     "factor": 2
+    },
+    {
+     "FROM": {
+      "has_idea": "best_of_the_best_spirit"
+     },
+     "factor": 0
+    },
+    {
+     "FROM": {
+      "has_idea": "academy_scholarships_spirit"
+     },
+     "factor": 0
+    },
+    {
+     "FROM": {
+      "has_dlc": "By Blood Alone"
+     },
+     "factor": 0
+    }
+   ]
+  }
+ },
+ "irregulars_officer": {
+  "id": "irregulars_officer",
+  "sourceFile": "00_traits.txt",
+  "type": "corps_commander",
+  "trait_type": "personality_trait",
+  "attack_skill_factor": 1,
+  "planning_skill_factor": 1,
+  "allowed": {
+   "FROM": {
+    "OR": {
+     "original_tag": [
+      "ITA",
+      "ETH"
+     ]
+    }
+   }
+  },
+  "new_commander_weight": {
+   "base": 0,
+   "modifier": [
+    {
+     "add": 0.5,
+     "FROM": {
+      "OR": {
+       "original_tag": [
+        "ITA",
+        "ETH"
+       ]
+      }
+     }
+    },
+    {
+     "factor": 2,
+     "FROM": {
+      "has_completed_focus": "ITA_comandante_diavolo"
+     }
+    },
+    {
+     "factor": 2,
+     "FROM": {
+      "has_completed_focus": "ITA_proclaim_the_italian_empire"
+     }
+    }
+   ]
+  },
+  "modifier": {
+   "modifier_army_sub_unit_irregular_infantry_attack_factor": 0.05,
+   "modifier_army_sub_unit_cavalry_speed_factor": 0.05,
+   "modifier_army_sub_unit_camelry_speed_factor": 0.05,
+   "out_of_supply_factor": -0.1,
+   "desert": {
+    "movement": 0.1
+   }
+  }
+ },
+ "ascari_officer": {
+  "id": "ascari_officer",
+  "sourceFile": "00_traits.txt",
+  "type": "corps_commander",
+  "trait_type": "personality_trait",
+  "defense_skill_factor": 1,
+  "logistics_skill_factor": 1,
+  "allowed": {
+   "FROM": {
+    "original_tag": "ITA"
+   }
+  },
+  "new_commander_weight": {
+   "base": 0,
+   "modifier": [
+    {
+     "add": 0.5,
+     "FROM": {
+      "original_tag": "ITA"
+     }
+    },
+    {
+     "factor": 2,
+     "FROM": {
+      "has_completed_focus": "ITA_strengthen_ascari_corps"
+     }
+    },
+    {
+     "factor": 2,
+     "FROM": {
+      "has_completed_focus": "ITA_novus_ordo"
+     }
+    }
+   ]
+  },
+  "modifier": {
+   "modifier_army_sub_unit_infantry_defence_factor": 0.05,
+   "modifier_army_sub_unit_cavalry_defence_factor": 0.05,
+   "modifier_army_sub_unit_camelry_defence_factor": 0.05,
+   "desert": {
+    "defence": 0.05
+   }
+  }
+ },
+ "militias_officer": {
+  "id": "militias_officer",
+  "sourceFile": "00_traits.txt",
+  "type": "corps_commander",
+  "trait_type": "personality_trait",
+  "defense_skill_factor": 1,
+  "planning_skill_factor": 1,
+  "allowed": {
+   "FROM": {
+    "OR": {
+     "original_tag": [
+      "ITA",
+      "SWI",
+      "SWE",
+      "AUS",
+      "BRA",
+      "GER",
+      "CHI",
+      "PRC"
+     ]
+    }
+   }
+  },
+  "new_commander_weight": {
+   "base": 0,
+   "modifier": [
+    {
+     "add": 0.5,
+     "FROM": {
+      "OR": {
+       "original_tag": [
+        "ITA",
+        "SWI"
+       ]
+      }
+     }
+    },
+    {
+     "factor": 2,
+     "FROM": {
+      "has_completed_focus": "ITA_strengthen_the_blackshirts"
+     }
+    },
+    {
+     "factor": 2,
+     "FROM": {
+      "OR": {
+       "has_completed_focus": [
+        "ITA_divino_duce",
+        "ITA_a_greater_purpose"
+       ]
+      }
+     }
+    }
+   ]
+  },
+  "modifier": {
+   "modifier_army_sub_unit_militia_defence_factor": 0.05,
+   "modifier_army_sub_unit_militia_speed_factor": 0.05,
+   "modifier_army_sub_unit_militia_max_org_factor": 0.05
+  }
+ },
+ "jaeger": {
+  "id": "jaeger",
+  "sourceFile": "00_traits.txt",
+  "type": "land",
+  "trait_type": "personality_trait",
+  "attack_skill_factor": 1,
+  "logistics_skill_factor": 1,
+  "allowed": {
+   "FROM": {
+    "original_tag": "FIN"
+   }
+  },
+  "trait_xp_factor": {
+   "trickster": 1,
+   "winter_specialist": 1,
+   "commando": 1,
+   "swamp_fox": 1,
+   "ranger": 1,
+   "hill_fighter": 1,
+   "urban_assault_specialist": 1,
+   "naval_invader": 1
+  },
+  "new_commander_weight": {
+   "factor": 0
+  },
+  "modifier": {
+   "equipment_capture": 0.03
+  }
+ },
+ "logistics_wizard": {
+  "id": "logistics_wizard",
+  "sourceFile": "00_traits.txt",
+  "type": "field_marshal",
+  "trait_type": "assignable_trait",
+  "gui_row": 0,
+  "cost": 1000,
+  "enable_ability": "extra_suplies",
+  "any_parent": [
+   "organizer"
+  ],
+  "fieldMarshalModifier": {
+   "supply_consumption_factor": -0.15
+  }
+ },
+ "offensive_doctrine": {
+  "id": "offensive_doctrine",
+  "sourceFile": "00_traits.txt",
+  "type": "field_marshal",
+  "trait_type": "assignable_trait",
+  "mutually_exclusive": "defensive_doctrine",
+  "gui_row": 5,
+  "cost": 1000,
+  "slot": "army_chief",
+  "attack_skill": 1,
+  "fieldMarshalModifier": {
+   "org_loss_when_moving": -0.3
+  }
+ },
+ "defensive_doctrine": {
+  "id": "defensive_doctrine",
+  "sourceFile": "00_traits.txt",
+  "type": "field_marshal",
+  "trait_type": "assignable_trait",
+  "mutually_exclusive": "offensive_doctrine",
+  "gui_row": 6,
+  "cost": 1000,
+  "slot": "army_chief",
+  "fieldMarshalModifier": {
+   "max_dig_in_factor": 0.3
+  }
+ },
+ "fast_planner": {
+  "id": "fast_planner",
+  "sourceFile": "00_traits.txt",
+  "type": "field_marshal",
+  "trait_type": "assignable_trait",
+  "mutually_exclusive": "thorough_planner",
+  "gui_row": 1,
+  "cost": 1000,
+  "slot": "army_chief",
+  "any_parent": [
+   "organizer"
+  ],
+  "fieldMarshalModifier": {
+   "planning_speed": 0.25
+  }
+ },
+ "thorough_planner": {
+  "id": "thorough_planner",
+  "sourceFile": "00_traits.txt",
+  "type": "field_marshal",
+  "trait_type": "assignable_trait",
+  "mutually_exclusive": "fast_planner",
+  "gui_row": 2,
+  "cost": 1000,
+  "slot": "army_chief",
+  "any_parent": [
+   "organizer"
+  ],
+  "fieldMarshalModifier": {
+   "max_planning": 0.1
+  }
+ },
+ "unyielding_defender": {
+  "id": "unyielding_defender",
+  "sourceFile": "00_traits.txt",
+  "type": "field_marshal",
+  "trait_type": "assignable_trait",
+  "mutually_exclusive": "aggressive_assaulter",
+  "gui_row": 3,
+  "custom_effect_tooltip": "INCREASED_COUNTERATTACK_CHANCE",
+  "cost": 1000,
+  "slot": "army_chief",
+  "prerequisites": {
+   "has_trait": "inflexible_strategist"
+  },
+  "fieldMarshalModifier": {
+   "defence": 0.1
+  }
+ },
+ "aggressive_assaulter": {
+  "id": "aggressive_assaulter",
+  "sourceFile": "00_traits.txt",
+  "type": "field_marshal",
+  "trait_type": "assignable_trait",
+  "mutually_exclusive": "unyielding_defender",
+  "gui_row": 4,
+  "custom_effect_tooltip": "INCREASED_ASSAULT_AND_SHOCK_CHANCE",
+  "cost": 1000,
+  "slot": "army_chief",
+  "prerequisites": {
+   "has_trait": "brilliant_strategist"
+  },
+  "fieldMarshalModifier": {
+   "breakthrough_factor": 0.1
+  }
+ },
+ "organisational_leader": {
+  "id": "organisational_leader",
+  "sourceFile": "00_traits.txt",
+  "type": "field_marshal",
+  "trait_type": "assignable_trait",
+  "gui_row": 7,
+  "cost": 1000,
+  "slot": "army_chief",
+  "fieldMarshalModifier": {
+   "land_reinforce_rate": 0.02
+  }
+ },
+ "inspirational_leader": {
+  "id": "inspirational_leader",
+  "sourceFile": "00_traits.txt",
+  "type": "field_marshal",
+  "trait_type": "assignable_trait",
+  "gui_row": 8,
+  "cost": 1000,
+  "slot": "army_chief",
+  "fieldMarshalModifier": {
+   "army_morale_factor": 0.1
+  }
+ },
+ "expert_delegator": {
+  "id": "expert_delegator",
+  "sourceFile": "00_traits.txt",
+  "type": "field_marshal",
+  "trait_type": "assignable_trait",
+  "gui_row": 15,
+  "cost": 1000,
+  "slot": "army_chief",
+  "any_parent": [
+   "skilled_staffer"
+  ],
+  "fieldMarshalModifier": {
+   "max_army_group_size": 2
+  }
+ },
+ "organizer": {
+  "id": "organizer",
+  "sourceFile": "00_traits.txt",
+  "type": "corps_commander",
+  "gui_row": 0,
+  "custom_gain_xp_trigger_tooltip": "is_using_battle_plans",
+  "cost": 1000,
+  "slot": "high_command",
+  "modifier": {
+   "planning_speed": 0.1
+  }
+ },
+ "cavalry_leader": {
+  "id": "cavalry_leader",
+  "sourceFile": "00_traits.txt",
+  "type": "corps_commander",
+  "gui_row": 3,
+  "custom_gain_xp_trigger_tooltip": "cavalary_ratio_over_40",
+  "cost": 1000,
+  "slot": "high_command",
+  "modifier": {
+   "cavalry_attack_factor": 0.12,
+   "motorized_attack_factor": 0.12,
+   "mechanized_attack_factor": 0.12
+  }
+ },
+ "infantry_leader": {
+  "id": "infantry_leader",
+  "sourceFile": "00_traits.txt",
+  "type": "corps_commander",
+  "gui_row": 6,
+  "custom_gain_xp_trigger_tooltip": "infantry_ratio_over_80",
+  "cost": 1000,
+  "slot": "high_command",
+  "modifier": {
+   "army_infantry_defence_factor": 0.13
+  }
+ },
+ "skilled_staffer": {
+  "id": "skilled_staffer",
+  "sourceFile": "00_traits.txt",
+  "type": "corps_commander",
+  "gui_row": 15,
+  "custom_gain_xp_trigger_tooltip": "fighting_with_enough_units",
+  "cost": 2000,
+  "slot": "high_command",
+  "logistics_skill_factor": 2,
+  "corpsCommanderModifier": {
+   "max_commander_army_size": 6
+  }
+ },
+ "trickster": {
+  "id": "trickster",
+  "sourceFile": "00_traits.txt",
+  "type": "corps_commander",
+  "gui_row": 13,
+  "custom_gain_xp_trigger_tooltip": "has_flanked",
+  "cost": 500,
+  "modifier": {
+   "recon_factor": 0.25
+  }
+ },
+ "winter_specialist": {
+  "id": "winter_specialist",
+  "sourceFile": "00_traits.txt",
+  "type": "corps_commander",
+  "trait_type": "basic_terrain_trait",
+  "gui_row": 7,
+  "cost": 500,
+  "modifier": {
+   "winter_attrition_factor": -0.5
+  }
+ },
+ "adaptable": {
+  "id": "adaptable",
+  "sourceFile": "00_traits.txt",
+  "type": "corps_commander",
+  "trait_type": "assignable_terrain_trait",
+  "gui_row": 3,
+  "cost": 1000,
+  "parent": {
+   "traits": [
+    "desert_fox",
+    "swamp_fox",
+    "trait_mountaineer",
+    "hill_fighter",
+    "jungle_rat",
+    "ranger",
+    "urban_assault_specialist",
+    "winter_specialist"
+   ],
+   "num_parents_needed": 2
+  },
+  "modifier": {
+   "terrain_penalty_reduction": 0.3,
+   "acclimatization_cold_climate_gain_factor": 0.1,
+   "acclimatization_hot_climate_gain_factor": 0.1
+  }
+ },
+ "winter_expert": {
+  "id": "winter_expert",
+  "sourceFile": "00_traits.txt",
+  "type": "corps_commander",
+  "trait_type": "assignable_terrain_trait",
+  "gui_row": 7,
+  "any_parent": [
+   "winter_specialist"
+  ],
+  "modifier": {
+   "acclimatization_cold_climate_gain_factor": 0.4
+  }
+ },
+ "trait_engineer": {
+  "id": "trait_engineer",
+  "sourceFile": "00_traits.txt",
+  "type": "corps_commander",
+  "gui_row": 4,
+  "cost": 700,
+  "slot": "high_command",
+  "modifier": {
+   "river": {
+    "attack": 0.05
+   },
+   "fort": {
+    "attack": 0.1
+   }
+  }
+ },
+ "panzer_leader": {
+  "id": "panzer_leader",
+  "sourceFile": "00_traits.txt",
+  "type": "corps_commander",
+  "gui_row": 1,
+  "custom_gain_xp_trigger_tooltip": "armored_ratio_over_40",
+  "cost": 700,
+  "slot": "high_command",
+  "attack_skill_factor": 2,
+  "modifier": {
+   "army_armor_speed_factor": 0.05,
+   "army_armor_attack_factor": 0.16
+  }
+ },
+ "commando": {
+  "id": "commando",
+  "sourceFile": "00_traits.txt",
+  "type": "corps_commander",
+  "gui_row": 10,
+  "cost": 700,
+  "slot": "high_command",
+  "modifier": {
+   "out_of_supply_factor": -0.25
+  }
+ },
+ "desert_fox": {
+  "id": "desert_fox",
+  "sourceFile": "00_traits.txt",
+  "type": "corps_commander",
+  "trait_type": "basic_terrain_trait",
+  "gui_row": 0,
+  "cost": 700,
+  "new_commander_weight": {
+   "factor": 100
+  },
+  "modifier": {
+   "desert": {
+    "movement": 0.05,
+    "attack": 0.1,
+    "defence": 0.1
+   }
+  }
+ },
+ "swamp_fox": {
+  "id": "swamp_fox",
+  "sourceFile": "00_traits.txt",
+  "type": "corps_commander",
+  "trait_type": "basic_terrain_trait",
+  "gui_row": 1,
+  "cost": 700,
+  "modifier": {
+   "marsh": {
+    "movement": 0.05,
+    "attack": 0.1,
+    "defence": 0.1
+   }
+  }
+ },
+ "trait_mountaineer": {
+  "id": "trait_mountaineer",
+  "sourceFile": "00_traits.txt",
+  "type": "corps_commander",
+  "trait_type": "basic_terrain_trait",
+  "gui_row": 3,
+  "cost": 700,
+  "modifier": {
+   "mountain": {
+    "movement": 0.05,
+    "attack": 0.1,
+    "defence": 0.1
+   }
+  }
+ },
+ "hill_fighter": {
+  "id": "hill_fighter",
+  "sourceFile": "00_traits.txt",
+  "type": "corps_commander",
+  "trait_type": "basic_terrain_trait",
+  "gui_row": 2,
+  "cost": 700,
+  "modifier": {
+   "hills": {
+    "movement": 0.05,
+    "attack": 0.1,
+    "defence": 0.1
+   }
+  }
+ },
+ "jungle_rat": {
+  "id": "jungle_rat",
+  "sourceFile": "00_traits.txt",
+  "type": "corps_commander",
+  "trait_type": "basic_terrain_trait",
+  "gui_row": 6,
+  "cost": 700,
+  "modifier": {
+   "jungle": {
+    "movement": 0.05,
+    "attack": 0.1,
+    "defence": 0.1
+   }
+  }
+ },
+ "ranger": {
+  "id": "ranger",
+  "sourceFile": "00_traits.txt",
+  "type": "corps_commander",
+  "trait_type": "basic_terrain_trait",
+  "gui_row": 5,
+  "cost": 700,
+  "modifier": {
+   "forest": {
+    "movement": 0.05,
+    "attack": 0.1,
+    "defence": 0.1
+   }
+  }
+ },
+ "urban_assault_specialist": {
+  "id": "urban_assault_specialist",
+  "sourceFile": "00_traits.txt",
+  "type": "corps_commander",
+  "trait_type": "basic_terrain_trait",
+  "gui_row": 4,
+  "cost": 500,
+  "modifier": {
+   "urban": {
+    "movement": 0.05,
+    "attack": 0.1,
+    "defence": 0.1
+   }
+  }
+ },
+ "naval_invader": {
+  "id": "naval_invader",
+  "sourceFile": "00_traits.txt",
+  "type": "corps_commander",
+  "gui_row": 8,
+  "cost": 100,
+  "slot": "high_command",
+  "modifier": {
+   "amphibious_invasion": 0.3,
+   "invasion_preparation": -0.3
+  }
+ },
+ "panzer_expert": {
+  "id": "panzer_expert",
+  "sourceFile": "00_traits.txt",
+  "type": "corps_commander",
+  "trait_type": "assignable_trait",
+  "mutually_exclusive": [
+   "combined_arms_expert",
+   "cavalry_expert"
+  ],
+  "gui_row": 1,
+  "custom_effect_tooltip": "INCREASED_BLITZ_AND_ENCIRCLEMENT_CHANCE",
+  "cost": 1000,
+  "any_parent": [
+   "panzer_leader"
+  ],
+  "modifier": {
+   "army_armor_defence_factor": 0.1
+  }
+ },
+ "combined_arms_expert": {
+  "id": "combined_arms_expert",
+  "sourceFile": "00_traits.txt",
+  "type": "corps_commander",
+  "trait_type": "assignable_trait",
+  "mutually_exclusive": [
+   "panzer_expert",
+   "cavalry_expert"
+  ],
+  "gui_row": 2,
+  "custom_effect_tooltip": "INCREASED_BLITZ_AND_ENCIRCLEMENT_CHANCE",
+  "cost": 500,
+  "slot": "high_command",
+  "any_parent": [
+   "cavalry_leader",
+   "panzer_leader"
+  ],
+  "modifier": {
+   "motorized_defence_factor": 0.15,
+   "mechanized_defence_factor": 0.15
+  }
+ },
+ "cavalry_expert": {
+  "id": "cavalry_expert",
+  "sourceFile": "00_traits.txt",
+  "type": "corps_commander",
+  "trait_type": "assignable_trait",
+  "mutually_exclusive": [
+   "panzer_expert",
+   "combined_arms_expert"
+  ],
+  "gui_row": 3,
+  "cost": 500,
+  "any_parent": [
+   "cavalry_leader"
+  ],
+  "modifier": {
+   "cavalry_defence_factor": 0.1
+  }
+ },
+ "fortress_buster": {
+  "id": "fortress_buster",
+  "sourceFile": "00_traits.txt",
+  "type": "corps_commander",
+  "trait_type": "assignable_trait",
+  "mutually_exclusive": "scavenger",
+  "gui_row": 4,
+  "cost": 700,
+  "enable_ability": "siege_artillery",
+  "slot": "high_command",
+  "any_parent": [
+   "trait_engineer"
+  ],
+  "modifier": {
+   "fort": {
+    "attack": 0.15
+   }
+  }
+ },
+ "scavenger": {
+  "id": "scavenger",
+  "sourceFile": "00_traits.txt",
+  "type": "corps_commander",
+  "trait_type": "assignable_trait",
+  "mutually_exclusive": "fortress_buster",
+  "gui_row": 5,
+  "cost": 500,
+  "any_parent": [
+   "trait_engineer"
+  ],
+  "modifier": {
+   "equipment_capture": 0.03
+  }
+ },
+ "infantry_expert": {
+  "id": "infantry_expert",
+  "sourceFile": "00_traits.txt",
+  "type": "corps_commander",
+  "trait_type": "assignable_trait",
+  "mutually_exclusive": "ambusher",
+  "gui_row": 6,
+  "cost": 500,
+  "any_parent": [
+   "infantry_leader"
+  ],
+  "modifier": {
+   "army_infantry_attack_factor": 0.1
+  }
+ },
+ "ambusher": {
+  "id": "ambusher",
+  "sourceFile": "00_traits.txt",
+  "type": "corps_commander",
+  "trait_type": "assignable_trait",
+  "mutually_exclusive": "infantry_expert",
+  "gui_row": 7,
+  "cost": 500,
+  "any_parent": [
+   "infantry_leader"
+  ],
+  "modifier": {
+   "max_dig_in": 5,
+   "recon_factor_while_entrenched": 0.25
+  }
+ },
+ "invader_ii": {
+  "id": "invader_ii",
+  "sourceFile": "00_traits.txt",
+  "type": "corps_commander",
+  "trait_type": "assignable_trait",
+  "gui_row": 8,
+  "cost": 500,
+  "enable_ability": "faster_naval_invasion_planning",
+  "any_parent": [
+   "naval_invader"
+  ],
+  "modifier": {
+   "extra_marine_supply_grace": 240
+  }
+ },
+ "naval_liason": {
+  "id": "naval_liason",
+  "sourceFile": "00_traits.txt",
+  "type": "corps_commander",
+  "trait_type": "assignable_trait",
+  "gui_row": 9,
+  "cost": 500,
+  "any_parent": [
+   "naval_invader"
+  ],
+  "modifier": {
+   "shore_bombardment_bonus": 0.25
+  }
+ },
+ "skirmisher": {
+  "id": "skirmisher",
+  "sourceFile": "00_traits.txt",
+  "type": "corps_commander",
+  "trait_type": "assignable_trait",
+  "gui_row": 10,
+  "cost": 500,
+  "enable_ability": "probing_attack",
+  "any_parent": [
+   "commando"
+  ],
+  "modifier": {}
+ },
+ "paratrooper": {
+  "id": "paratrooper",
+  "sourceFile": "00_traits.txt",
+  "type": "corps_commander",
+  "trait_type": "assignable_trait",
+  "gui_row": 11,
+  "cost": 500,
+  "enable_ability": "glider_planes",
+  "any_parent": [
+   "commando"
+  ],
+  "modifier": {
+   "extra_paratrooper_supply_grace": 240
+  }
+ },
+ "camouflage_expert": {
+  "id": "camouflage_expert",
+  "sourceFile": "00_traits.txt",
+  "type": "corps_commander",
+  "trait_type": "assignable_trait",
+  "gui_row": 12,
+  "cost": 500,
+  "slot": "high_command",
+  "any_parent": [
+   "commando"
+  ],
+  "modifier": {
+   "cas_damage_reduction": 0.5,
+   "air_superiority_bonus_in_combat": -0.5
+  }
+ },
+ "expert_improviser": {
+  "id": "expert_improviser",
+  "sourceFile": "00_traits.txt",
+  "type": "corps_commander",
+  "trait_type": "assignable_trait",
+  "gui_row": 13,
+  "override_effect_tooltip": "expert_improviser_movement_bonus_on_land",
+  "custom_prerequisite_tooltip": "needs_at_least_one_terrain",
+  "cost": 500,
+  "enable_ability": "makeshift_bridges",
+  "any_parent": [
+   "trickster"
+  ],
+  "prerequisites": {
+   "check_variable": [
+    "num_terrain_traits",
+    ">",
+    0
+   ]
+  },
+  "modifier": {
+   "desert": {
+    "movement": 0.1
+   },
+   "hills": {
+    "movement": 0.1
+   },
+   "forest": {
+    "movement": 0.1
+   },
+   "mountain": {
+    "movement": 0.1
+   },
+   "plains": {
+    "movement": 0.1
+   },
+   "urban": {
+    "movement": 0.1
+   },
+   "jungle": {
+    "movement": 0.1
+   },
+   "marsh": {
+    "movement": 0.1
+   }
+  }
+ },
+ "guerilla_fighter": {
+  "id": "guerilla_fighter",
+  "sourceFile": "00_traits.txt",
+  "type": "corps_commander",
+  "trait_type": "assignable_trait",
+  "gui_row": 14,
+  "cost": 500,
+  "any_parent": [
+   "trickster"
+  ],
+  "modifier": {
+   "dig_in_speed_factor": 0.5
+  }
+ },
+ "blockade_runner": {
+  "id": "blockade_runner",
+  "sourceFile": "00_traits.txt",
+  "type": "navy",
+  "gui_row": 0,
+  "gui_column": 0,
+  "custom_gain_xp_trigger_tooltip": "BLOCKADE_RUNNER_TRIGGER_TT",
+  "cost": 500,
+  "modifier": {
+   "naval_retreat_chance": 0.2,
+   "naval_retreat_speed": 0.15,
+   "convoy_retreat_speed": 0.05
+  }
+ },
+ "seawolf": {
+  "id": "seawolf",
+  "sourceFile": "00_traits.txt",
+  "type": "navy",
+  "gui_row": 2,
+  "gui_column": 0,
+  "custom_gain_xp_trigger_tooltip": "SEAWOLF_TRIGGER_TT",
+  "cost": 700,
+  "slot": "high_command",
+  "modifier": {
+   "navy_submarine_attack_factor": 0.2
+  }
+ },
+ "spotter": {
+  "id": "spotter",
+  "sourceFile": "00_traits.txt",
+  "type": "navy",
+  "gui_row": 4,
+  "gui_column": 0,
+  "custom_gain_xp_trigger_tooltip": "SPOTTER_TRIGGER_TT",
+  "cost": 500,
+  "gain_xp_on_spotting": 10,
+  "modifier": {
+   "spotting_chance": 0.1
+  }
+ },
+ "fleet_protector": {
+  "id": "fleet_protector",
+  "sourceFile": "00_traits.txt",
+  "type": "navy",
+  "gui_row": 5,
+  "gui_column": 0,
+  "custom_gain_xp_trigger_tooltip": "FLEET_PROTECTOR_TRIGGER_TT",
+  "cost": 500,
+  "slot": "high_command",
+  "modifier": {
+   "screening_efficiency": 0.2
+  }
+ },
+ "superior_tactician": {
+  "id": "superior_tactician",
+  "sourceFile": "00_traits.txt",
+  "type": "navy",
+  "gui_row": 6,
+  "gui_column": 0,
+  "custom_gain_xp_trigger_tooltip": "SUPERIOR_TACTICIAN_TRIGGER_TT",
+  "cost": 500,
+  "slot": "navy_chief",
+  "modifier": {
+   "positioning": 0.25
+  }
+ },
+ "air_controller": {
+  "id": "air_controller",
+  "sourceFile": "00_traits.txt",
+  "type": "navy",
+  "gui_row": 8,
+  "gui_column": 0,
+  "cost": 500,
+  "modifier": {
+   "navy_carrier_air_targetting_factor": 0.1,
+   "sortie_efficiency": 0.1
+  }
+ },
+ "ironside": {
+  "id": "ironside",
+  "sourceFile": "00_traits.txt",
+  "type": "navy",
+  "gui_row": 10,
+  "gui_column": 0,
+  "custom_gain_xp_trigger_tooltip": "IRONSIDE_TRIGGER_TT",
+  "cost": 500,
+  "modifier": {
+   "navy_capital_ship_defence_factor": 0.1
+  }
+ },
+ "concealment_expert": {
+  "id": "concealment_expert",
+  "sourceFile": "00_traits.txt",
+  "type": "navy",
+  "trait_type": "assignable_trait",
+  "mutually_exclusive": "lone_wolf",
+  "gui_row": 0,
+  "gui_column": 1,
+  "slot": "navy_chief",
+  "any_parent": [
+   "blockade_runner"
+  ],
+  "modifier": {
+   "navy_visibility": -0.1
+  }
+ },
+ "lone_wolf": {
+  "id": "lone_wolf",
+  "sourceFile": "00_traits.txt",
+  "type": "navy",
+  "trait_type": "assignable_trait",
+  "mutually_exclusive": "concealment_expert",
+  "gui_row": 1,
+  "gui_column": 1,
+  "any_parent": [
+   "blockade_runner"
+  ],
+  "modifier": {
+   "naval_enemy_fleet_size_ratio_penalty_factor": 0.1
+  }
+ },
+ "silent_hunter": {
+  "id": "silent_hunter",
+  "sourceFile": "00_traits.txt",
+  "type": "navy",
+  "trait_type": "assignable_trait",
+  "mutually_exclusive": "lancer",
+  "gui_row": 2,
+  "gui_column": 1,
+  "any_parent": [
+   "seawolf"
+  ],
+  "modifier": {
+   "naval_torpedo_reveal_chance_factor": -0.15
+  }
+ },
+ "lancer": {
+  "id": "lancer",
+  "sourceFile": "00_traits.txt",
+  "type": "navy",
+  "trait_type": "assignable_trait",
+  "mutually_exclusive": "silent_hunter",
+  "gui_row": 3,
+  "gui_column": 1,
+  "any_parent": [
+   "seawolf",
+   "spotter",
+   "fleet_protector",
+   "superior_tactician"
+  ],
+  "modifier": {
+   "naval_torpedo_screen_penetration_factor": 0.25
+  }
+ },
+ "search_pattern_expert": {
+  "id": "search_pattern_expert",
+  "sourceFile": "00_traits.txt",
+  "type": "navy",
+  "trait_type": "assignable_trait",
+  "gui_row": 4,
+  "gui_column": 1,
+  "any_parent": [
+   "spotter",
+   "fleet_protector"
+  ],
+  "modifier": {
+   "spotting_chance": 0.2
+  }
+ },
+ "destroyer_leader": {
+  "id": "destroyer_leader",
+  "sourceFile": "00_traits.txt",
+  "type": "navy",
+  "trait_type": "assignable_trait",
+  "gui_row": 5,
+  "gui_column": 1,
+  "any_parent": [
+   "fleet_protector",
+   "superior_tactician"
+  ],
+  "modifier": {},
+  "subUnitModifiers": {
+   "destroyer": {
+    "naval_damage_factor": 0.1,
+    "naval_torpedo_hit_chance_factor": 0.1,
+    "navy_visibility": -0.1
+   }
+  }
+ },
+ "cruiser_captain": {
+  "id": "cruiser_captain",
+  "sourceFile": "00_traits.txt",
+  "type": "navy",
+  "trait_type": "assignable_trait",
+  "gui_row": 6,
+  "gui_column": 1,
+  "any_parent": [
+   "fleet_protector",
+   "superior_tactician"
+  ],
+  "modifier": {},
+  "subUnitModifiers": {
+   "light_cruiser": {
+    "naval_damage_factor": 0.1,
+    "naval_speed_factor": 0.1
+   },
+   "heavy_cruiser": {
+    "naval_damage_factor": 0.1,
+    "naval_speed_factor": 0.1
+   }
+  }
+ },
+ "mine_craft": {
+  "id": "mine_craft",
+  "sourceFile": "00_traits.txt",
+  "type": "navy",
+  "trait_type": "assignable_trait",
+  "gui_row": 7,
+  "gui_column": 1,
+  "any_parent": [
+   "superior_tactician"
+  ],
+  "modifier": {
+   "mines_planting_by_fleets_factor": 0.25,
+   "mines_sweeping_by_fleets_factor": 0.25,
+   "naval_mines_effect_reduction": 0.25
+  }
+ },
+ "flight_deck_manager": {
+  "id": "flight_deck_manager",
+  "sourceFile": "00_traits.txt",
+  "type": "navy",
+  "trait_type": "assignable_trait",
+  "gui_row": 8,
+  "gui_column": 1,
+  "slot": "high_command",
+  "any_parent": [
+   "air_controller"
+  ],
+  "modifier": {
+   "sortie_efficiency": 0.1
+  }
+ },
+ "ground_pounder": {
+  "id": "ground_pounder",
+  "sourceFile": "00_traits.txt",
+  "type": "navy",
+  "trait_type": "assignable_trait",
+  "gui_row": 9,
+  "gui_column": 1,
+  "any_parent": [
+   "ironside"
+  ],
+  "modifier": {
+   "shore_bombardment_bonus": 0.25
+  }
+ },
+ "big_guns_expert": {
+  "id": "big_guns_expert",
+  "sourceFile": "00_traits.txt",
+  "type": "navy",
+  "trait_type": "assignable_trait",
+  "gui_row": 10,
+  "gui_column": 1,
+  "slot": "high_command",
+  "any_parent": [
+   "ironside"
+  ],
+  "modifier": {
+   "navy_capital_ship_attack_factor": 0.15
+  }
+ },
+ "safety_first": {
+  "id": "safety_first",
+  "sourceFile": "00_traits.txt",
+  "type": "navy",
+  "trait_type": "assignable_trait",
+  "gui_row": 11,
+  "gui_column": 1,
+  "slot": "navy_chief",
+  "any_parent": [
+   "ironside"
+  ],
+  "modifier": {
+   "critical_receive_chance": -0.25
+  }
+ },
+ "smoke_screen_expert": {
+  "id": "smoke_screen_expert",
+  "sourceFile": "00_traits.txt",
+  "type": "navy",
+  "trait_type": "assignable_trait",
+  "gui_row": 0,
+  "gui_column": 2,
+  "any_parent": [
+   "lone_wolf",
+   "concealment_expert"
+  ],
+  "modifier": {
+   "naval_retreat_chance": 0.25
+  }
+ },
+ "torpedo_expert": {
+  "id": "torpedo_expert",
+  "sourceFile": "00_traits.txt",
+  "type": "navy",
+  "trait_type": "assignable_trait",
+  "gui_row": 2,
+  "gui_column": 2,
+  "slot": "high_command",
+  "any_parent": [
+   "silent_hunter",
+   "lancer"
+  ],
+  "modifier": {
+   "naval_torpedo_hit_chance_factor": 0.1
+  }
+ },
+ "loading_drill_master": {
+  "id": "loading_drill_master",
+  "sourceFile": "00_traits.txt",
+  "type": "navy",
+  "trait_type": "assignable_trait",
+  "gui_row": 3,
+  "gui_column": 2,
+  "any_parent": [
+   "silent_hunter",
+   "lancer"
+  ],
+  "modifier": {
+   "naval_torpedo_cooldown_factor": -0.25
+  }
+ },
+ "hunter_killer": {
+  "id": "hunter_killer",
+  "sourceFile": "00_traits.txt",
+  "type": "navy",
+  "trait_type": "assignable_trait",
+  "gui_row": 5,
+  "gui_column": 2,
+  "any_parent": [
+   "search_pattern_expert",
+   "destroyer_leader"
+  ],
+  "modifier": {
+   "navy_submarine_detection_factor": 0.2,
+   "navy_submarine_attack_factor": 0.1
+  }
+ },
+ "fly_swatter": {
+  "id": "fly_swatter",
+  "sourceFile": "00_traits.txt",
+  "type": "navy",
+  "trait_type": "assignable_trait",
+  "gui_row": 6,
+  "gui_column": 2,
+  "slot": "high_command",
+  "any_parent": [
+   "cruiser_captain",
+   "destroyer_leader"
+  ],
+  "modifier": {
+   "navy_anti_air_attack_factor": 0.1
+  }
+ },
+ "fighter_director": {
+  "id": "fighter_director",
+  "sourceFile": "00_traits.txt",
+  "type": "navy",
+  "trait_type": "assignable_trait",
+  "mutually_exclusive": [
+   "dive_bomber",
+   "torpedo_bomber"
+  ],
+  "gui_row": 7,
+  "gui_column": 2,
+  "any_parent": [
+   "flight_deck_manager"
+  ],
+  "modifier": {
+   "fighter_sortie_efficiency": 0.2
+  }
+ },
+ "dive_bomber": {
+  "id": "dive_bomber",
+  "sourceFile": "00_traits.txt",
+  "type": "navy",
+  "trait_type": "assignable_trait",
+  "mutually_exclusive": [
+   "fighter_director",
+   "torpedo_bomber"
+  ],
+  "gui_row": 8,
+  "gui_column": 2,
+  "slot": "navy_chief",
+  "any_parent": [
+   "flight_deck_manager"
+  ],
+  "subUnitModifiers": {
+   "cv_cas": {
+    "ground_attack_factor": 0.1,
+    "air_cas_efficiency": 0.1
+   }
+  }
+ },
+ "torpedo_bomber": {
+  "id": "torpedo_bomber",
+  "sourceFile": "00_traits.txt",
+  "type": "navy",
+  "trait_type": "assignable_trait",
+  "mutually_exclusive": [
+   "fighter_director",
+   "dive_bomber"
+  ],
+  "gui_row": 9,
+  "gui_column": 2,
+  "slot": "high_command",
+  "any_parent": [
+   "flight_deck_manager"
+  ],
+  "subUnitModifiers": {
+   "cv_nav_bomber": {
+    "naval_strike_attack_factor": 0.1,
+    "air_nav_efficiency": 0.1,
+    "naval_strike_targetting_factor": 0.05
+   }
+  }
+ },
+ "marksman": {
+  "id": "marksman",
+  "sourceFile": "00_traits.txt",
+  "type": "navy",
+  "trait_type": "assignable_trait",
+  "mutually_exclusive": "crisis_magician",
+  "gui_row": 10,
+  "gui_column": 2,
+  "slot": "navy_chief",
+  "any_parent": [
+   "big_guns_expert"
+  ],
+  "modifier": {
+   "naval_critical_score_chance_factor": 0.1
+  }
+ },
+ "crisis_magician": {
+  "id": "crisis_magician",
+  "sourceFile": "00_traits.txt",
+  "type": "navy",
+  "trait_type": "assignable_trait",
+  "mutually_exclusive": "marksman",
+  "gui_row": 11,
+  "gui_column": 2,
+  "any_parent": [
+   "safety_first"
+  ],
+  "modifier": {
+   "naval_critical_effect_factor": -0.5
+  }
+ },
+ "arctic_water_expert": {
+  "id": "arctic_water_expert",
+  "sourceFile": "00_traits.txt",
+  "type": "navy",
+  "trait_type": "basic_terrain_trait",
+  "gui_row": 0,
+  "cost": 1000,
+  "modifier": {
+   "naval_attrition": -0.08
+  }
+ },
+ "inshore_fighter": {
+  "id": "inshore_fighter",
+  "sourceFile": "00_traits.txt",
+  "type": "navy",
+  "trait_type": "basic_terrain_trait",
+  "gui_row": 1,
+  "cost": 1000,
+  "modifier": {
+   "water_fjords": {
+    "attack": 0.1,
+    "movement": 0.1,
+    "defence": 0.1
+   }
+  }
+ },
+ "blue_water_expert": {
+  "id": "blue_water_expert",
+  "sourceFile": "00_traits.txt",
+  "type": "navy",
+  "trait_type": "basic_terrain_trait",
+  "gui_row": 2,
+  "cost": 1000,
+  "slot": "high_command",
+  "modifier": {
+   "water_deep_ocean": {
+    "attack": 0.1,
+    "movement": 0.1,
+    "defence": 0.1
+   }
+  }
+ },
+ "green_water_expert": {
+  "id": "green_water_expert",
+  "sourceFile": "00_traits.txt",
+  "type": "navy",
+  "trait_type": "basic_terrain_trait",
+  "gui_row": 3,
+  "cost": 1000,
+  "modifier": {
+   "water_shallow_sea": {
+    "attack": 0.1,
+    "movement": 0.1,
+    "defence": 0.1
+   }
+  }
+ },
+ "old_guard_navy": {
+  "id": "old_guard_navy",
+  "sourceFile": "00_traits.txt",
+  "type": "navy",
+  "trait_type": "personality_trait",
+  "new_commander_weight": {
+   "factor": 1,
+   "modifier": [
+    {
+     "FROM": {
+      "has_idea": "best_of_the_best_naval_academy_spirit"
+     },
+     "factor": 0
+    },
+    {
+     "FROM": {
+      "has_idea": "naval_academy_scholarships_spirit"
+     },
+     "factor": 0
+    },
+    {
+     "FROM": {
+      "has_idea": "SOV_purged_junior_navy_officers_3"
+     },
+     "factor": 0
+    }
+   ]
+  },
+  "modifier": {
+   "experience_gain_factor": -0.25
+  }
+ },
+ "gentlemanly": {
+  "id": "gentlemanly",
+  "sourceFile": "00_traits.txt",
+  "type": "navy",
+  "trait_type": "personality_trait",
+  "new_commander_weight": {
+   "factor": 1,
+   "modifier": [
+    {
+     "FROM": {
+      "has_idea": "best_of_the_best_naval_academy_spirit"
+     },
+     "factor": 0
+    },
+    {
+     "FROM": {
+      "has_idea": "naval_academy_scholarships_spirit"
+     },
+     "factor": 0
+    },
+    {
+     "FROM": {
+      "has_idea": "SOV_purged_junior_navy_officers_3"
+     },
+     "factor": 0
+    }
+   ]
+  },
+  "modifier": {
+   "naval_enemy_retreat_chance": 0.2,
+   "navy_org": 5
+  }
+ },
+ "gunnery_expert": {
+  "id": "gunnery_expert",
+  "sourceFile": "00_traits.txt",
+  "type": "navy",
+  "trait_type": "personality_trait",
+  "trait_xp_factor": {
+   "ironside": 1
+  },
+  "new_commander_weight": {
+   "factor": 1,
+   "modifier": [
+    {
+     "FROM": {
+      "has_idea": "best_of_the_best_naval_academy_spirit"
+     },
+     "factor": 0
+    },
+    {
+     "FROM": {
+      "has_idea": "naval_academy_scholarships_spirit"
+     },
+     "factor": 0
+    },
+    {
+     "FROM": {
+      "has_idea": "SOV_purged_junior_navy_officers_3"
+     },
+     "factor": 0
+    }
+   ]
+  },
+  "modifier": {}
+ },
+ "cuts_corners": {
+  "id": "cuts_corners",
+  "sourceFile": "00_traits.txt",
+  "type": "navy",
+  "trait_type": "personality_trait",
+  "new_commander_weight": {
+   "factor": 1,
+   "modifier": [
+    {
+     "FROM": {
+      "has_idea": "best_of_the_best_naval_academy_spirit"
+     },
+     "factor": 0
+    },
+    {
+     "FROM": {
+      "has_idea": "naval_academy_scholarships_spirit"
+     },
+     "factor": 0
+    },
+    {
+     "FROM": {
+      "has_idea": "SOV_purged_junior_navy_officers_3"
+     },
+     "factor": 0
+    }
+   ]
+  },
+  "modifier": {
+   "naval_damage_factor": 0.2,
+   "naval_defense_factor": -0.1
+  }
+ },
+ "chief_engineer": {
+  "id": "chief_engineer",
+  "sourceFile": "00_traits.txt",
+  "type": "navy",
+  "trait_type": "personality_trait",
+  "new_commander_weight": {
+   "factor": 1,
+   "modifier": [
+    {
+     "FROM": {
+      "has_idea": "best_of_the_best_naval_academy_spirit"
+     },
+     "factor": 0
+    },
+    {
+     "FROM": {
+      "has_idea": "naval_academy_scholarships_spirit"
+     },
+     "factor": 0
+    },
+    {
+     "FROM": {
+      "has_idea": "SOV_purged_junior_navy_officers_3"
+     },
+     "factor": 0
+    }
+   ]
+  },
+  "modifier": {
+   "critical_receive_chance": -0.05
+  }
+ },
+ "navy_media_personality": {
+  "id": "navy_media_personality",
+  "sourceFile": "00_traits.txt",
+  "type": "navy",
+  "trait_type": "personality_trait",
+  "new_commander_weight": {
+   "factor": 1,
+   "modifier": [
+    {
+     "FROM": {
+      "has_idea": "best_of_the_best_naval_academy_spirit"
+     },
+     "factor": 0
+    },
+    {
+     "FROM": {
+      "has_idea": "naval_academy_scholarships_spirit"
+     },
+     "factor": 0
+    },
+    {
+     "FROM": {
+      "has_idea": "SOV_purged_junior_navy_officers_3"
+     },
+     "factor": 0
+    }
+   ]
+  },
+  "modifier": {
+   "naval_has_potf_in_combat_attack": 0.1,
+   "naval_has_potf_in_combat_defense": 0.1
+  }
+ },
+ "bold": {
+  "id": "bold",
+  "sourceFile": "00_traits.txt",
+  "type": "navy",
+  "trait_type": "personality_trait",
+  "new_commander_weight": {
+   "factor": 1,
+   "modifier": [
+    {
+     "FROM": {
+      "has_idea": "best_of_the_best_naval_academy_spirit"
+     },
+     "factor": 0
+    },
+    {
+     "FROM": {
+      "has_idea": "naval_academy_scholarships_spirit"
+     },
+     "factor": 0
+    },
+    {
+     "FROM": {
+      "has_idea": "SOV_purged_junior_navy_officers_3"
+     },
+     "factor": 0
+    }
+   ]
+  },
+  "modifier": {
+   "naval_damage_factor": 0.05,
+   "naval_speed_factor": 0.1
+  }
+ },
+ "navy_career_officer": {
+  "id": "navy_career_officer",
+  "sourceFile": "00_traits.txt",
+  "type": "navy",
+  "trait_type": "personality_trait",
+  "new_commander_weight": {
+   "factor": 1,
+   "modifier": [
+    {
+     "FROM": {
+      "has_idea": "best_of_the_best_naval_academy_spirit"
+     },
+     "factor": 0
+    },
+    {
+     "FROM": {
+      "has_idea": "naval_academy_scholarships_spirit"
+     },
+     "factor": 0
+    },
+    {
+     "FROM": {
+      "has_idea": "SOV_purged_junior_navy_officers_3"
+     },
+     "factor": 0
+    }
+   ]
+  },
+  "modifier": {
+   "experience_gain_factor": 0.1
+  }
+ },
+ "battleship_adherent": {
+  "id": "battleship_adherent",
+  "sourceFile": "00_traits.txt",
+  "type": "navy",
+  "trait_type": "personality_trait",
+  "new_commander_weight": {
+   "factor": 1,
+   "modifier": [
+    {
+     "FROM": {
+      "has_idea": "best_of_the_best_naval_academy_spirit"
+     },
+     "factor": 0
+    },
+    {
+     "FROM": {
+      "has_idea": "naval_academy_scholarships_spirit"
+     },
+     "factor": 0
+    },
+    {
+     "FROM": {
+      "has_idea": "SOV_purged_junior_navy_officers_3"
+     },
+     "factor": 0
+    }
+   ]
+  },
+  "modifier": {
+   "navy_capital_ship_attack_factor": 0.1,
+   "navy_anti_air_attack_factor": -0.2
+  }
+ },
+ "aviation_enthusiast": {
+  "id": "aviation_enthusiast",
+  "sourceFile": "00_traits.txt",
+  "type": "navy",
+  "trait_type": "personality_trait",
+  "trait_xp_factor": {
+   "air_controller": 1
+  },
+  "new_commander_weight": {
+   "factor": 1,
+   "modifier": [
+    {
+     "FROM": {
+      "has_idea": "best_of_the_best_naval_academy_spirit"
+     },
+     "factor": 0
+    },
+    {
+     "FROM": {
+      "has_idea": "naval_academy_scholarships_spirit"
+     },
+     "factor": 0
+    },
+    {
+     "FROM": {
+      "has_idea": "SOV_purged_junior_navy_officers_3"
+     },
+     "factor": 0
+    }
+   ]
+  },
+  "modifier": {}
+ },
+ "caustic_personality": {
+  "id": "caustic_personality",
+  "sourceFile": "00_traits.txt",
+  "type": "navy",
+  "trait_type": "personality_trait",
+  "new_commander_weight": {
+   "factor": 1,
+   "modifier": [
+    {
+     "FROM": {
+      "has_idea": "best_of_the_best_naval_academy_spirit"
+     },
+     "factor": 0
+    },
+    {
+     "FROM": {
+      "has_idea": "naval_academy_scholarships_spirit"
+     },
+     "factor": 0
+    },
+    {
+     "FROM": {
+      "has_idea": "SOV_purged_junior_navy_officers_3"
+     },
+     "factor": 0
+    }
+   ]
+  },
+  "modifier": {
+   "ships_at_battle_start": -0.25
+  }
+ },
+ "craven": {
+  "id": "craven",
+  "sourceFile": "00_traits.txt",
+  "type": "navy",
+  "trait_type": "personality_trait",
+  "new_commander_weight": {
+   "factor": 1,
+   "modifier": [
+    {
+     "FROM": {
+      "has_idea": "best_of_the_best_naval_academy_spirit"
+     },
+     "factor": 0
+    },
+    {
+     "FROM": {
+      "has_idea": "naval_academy_scholarships_spirit"
+     },
+     "factor": 0
+    },
+    {
+     "FROM": {
+      "has_idea": "SOV_purged_junior_navy_officers_3"
+     },
+     "factor": 0
+    }
+   ]
+  },
+  "modifier": {
+   "naval_retreat_chance": 0.25,
+   "naval_damage_factor": -0.05
+  }
+ },
+ "naval_lineage": {
+  "id": "naval_lineage",
+  "sourceFile": "00_traits.txt",
+  "type": "navy",
+  "trait_type": "personality_trait",
+  "new_commander_weight": {
+   "factor": 1,
+   "modifier": [
+    {
+     "FROM": {
+      "has_idea": "best_of_the_best_naval_academy_spirit"
+     },
+     "factor": 0
+    },
+    {
+     "FROM": {
+      "has_idea": "naval_academy_scholarships_spirit"
+     },
+     "factor": 0
+    },
+    {
+     "FROM": {
+      "has_idea": "SOV_purged_junior_navy_officers_3"
+     },
+     "factor": 0
+    }
+   ]
+  },
+  "modifier": {
+   "naval_retreat_chance": -0.25,
+   "ships_at_battle_start": 0.25
+  }
+ },
+ "submarine_officer": {
+  "id": "submarine_officer",
+  "sourceFile": "00_traits.txt",
+  "type": "navy",
+  "trait_type": "personality_trait",
+  "trait_xp_factor": {
+   "seawolf": 0.5,
+   "spotter": 0.5
+  },
+  "new_commander_weight": {
+   "factor": 1,
+   "modifier": [
+    {
+     "FROM": {
+      "has_idea": "best_of_the_best_naval_academy_spirit"
+     },
+     "factor": 0
+    },
+    {
+     "FROM": {
+      "has_idea": "naval_academy_scholarships_spirit"
+     },
+     "factor": 0
+    },
+    {
+     "FROM": {
+      "has_idea": "SOV_purged_junior_navy_officers_3"
+     },
+     "factor": 0
+    },
+    {
+     "FROM": {
+      "has_dlc": "Thunder at Our Gates"
+     },
+     "factor": 0
+    }
+   ]
+  }
+ },
+ "destroyer_officer": {
+  "id": "destroyer_officer",
+  "sourceFile": "00_traits.txt",
+  "type": "navy",
+  "trait_type": "personality_trait",
+  "trait_xp_factor": {
+   "blockade_runner": 0.5,
+   "fleet_protector": 0.5
+  },
+  "new_commander_weight": {
+   "factor": 1,
+   "modifier": [
+    {
+     "FROM": {
+      "has_idea": "best_of_the_best_naval_academy_spirit"
+     },
+     "factor": 0
+    },
+    {
+     "FROM": {
+      "has_idea": "naval_academy_scholarships_spirit"
+     },
+     "factor": 0
+    },
+    {
+     "FROM": {
+      "has_idea": "SOV_purged_junior_navy_officers_3"
+     },
+     "factor": 0
+    },
+    {
+     "FROM": {
+      "has_dlc": "Thunder at Our Gates"
+     },
+     "factor": 0
+    }
+   ]
+  }
+ },
+ "cruiser_officer": {
+  "id": "cruiser_officer",
+  "sourceFile": "00_traits.txt",
+  "type": "navy",
+  "trait_type": "personality_trait",
+  "trait_xp_factor": {
+   "superior_tactician": 0.5,
+   "fleet_protector": 0.5
+  },
+  "new_commander_weight": {
+   "factor": 1,
+   "modifier": [
+    {
+     "FROM": {
+      "has_idea": "best_of_the_best_naval_academy_spirit"
+     },
+     "factor": 0
+    },
+    {
+     "FROM": {
+      "has_idea": "naval_academy_scholarships_spirit"
+     },
+     "factor": 0
+    },
+    {
+     "FROM": {
+      "has_idea": "SOV_purged_junior_navy_officers_3"
+     },
+     "factor": 0
+    },
+    {
+     "FROM": {
+      "has_dlc": "Thunder at Our Gates"
+     },
+     "factor": 0
+    }
+   ]
+  }
+ },
+ "heavy_ship_officer": {
+  "id": "heavy_ship_officer",
+  "sourceFile": "00_traits.txt",
+  "type": "navy",
+  "trait_type": "personality_trait",
+  "trait_xp_factor": {
+   "superior_tactician": 0.5,
+   "ironside": 0.5
+  },
+  "new_commander_weight": {
+   "factor": 1,
+   "modifier": [
+    {
+     "FROM": {
+      "has_idea": "best_of_the_best_naval_academy_spirit"
+     },
+     "factor": 0
+    },
+    {
+     "FROM": {
+      "has_idea": "naval_academy_scholarships_spirit"
+     },
+     "factor": 0
+    },
+    {
+     "FROM": {
+      "has_idea": "SOV_purged_junior_navy_officers_3"
+     },
+     "factor": 0
+    },
+    {
+     "FROM": {
+      "has_dlc": "Thunder at Our Gates"
+     },
+     "factor": 0
+    }
+   ]
+  }
+ },
+ "carrier_officer": {
+  "id": "carrier_officer",
+  "sourceFile": "00_traits.txt",
+  "type": "navy",
+  "trait_type": "personality_trait",
+  "trait_xp_factor": {
+   "air_controller": 0.5,
+   "spotter": 0.5
+  },
+  "new_commander_weight": {
+   "factor": 1,
+   "modifier": [
+    {
+     "FROM": {
+      "has_idea": "best_of_the_best_naval_academy_spirit"
+     },
+     "factor": 0
+    },
+    {
+     "FROM": {
+      "has_idea": "naval_academy_scholarships_spirit"
+     },
+     "factor": 0
+    },
+    {
+     "FROM": {
+      "has_idea": "SOV_purged_junior_navy_officers_3"
+     },
+     "factor": 0
+    },
+    {
+     "FROM": {
+      "has_dlc": "Thunder at Our Gates"
+     },
+     "factor": 0
+    }
+   ]
+  }
+ },
+ "sick": {
+  "id": "sick",
+  "sourceFile": "00_traits.txt",
+  "type": "all",
+  "trait_type": "status_trait",
+  "nonSharedModifier": {
+   "skill_bonus_factor": -0.5,
+   "cannot_use_abilities": 1
+  }
+ },
+ "wounded": {
+  "id": "wounded",
+  "sourceFile": "00_traits.txt",
+  "type": "all",
+  "trait_type": "status_trait",
+  "nonSharedModifier": {
+   "skill_bonus_factor": -0.5,
+   "cannot_use_abilities": 1
+  }
+ },
+ "reassigned": {
+  "id": "reassigned",
+  "sourceFile": "00_traits.txt",
+  "type": "all",
+  "trait_type": "status_trait",
+  "nonSharedModifier": {
+   "skill_bonus_factor": -1,
+   "cannot_use_abilities": 1
+  }
+ },
+ "disgruntled": {
+  "id": "disgruntled",
+  "sourceFile": "00_traits.txt",
+  "type": "all",
+  "trait_type": "status_trait",
+  "attack_skill": -2,
+  "defense_skill": -2,
+  "logistics_skill": -2,
+  "planning_skill": -2
+ },
+ "demoted": {
+  "id": "demoted",
+  "sourceFile": "00_traits.txt",
+  "type": "all",
+  "trait_type": "status_trait",
+  "attack_skill": -1,
+  "defense_skill": -1,
+  "logistics_skill": -1,
+  "planning_skill": -1
+ },
+ "substance_abuser": {
+  "id": "substance_abuser",
+  "sourceFile": "00_traits.txt",
+  "type": "all",
+  "trait_type": "status_trait"
+ },
+ "substance_addict": {
+  "id": "substance_addict",
+  "sourceFile": "00_traits.txt",
+  "type": "all",
+  "trait_type": "status_trait",
+  "attack_skill": -2,
+  "defense_skill": -2,
+  "logistics_skill": -2,
+  "planning_skill": -2,
+  "allowed": {
+   "has_trait": "substance_abuser"
+  }
+ },
+ "hidden_sympathies": {
+  "id": "hidden_sympathies",
+  "sourceFile": "00_traits.txt",
+  "type": "all",
+  "trait_type": "status_trait"
+ },
+ "recently_promoted": {
+  "id": "recently_promoted",
+  "sourceFile": "00_traits.txt",
+  "type": "all",
+  "trait_type": "status_trait",
+  "attack_skill": -1,
+  "defense_skill": -1,
+  "logistics_skill": -1,
+  "planning_skill": -1
+ },
+ "motivated": {
+  "id": "motivated",
+  "sourceFile": "00_traits.txt",
+  "type": "land",
+  "trait_type": "status_trait",
+  "attack_skill": 1,
+  "nonSharedModifier": {
+   "army_morale_factor": 0.1
+  }
+ },
+ "exiled_leader": {
+  "id": "exiled_leader",
+  "sourceFile": "00_traits.txt",
+  "type": "land",
+  "trait_type": "exile",
+  "new_commander_weight": {
+   "factor": 0
+  },
+  "modifier": {
+   "exiled_divisions_attack_factor": 0.1,
+   "own_exiled_divisions_attack_factor": 0.05,
+   "exiled_divisions_defense_factor": 0.1,
+   "own_exiled_divisions_defense_factor": 0.05
+  }
+ },
+ "trait_SPA_nationalist_sympathies": {
+  "id": "trait_SPA_nationalist_sympathies",
+  "sourceFile": "00_traits.txt",
+  "type": "all",
+  "trait_type": "personality_trait",
+  "new_commander_weight": {
+   "factor": 0
+  }
+ },
+ "trait_SPA_falangist_loyalties": {
+  "id": "trait_SPA_falangist_loyalties",
+  "sourceFile": "00_traits.txt",
+  "type": "all",
+  "trait_type": "personality_trait",
+  "new_commander_weight": {
+   "factor": 0
+  }
+ },
+ "trait_SPA_carlist_loyalties": {
+  "id": "trait_SPA_carlist_loyalties",
+  "sourceFile": "00_traits.txt",
+  "type": "all",
+  "trait_type": "personality_trait",
+  "new_commander_weight": {
+   "factor": 0
+  }
+ },
+ "trait_SPR_republican_loyalties": {
+  "id": "trait_SPR_republican_loyalties",
+  "sourceFile": "00_traits.txt",
+  "type": "all",
+  "trait_type": "personality_trait",
+  "new_commander_weight": {
+   "factor": 0
+  }
+ },
+ "trait_SPR_stalinist_loyalties": {
+  "id": "trait_SPR_stalinist_loyalties",
+  "sourceFile": "00_traits.txt",
+  "type": "all",
+  "trait_type": "personality_trait",
+  "new_commander_weight": {
+   "factor": 0
+  }
+ },
+ "trait_SPR_anti_stalinist_loyalties": {
+  "id": "trait_SPR_anti_stalinist_loyalties",
+  "sourceFile": "00_traits.txt",
+  "type": "all",
+  "trait_type": "personality_trait",
+  "new_commander_weight": {
+   "factor": 0
+  }
+ },
+ "trait_BUL_zveno_member": {
+  "id": "trait_BUL_zveno_member",
+  "sourceFile": "00_traits.txt",
+  "type": "all",
+  "trait_type": "personality_trait",
+  "allowed": {
+   "FROM": {
+    "original_tag": "BUL"
+   }
+  },
+  "new_commander_weight": {
+   "factor": 1,
+   "modifier": {
+    "factor": 0,
+    "FROM": {
+     "has_country_flag": "BUL_zveno_destroyed_flag"
+    }
+   }
+  }
+ },
+ "trait_BUL_tsar_loyalist": {
+  "id": "trait_BUL_tsar_loyalist",
+  "sourceFile": "00_traits.txt",
+  "type": "all",
+  "trait_type": "personality_trait",
+  "allowed": {
+   "FROM": {
+    "original_tag": "BUL"
+   }
+  },
+  "new_commander_weight": {
+   "factor": 1,
+   "modifier": {
+    "factor": 0,
+    "FROM": {
+     "OR": {
+      "has_completed_focus": [
+       "BUL_overthrow_the_tsar",
+       "BUL_abolish_the_monarchy",
+       "BUL_depose_the_tsar"
+      ],
+      "AND": {
+       "has_completed_focus": "BUL_plot_against_boris",
+       "NOT": {
+        "has_completed_focus": "BUL_the_return_of_ferdinand_i"
+       }
+      },
+      "__list": [
+       "neutrality",
+       "<",
+       0.05
+      ]
+     }
+    }
+   }
+  }
+ },
+ "trait_BUL_ff_sympathizer": {
+  "id": "trait_BUL_ff_sympathizer",
+  "sourceFile": "00_traits.txt",
+  "type": "all",
+  "trait_type": "personality_trait",
+  "allowed": {
+   "FROM": {
+    "original_tag": "BUL"
+   }
+  },
+  "new_commander_weight": {
+   "factor": 1,
+   "modifier": {
+    "factor": 0,
+    "OR": {
+     "FROM": [
+      [
+       "communism",
+       "<",
+       0.05
+      ],
+      {
+       "has_completed_focus": "BUL_crush_the_communists"
+      }
+     ]
+    }
+   }
+  }
+ },
+ "trait_TUR_kemalist_champion": {
+  "id": "trait_TUR_kemalist_champion",
+  "sourceFile": "00_traits.txt",
+  "type": "all",
+  "trait_type": "personality_trait",
+  "allowed": {
+   "FROM": {
+    "original_tag": "TUR"
+   }
+  },
+  "new_commander_weight": {
+   "factor": 0
+  }
+ },
+ "trait_GRE_stauch_monarchist": {
+  "id": "trait_GRE_stauch_monarchist",
+  "sourceFile": "00_traits.txt",
+  "type": "all",
+  "trait_type": "personality_trait",
+  "allowed": {
+   "FROM": {
+    "original_tag": "GRE"
+   }
+  },
+  "new_commander_weight": {
+   "factor": 0
+  }
+ },
+ "trait_GRE_venezelist_loyalist": {
+  "id": "trait_GRE_venezelist_loyalist",
+  "sourceFile": "00_traits.txt",
+  "type": "all",
+  "trait_type": "personality_trait",
+  "allowed": {
+   "FROM": {
+    "original_tag": "GRE"
+   }
+  },
+  "new_commander_weight": {
+   "factor": 0
+  }
+ },
+ "trait_GRE_marxist_acolyte": {
+  "id": "trait_GRE_marxist_acolyte",
+  "sourceFile": "00_traits.txt",
+  "type": "all",
+  "trait_type": "personality_trait",
+  "allowed": {
+   "FROM": {
+    "original_tag": "GRE"
+   }
+  },
+  "new_commander_weight": {
+   "factor": 0
+  }
+ },
+ "trait_GRE_fascist_sympathizer": {
+  "id": "trait_GRE_fascist_sympathizer",
+  "sourceFile": "00_traits.txt",
+  "type": "all",
+  "trait_type": "personality_trait",
+  "allowed": {
+   "FROM": {
+    "original_tag": "GRE"
+   }
+  },
+  "new_commander_weight": {
+   "factor": 0
+  }
+ },
+ "trait_HUN_fascist_sympathies": {
+  "id": "trait_HUN_fascist_sympathies",
+  "sourceFile": "00_traits.txt",
+  "type": "all",
+  "trait_type": "personality_trait",
+  "allowed": {
+   "FROM": {
+    "original_tag": "HUN"
+   }
+  },
+  "new_commander_weight": {
+   "factor": 0
+  }
+ },
+ "trait_HUN_vitez": {
+  "id": "trait_HUN_vitez",
+  "sourceFile": "00_traits.txt",
+  "type": "all",
+  "trait_type": "personality_trait",
+  "allowed": {
+   "FROM": {
+    "original_tag": "HUN"
+   }
+  },
+  "new_commander_weight": {
+   "factor": 0
+  }
+ },
+ "trait_JAP_kodoha_sympathizer": {
+  "id": "trait_JAP_kodoha_sympathizer",
+  "sourceFile": "00_traits.txt",
+  "type": "all",
+  "trait_type": "personality_trait",
+  "allowed": {
+   "FROM": {
+    "original_tag": "JAP"
+   }
+  },
+  "new_commander_weight": {
+   "factor": 0
+  }
+ },
+ "JAP_royal_lineage": {
+  "id": "JAP_royal_lineage",
+  "sourceFile": "00_traits.txt",
+  "type": "all",
+  "trait_type": "personality_trait",
+  "allowed": {
+   "FROM": {
+    "original_tag": "JAP"
+   }
+  },
+  "new_commander_weight": {
+   "factor": 0
+  },
+  "modifier": {}
+ },
+ "JAP_kamikaze_proponent": {
+  "id": "JAP_kamikaze_proponent",
+  "sourceFile": "00_traits.txt",
+  "type": "navy",
+  "trait_type": "personality_trait",
+  "allowed": {
+   "FROM": {
+    "original_tag": "JAP"
+   }
+  },
+  "new_commander_weight": {
+   "factor": 0
+  },
+  "modifier": {}
+ },
+ "JAP_tohokai_sympathies": {
+  "id": "JAP_tohokai_sympathies",
+  "sourceFile": "00_traits.txt",
+  "type": "all",
+  "trait_type": "personality_trait",
+  "allowed": {
+   "FROM": {
+    "original_tag": "JAP"
+   }
+  },
+  "new_commander_weight": {
+   "factor": 0
+  }
+ },
+ "JAP_IJA_loyalist": {
+  "id": "JAP_IJA_loyalist",
+  "sourceFile": "00_traits.txt",
+  "type": "all",
+  "trait_type": "personality_trait",
+  "allowed": {
+   "FROM": {
+    "original_tag": "JAP"
+   }
+  },
+  "new_commander_weight": {
+   "factor": 0
+  }
+ },
+ "JAP_government_supporter": {
+  "id": "JAP_government_supporter",
+  "sourceFile": "00_traits.txt",
+  "type": "all",
+  "trait_type": "personality_trait",
+  "allowed": {
+   "FROM": {
+    "original_tag": "JAP"
+   }
+  },
+  "new_commander_weight": {
+   "factor": 0
+  }
+ },
+ "expeditionary_leader_trait": {
+  "id": "expeditionary_leader_trait",
+  "sourceFile": "00_traits.txt",
+  "type": "land",
+  "trait_type": "personality_trait",
+  "new_commander_weight": {
+   "factor": 0
+  },
+  "modifier": {
+   "max_commander_army_size": -18,
+   "max_army_group_size": -4,
+   "army_non_core_attack_factor": 0.1,
+   "army_non_core_defence_factor": 0.1
+  }
+ },
+ "operative_commando": {
+  "id": "operative_commando",
+  "sourceFile": "00_traits.txt",
+  "type": "operative",
+  "trait_type": "basic_trait",
+  "cost": 600,
+  "new_commander_weight": {
+   "base": 1,
+   "modifier": [
+    {
+     "set_temp_variable": {
+      "trait_chance": "FROM.modifier@commando_trait_chance_factor"
+     },
+     "add_to_temp_variable": {
+      "var": "trait_chance",
+      "value": 1
+     },
+     "factor": "trait_chance"
+    },
+    {
+     "factor": 0.2,
+     "FROM": {
+      "NOT": {
+       "has_done_agency_upgrade": "upgrade_commando_training"
+      }
+     }
+    }
+   ]
+  },
+  "modifier": {
+   "own_operative_detection_chance_factor": -0.1,
+   "target_sabotage_factor": 0.25,
+   "target_sabotage_risk": -0.25,
+   "operation_capture_cipher_outcome": 0.25,
+   "operation_capture_cipher_risk": -0.25
+  }
+ },
+ "operative_seducer": {
+  "id": "operative_seducer",
+  "sourceFile": "00_traits.txt",
+  "type": "operative",
+  "trait_type": "personality_trait",
+  "modifier": {
+   "operation_infiltrate_outcome": 0.25,
+   "operation_infiltrate_risk": -0.25,
+   "own_operative_detection_chance_factor": -0.2
+  }
+ },
+ "operative_infiltrator": {
+  "id": "operative_infiltrator",
+  "sourceFile": "00_traits.txt",
+  "type": "operative",
+  "trait_type": "basic_trait",
+  "cost": 400,
+  "new_commander_weight": {
+   "factor": 0.5
+  },
+  "modifier": {
+   "operation_infiltrate_outcome": 0.25,
+   "operation_infiltrate_risk": -0.25
+  }
+ },
+ "operative_master_interrogator": {
+  "id": "operative_master_interrogator",
+  "sourceFile": "00_traits.txt",
+  "type": "operative",
+  "trait_type": "basic_trait",
+  "cost": 400,
+  "modifier": {
+   "intelligence_agency_defense": 0.2
+  }
+ },
+ "operative_linguist": {
+  "id": "operative_linguist",
+  "sourceFile": "00_traits.txt",
+  "type": "operative",
+  "trait_type": "basic_trait",
+  "cost": 400,
+  "modifier": {}
+ },
+ "operative_double_agent": {
+  "id": "operative_double_agent",
+  "sourceFile": "00_traits.txt",
+  "type": "operative",
+  "trait_type": "personality_trait",
+  "new_commander_weight": {
+   "factor": 0
+  },
+  "modifier": {}
+ },
+ "operative_tough": {
+  "id": "operative_tough",
+  "sourceFile": "00_traits.txt",
+  "type": "operative",
+  "trait_type": "personality_trait",
+  "modifier": {
+   "enemy_operative_intel_extraction_rate": -0.5
+  }
+ },
+ "operative_safe_cracker": {
+  "id": "operative_safe_cracker",
+  "sourceFile": "00_traits.txt",
+  "type": "operative",
+  "trait_type": "personality_trait",
+  "new_commander_weight": {
+   "factor": 0.5
+  },
+  "modifier": {
+   "operation_capture_cipher_outcome": 0.25,
+   "operation_steal_tech_risk": -0.25,
+   "operation_steal_tech_outcome": 0.25
+  }
+ },
+ "operative_well_groomed": {
+  "id": "operative_well_groomed",
+  "sourceFile": "00_traits.txt",
+  "type": "operative",
+  "trait_type": "basic_trait",
+  "cost": 400,
+  "modifier": {
+   "control_trade_mission_factor": 0.2,
+   "diplomatic_pressure_mission_factor": 0.2
+  }
+ },
+ "operative_natural_orator": {
+  "id": "operative_natural_orator",
+  "sourceFile": "00_traits.txt",
+  "type": "operative",
+  "trait_type": "basic_trait",
+  "cost": 400,
+  "modifier": {
+   "operation_coup_government_risk": -0.25,
+   "operation_coup_government_cost": -0.25,
+   "boost_ideology_mission_factor": 0.2
+  }
+ },
+ "operative_escape_artist": {
+  "id": "operative_escape_artist",
+  "sourceFile": "00_traits.txt",
+  "type": "operative",
+  "trait_type": "basic_trait",
+  "modifier": {
+   "operation_rescue_operative_risk": -0.1,
+   "operation_rescue_operative_cost": -0.1
+  }
+ },
+ "operative_demolition_expert": {
+  "id": "operative_demolition_expert",
+  "sourceFile": "00_traits.txt",
+  "type": "operative",
+  "trait_type": "basic_trait",
+  "cost": 400,
+  "modifier": {
+   "target_sabotage_factor": 0.25,
+   "target_sabotage_cost": -0.25,
+   "boost_resistance_factor": 0.25
+  }
+ },
+ "promoted_from_the_ranks": {
+  "id": "promoted_from_the_ranks",
+  "sourceFile": "00_traits.txt",
+  "type": "land",
+  "trait_type": "personality_trait",
+  "new_commander_weight": {
+   "factor": 0
+  },
+  "modifier": {
+   "promote_cost_factor": 0.5,
+   "planning_speed": 0.1,
+   "recon_factor": 0.05
+  }
+ },
+ "inspirational_bagpiper": {
+  "id": "inspirational_bagpiper",
+  "sourceFile": "00_traits.txt",
+  "type": [
+   "land"
+  ],
+  "trait_type": "personality_trait",
+  "new_commander_weight": {
+   "factor": 0
+  },
+  "modifier": {
+   "wounded_chance_factor": 0.65,
+   "experience_gain_army_unit_factor": 0.1,
+   "army_strength_factor": 0.1
+  }
+ },
+ "loyalty_to_britain": {
+  "id": "loyalty_to_britain",
+  "sourceFile": "00_traits.txt",
+  "type": [
+   "land"
+  ],
+  "trait_type": "personality_trait",
+  "new_commander_weight": {
+   "factor": 0
+  }
+ },
+ "loyalty_to_pakistan": {
+  "id": "loyalty_to_pakistan",
+  "sourceFile": "00_traits.txt",
+  "type": [
+   "land"
+  ],
+  "trait_type": "personality_trait",
+  "new_commander_weight": {
+   "factor": 0
+  }
+ },
+ "loyalty_to_india": {
+  "id": "loyalty_to_india",
+  "sourceFile": "00_traits.txt",
+  "type": [
+   "land"
+  ],
+  "trait_type": "personality_trait",
+  "new_commander_weight": {
+   "factor": 0
+  }
+ },
+ "IRQ_golden_square_member": {
+  "id": "IRQ_golden_square_member",
+  "sourceFile": "00_traits.txt",
+  "type": [
+   "land"
+  ],
+  "trait_type": "personality_trait",
+  "new_commander_weight": {
+   "factor": 0
+  }
+ },
+ "PRC_survivor_of_the_long_march": {
+  "id": "PRC_survivor_of_the_long_march",
+  "sourceFile": "00_traits.txt",
+  "type": [
+   "land"
+  ],
+  "trait_type": "personality_trait",
+  "new_commander_weight": {
+   "factor": 0
+  },
+  "modifier": {
+   "out_of_supply_factor": -0.1,
+   "equipment_capture": 0.03
+  }
+ },
+ "SIC_dubious_loyalty": {
+  "id": "SIC_dubious_loyalty",
+  "sourceFile": "00_traits.txt",
+  "type": [
+   "land"
+  ],
+  "trait_type": "personality_trait",
+  "new_commander_weight": {
+   "factor": 0
+  },
+  "modifier": {}
+ },
+ "YUN_dubious_loyalty": {
+  "id": "YUN_dubious_loyalty",
+  "sourceFile": "00_traits.txt",
+  "type": [
+   "land"
+  ],
+  "trait_type": "personality_trait",
+  "new_commander_weight": {
+   "factor": 0
+  },
+  "modifier": {}
+ },
+ "CHI_dubious_loyalty": {
+  "id": "CHI_dubious_loyalty",
+  "sourceFile": "00_traits.txt",
+  "type": [
+   "land"
+  ],
+  "trait_type": "personality_trait",
+  "new_commander_weight": {
+   "factor": 0
+  },
+  "modifier": {}
+ },
+ "XSM_dubious_loyalty": {
+  "id": "XSM_dubious_loyalty",
+  "sourceFile": "00_traits.txt",
+  "type": [
+   "land"
+  ],
+  "trait_type": "personality_trait",
+  "new_commander_weight": {
+   "factor": 0
+  },
+  "modifier": {}
+ },
+ "INS_loyalty_to_indonesia": {
+  "id": "INS_loyalty_to_indonesia",
+  "sourceFile": "00_traits.txt",
+  "type": [
+   "land"
+  ],
+  "trait_type": "personality_trait",
+  "new_commander_weight": {
+   "factor": 0
+  }
+ },
+ "INS_loyalty_to_netherlands": {
+  "id": "INS_loyalty_to_netherlands",
+  "sourceFile": "00_traits.txt",
+  "type": [
+   "land"
+  ],
+  "trait_type": "personality_trait",
+  "new_commander_weight": {
+   "factor": 0
+  }
+ },
+ "INS_secret_commander": {
+  "id": "INS_secret_commander",
+  "sourceFile": "00_traits.txt",
+  "type": [
+   "land"
+  ],
+  "trait_type": "status_trait",
+  "new_commander_weight": {
+   "factor": 0
+  }
+ },
+ "ETH_hero_of_ethiopia": {
+  "id": "ETH_hero_of_ethiopia",
+  "sourceFile": "ETH_traits.txt",
+  "type": "all",
+  "trait_type": "personality_trait",
+  "allowed": {
+   "FROM": {
+    "tag": "ETH"
+   }
+  },
+  "new_commander_weight": {
+   "factor": 0
+  },
+  "modifier": {
+   "army_morale_factor": 0.1,
+   "army_infantry_defence_factor": 0.05
+  }
+ },
+ "JAP_samurai_lineage": {
+  "id": "JAP_samurai_lineage",
+  "sourceFile": "JAP_traits.txt",
+  "type": "all",
+  "trait_type": "personality_trait",
+  "allowed": {
+   "FROM": {
+    "original_tag": "JAP"
+   }
+  },
+  "new_commander_weight": {
+   "factor": 0
+  },
+  "modifier": {
+   "planning_speed": 0.05,
+   "wounded_chance_factor": 0.1
+  },
+  "nonSharedModifier": {
+   "promote_cost_factor": -0.2
+  }
+ },
+ "JAP_communist_sympathizer": {
+  "id": "JAP_communist_sympathizer",
+  "sourceFile": "JAP_traits.txt",
+  "type": "all",
+  "trait_type": "personality_trait",
+  "allowed": {
+   "FROM": {
+    "original_tag": "JAP"
+   }
+  },
+  "new_commander_weight": {
+   "factor": 0
+  },
+  "modifier": {}
+ },
+ "BALTIC_ex_russian": {
+  "id": "BALTIC_ex_russian",
+  "sourceFile": "NSB_traits.txt",
+  "type": "all",
+  "trait_type": "personality_trait",
+  "allowed": {
+   "FROM": {
+    "tag": "LIT"
+   }
+  },
+  "new_commander_weight": {
+   "factor": 0
+  },
+  "modifier": {}
+ },
+ "BALTIC_anti_bolshevik": {
+  "id": "BALTIC_anti_bolshevik",
+  "sourceFile": "NSB_traits.txt",
+  "type": "all",
+  "trait_type": "personality_trait",
+  "allowed": {
+   "FROM": {
+    "tag": "LIT"
+   }
+  },
+  "new_commander_weight": {
+   "factor": 0
+  },
+  "modifier": {}
+ },
+ "POL_sanation_left_leader": {
+  "id": "POL_sanation_left_leader",
+  "sourceFile": "NSB_traits.txt",
+  "type": "all",
+  "trait_type": "personality_trait",
+  "allowed": {
+   "FROM": {
+    "tag": "POL"
+   }
+  },
+  "new_commander_weight": {
+   "factor": 0
+  },
+  "modifier": {}
+ },
+ "POL_sanation_right_leader": {
+  "id": "POL_sanation_right_leader",
+  "sourceFile": "NSB_traits.txt",
+  "type": "all",
+  "trait_type": "personality_trait",
+  "allowed": {
+   "FROM": {
+    "tag": "POL"
+   }
+  },
+  "new_commander_weight": {
+   "factor": 0
+  },
+  "modifier": {}
+ },
+ "peasant_sympathiser": {
+  "id": "peasant_sympathiser",
+  "sourceFile": "NSB_traits.txt",
+  "type": "all",
+  "trait_type": "personality_trait",
+  "allowed": {
+   "FROM": {
+    "tag": "POL"
+   }
+  },
+  "new_commander_weight": {
+   "factor": 0
+  },
+  "modifier": {}
+ },
+ "trait_SOV_cowed_by_stalin_army": {
+  "id": "trait_SOV_cowed_by_stalin_army",
+  "sourceFile": "NSB_traits.txt",
+  "type": [
+   "land"
+  ],
+  "trait_type": "personality_trait",
+  "attack_skill": -2,
+  "defense_skill": -2,
+  "allowed": {
+   "FROM": {
+    "original_tag": "SOV"
+   }
+  },
+  "new_commander_weight": {
+   "factor": 0
+  },
+  "modifier": {
+   "custom_modifier_tooltip": "SOV_cowed_by_stalin_trait_tt",
+   "army_morale_factor": -0.1,
+   "land_reinforce_rate": -0.02
+  }
+ },
+ "trait_SOV_cowed_by_stalin_navy": {
+  "id": "trait_SOV_cowed_by_stalin_navy",
+  "sourceFile": "NSB_traits.txt",
+  "type": [
+   "navy"
+  ],
+  "trait_type": "personality_trait",
+  "attack_skill": -2,
+  "defense_skill": -2,
+  "allowed": {
+   "FROM": {
+    "original_tag": "SOV"
+   }
+  },
+  "new_commander_weight": {
+   "factor": 0
+  },
+  "modifier": {
+   "naval_retreat_chance": -0.25
+  }
+ },
+ "trait_SOV_determined": {
+  "id": "trait_SOV_determined",
+  "sourceFile": "NSB_traits.txt",
+  "type": [
+   "land",
+   "navy"
+  ],
+  "trait_type": "status_trait",
+  "attack_skill": 1,
+  "defense_skill": 1
+ },
+ "trait_SOV_monarchist_sympathizer": {
+  "id": "trait_SOV_monarchist_sympathizer",
+  "sourceFile": "NSB_traits.txt",
+  "type": [
+   "land",
+   "navy"
+  ],
+  "trait_type": "personality_trait",
+  "allowed": {
+   "FROM": {
+    "original_tag": "SOV"
+   }
+  },
+  "new_commander_weight": {
+   "factor": 0
+  }
+ },
+ "trait_SOV_stalinist": {
+  "id": "trait_SOV_stalinist",
+  "sourceFile": "NSB_traits.txt",
+  "type": [
+   "land",
+   "navy"
+  ],
+  "trait_type": "personality_trait",
+  "allowed": {
+   "FROM": {
+    "original_tag": "SOV"
+   }
+  },
+  "new_commander_weight": {
+   "factor": 0,
+   "modifier": {
+    "add": 1,
+    "FROM": {
+     "has_country_flag": "SOV_stalinist_military_flag"
+    }
+   }
+  }
+ },
+ "trait_SOV_trotskyist": {
+  "id": "trait_SOV_trotskyist",
+  "sourceFile": "NSB_traits.txt",
+  "type": [
+   "land",
+   "navy"
+  ],
+  "trait_type": "personality_trait",
+  "allowed": {
+   "FROM": {
+    "original_tag": "SOV"
+   }
+  },
+  "new_commander_weight": {
+   "factor": 0
+  }
+ },
+ "trait_SOV_bukharinist": {
+  "id": "trait_SOV_bukharinist",
+  "sourceFile": "NSB_traits.txt",
+  "type": [
+   "land",
+   "navy"
+  ],
+  "trait_type": "personality_trait",
+  "allowed": {
+   "FROM": {
+    "original_tag": "SOV"
+   }
+  },
+  "new_commander_weight": {
+   "factor": 0
+  }
+ },
+ "trait_SOV_foreign_military_advisor": {
+  "id": "trait_SOV_foreign_military_advisor",
+  "sourceFile": "NSB_traits.txt",
+  "type": [
+   "land",
+   "navy"
+  ],
+  "trait_type": "personality_trait",
+  "allowed": {
+   "always": true
+  },
+  "new_commander_weight": {
+   "factor": 0
+  }
+ },
+ "SIA_under_investigation": {
+  "id": "SIA_under_investigation",
+  "sourceFile": "SIA_traits.txt",
+  "type": "all",
+  "trait_type": "status_trait",
+  "nonSharedModifier": {
+   "skill_bonus_factor": -0.33,
+   "cannot_use_abilities": 1
+  }
+ },
+ "SWE_wounded_in_protests": {
+  "id": "SWE_wounded_in_protests",
+  "sourceFile": "SWE_traits.txt",
+  "type": "all",
+  "trait_type": "status_trait",
+  "nonSharedModifier": {
+   "skill_bonus_factor": -0.75,
+   "cannot_use_abilities": 1
+  }
+ },
+ "SWE_disillusioned_with_the_government": {
+  "id": "SWE_disillusioned_with_the_government",
+  "sourceFile": "SWE_traits.txt",
+  "type": "all",
+  "trait_type": "status_trait",
+  "attack_skill": -3,
+  "defense_skill": -3,
+  "logistics_skill": -3,
+  "planning_skill": -3
+ },
+ "SWE_promoted_away_from_power": {
+  "id": "SWE_promoted_away_from_power",
+  "sourceFile": "SWE_traits.txt",
+  "type": [
+   "land"
+  ],
+  "trait_type": "personality_trait",
+  "logistics_skill": -1,
+  "planning_skill": -1,
+  "allowed": {
+   "FROM": {
+    "original_tag": "SWE"
+   }
+  },
+  "new_commander_weight": {
+   "factor": 0
+  },
+  "modifier": {
+   "attrition": 0.04,
+   "supply_consumption_factor": 0.05
+  }
+ }
+}

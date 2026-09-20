@@ -1,0 +1,235 @@
+{
+ "gameRev": "c01a3d507f10bd8c713e88234de69ca110618138",
+ "clausewitzRev": "c01a3d507f10bd8c713e88234de69ca110618138",
+ "launcher": {
+  "gameId": "hoi4",
+  "displayName": "Hearts of Iron IV",
+  "version": "Operation Postern v1.19.3.0.c01a (5632)",
+  "rawVersion": "1.19.3.0",
+  "distPlatform": "steam",
+  "ingameSettingsPath": "pdx_settings.json",
+  "gameDataPath": "%USER_DOCUMENTS%/Paradox Interactive/Hearts of Iron IV",
+  "dlcPath": ".",
+  "ingameSettingsLayoutPath": "settings-layout.json",
+  "themeFile": "./assets/theme-settings.json",
+  "browserDlcUrl": "https://store.steampowered.com/dlc/394360/Hearts_of_Iron_IV/",
+  "browserModUrl": "",
+  "exePath": "./hoi4.exe",
+  "exeArgs": [
+   "-gdpr-compliant"
+  ],
+  "alternativeExecutables": [
+   {
+    "label": {
+     "de": "Spiel im Debug-Modus öffnen",
+     "en": "Open game in Debug Mode",
+     "es": "Abrir juego en modo de depuración",
+     "fr": "Ouvrir le jeu en mode débogage",
+     "ja": "デバッグモードでゲームを開",
+     "ko": "디버그 모드로 게임 열기",
+     "pl": "Uruchom grę w trybie debugowania",
+     "pt": "Abrir jogo em modo debug",
+     "ru": "Запустить игру в режиме разработчика",
+     "zh-hans": "以调试模式打开游戏"
+    },
+    "exePath": "./hoi4.exe",
+    "exeArgs": [
+     "-gdpr-compliant",
+     "-debug_mode"
+    ]
+   }
+  ],
+  "gameCachePaths": [
+   "buildings_nudger_markers.txt",
+   "cache/",
+   "continue_game.json",
+   "game rules/",
+   "map/",
+   "mod/",
+   "naval_dist.cache",
+   "naval_dist_checksum.cache",
+   "playlists/",
+   "pops_filestorage.index",
+   "pops_filestorage/",
+   "shadercache/"
+  ]
+ },
+ "dlcs": [
+  {
+   "id": "dlc001_german_historical_portraits",
+   "integrated": false
+  },
+  {
+   "id": "dlc002_polish_content_pack",
+   "integrated": false
+  },
+  {
+   "id": "dlc003_rocket_launcher_unit_pack",
+   "integrated": false
+  },
+  {
+   "id": "dlc005_heavy_cruisers_unit_pack",
+   "integrated": false
+  },
+  {
+   "id": "dlc006_soviet_tanks_unit_pack",
+   "integrated": false
+  },
+  {
+   "id": "dlc007_german_tanks_unit_pack",
+   "integrated": false
+  },
+  {
+   "id": "dlc008_french_tanks_unit_pack",
+   "integrated": false
+  },
+  {
+   "id": "dlc009_british_tanks_unit_pack",
+   "integrated": false
+  },
+  {
+   "id": "dlc010_us_tanks_unit_pack",
+   "integrated": false
+  },
+  {
+   "id": "dlc011_german_march_order_music_pack",
+   "integrated": false
+  },
+  {
+   "id": "dlc012_allied_radio_music_pack",
+   "integrated": false
+  },
+  {
+   "id": "dlc013_sabaton",
+   "integrated": false
+  },
+  {
+   "id": "dlc014_wallpaper",
+   "integrated": false
+  },
+  {
+   "id": "dlc019_sabaton_vol2",
+   "integrated": false
+  },
+  {
+   "id": "dlc021_anniversary_pack",
+   "integrated": false
+  },
+  {
+   "id": "dlc025_axis_armor_pack",
+   "integrated": false
+  },
+  {
+   "id": "dlc026_radio_pack",
+   "integrated": false
+  },
+  {
+   "id": "dlc027_la_resistance_preorder_bonus",
+   "integrated": false
+  },
+  {
+   "id": "dlc028_la_resistance",
+   "integrated": false
+  },
+  {
+   "id": "dlc029_allied_armor_pack",
+   "integrated": false
+  },
+  {
+   "id": "dlc030_allied_speeches_pack",
+   "integrated": false
+  },
+  {
+   "id": "dlc031_battle_for_the_bosporus",
+   "integrated": false
+  },
+  {
+   "id": "dlc032_eastern_front_planes_pack",
+   "integrated": false
+  },
+  {
+   "id": "dlc033_songs_of_the_eastern_front",
+   "integrated": false
+  },
+  {
+   "id": "dlc034_no_step_back",
+   "integrated": false
+  },
+  {
+   "id": "dlc035_no_step_back_preorder_bonus",
+   "integrated": false
+  },
+  {
+   "id": "dlc036_by_blood_alone",
+   "integrated": false
+  },
+  {
+   "id": "dlc038_arms_against_tyranny",
+   "integrated": false
+  },
+  {
+   "id": "dlc039_arms_against_tyranny_preorder_bonus",
+   "integrated": false
+  },
+  {
+   "id": "dlc040_trial_of_allegiance",
+   "integrated": false
+  },
+  {
+   "id": "dlc043_gotterdammerung",
+   "integrated": false
+  },
+  {
+   "id": "dlc044_expansion_pass_1_ride_of_the_valkyries",
+   "integrated": false
+  },
+  {
+   "id": "dlc045_expansion_pass_1_supporter_pack",
+   "integrated": false
+  },
+  {
+   "id": "dlc046_graveyard_of_empires",
+   "integrated": false
+  },
+  {
+   "id": "dlc047_prototype_vehicles",
+   "integrated": false
+  },
+  {
+   "id": "dlc048_expansion_pass_2_seaplane_tenders",
+   "integrated": false
+  },
+  {
+   "id": "dlc049_no_compromise_no_surrender",
+   "integrated": false
+  },
+  {
+   "id": "dlc050_warships_of_the_pacific",
+   "integrated": false
+  },
+  {
+   "id": "dlc051_peace_for_our_time",
+   "integrated": false
+  },
+  {
+   "id": "dlc052_thunder_at_our_gates",
+   "integrated": false
+  },
+  {
+   "id": "dlc018_together_for_victory",
+   "integrated": true
+  },
+  {
+   "id": "dlc020_death_or_dishonor",
+   "integrated": true
+  },
+  {
+   "id": "dlc022_waking_the_tiger",
+   "integrated": true
+  },
+  {
+   "id": "dlc023_man_the_guns",
+   "integrated": true
+  }
+ ]
+}

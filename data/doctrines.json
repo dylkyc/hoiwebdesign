@@ -1,0 +1,507 @@
+{
+ "folders": {
+  "allowed": {
+   "id": "allowed",
+   "sourceFile": "folders/doctrine_folders.txt",
+   "table": "special_forces",
+   "OR": {
+    "has_dlc": [
+     "No Compromise, No Surrender",
+     "Arms Against Tyranny"
+    ]
+   }
+  }
+ },
+ "grand": {
+  "available": {
+   "id": "available",
+   "sourceFile": "grand_doctrines/special_forces_grand_doctrines.txt",
+   "table": "special_forces_quality",
+   "OR": {
+    "has_tech": [
+     "tech_mountaineers",
+     "marines",
+     "paratroopers",
+     "rangers_tech"
+    ]
+   }
+  },
+  "ai_will_do": {
+   "id": "ai_will_do",
+   "sourceFile": "grand_doctrines/special_forces_grand_doctrines.txt",
+   "table": "special_forces_quality",
+   "base": 1
+  },
+  "milestones": {
+   "id": "milestones",
+   "sourceFile": "grand_doctrines/special_forces_grand_doctrines.txt",
+   "table": "special_forces_quality",
+   "category_special_forces": {
+    "acclimatization_hot_climate_gain_factor": 0.1,
+    "acclimatization_cold_climate_gain_factor": 0.1,
+    "soft_attack": 0.05,
+    "breakthrough": 0.05
+   },
+   "special_forces_cap": 0.02,
+   "effect": {
+    "if": {
+     "limit": {
+      "NOT": {
+       "has_variable": "special_forces_milestone_var"
+      }
+     },
+     "set_variable": {
+      "special_forces_milestone_var": 1
+     }
+    },
+    "else": {
+     "add_to_variable": {
+      "special_forces_milestone_var": 1
+     }
+    }
+   }
+  },
+  "category_line_artillery": {
+   "id": "category_line_artillery",
+   "sourceFile": "grand_doctrines/land_grand_doctrines.txt",
+   "table": "superior_firepower",
+   "soft_attack": 0.1
+  },
+  "category_support_artillery": {
+   "id": "category_support_artillery",
+   "sourceFile": "grand_doctrines/land_grand_doctrines.txt",
+   "table": "superior_firepower",
+   "soft_attack": 0.05
+  },
+  "battleship": {
+   "id": "battleship",
+   "sourceFile": "grand_doctrines/sea_grand_doctrines.txt",
+   "table": "new_fleet_in_being",
+   "max_organisation": 15
+  },
+  "submarine": {
+   "id": "submarine",
+   "sourceFile": "grand_doctrines/sea_grand_doctrines.txt",
+   "table": "new_convoy_raiding",
+   "max_organisation": 10,
+   "surface_detection": 0.1
+  },
+  "carrier": {
+   "id": "carrier",
+   "sourceFile": "grand_doctrines/sea_grand_doctrines.txt",
+   "table": "new_base_strike",
+   "max_organisation": 20
+  },
+  "category_special_forces": {
+   "id": "category_special_forces",
+   "sourceFile": "grand_doctrines/special_forces_grand_doctrines.txt",
+   "table": "special_forces_quality",
+   "max_organisation": 10
+  }
+ },
+ "sub": {
+  "available": {
+   "id": "available",
+   "sourceFile": "subdoctrines/special_forces/special_forces_subdoctrines.txt",
+   "table": "rangers_2",
+   "has_tech": "rangers_tech"
+  },
+  "ai_will_do": {
+   "id": "ai_will_do",
+   "sourceFile": "subdoctrines/special_forces/special_forces_subdoctrines.txt",
+   "table": "rangers_2",
+   "base": 1,
+   "modifier": {
+    "factor": 25,
+    "OR": {
+     "original_tag": [
+      "SIA",
+      "RAJ",
+      "BRM"
+     ]
+    }
+   }
+  },
+  "rewards": {
+   "id": "rewards",
+   "sourceFile": "subdoctrines/special_forces/special_forces_subdoctrines.txt",
+   "table": "rangers_2",
+   "reward_1": {
+    "mastery": 60,
+    "rangers_support": {
+     "jungle": {
+      "attack": 0.05,
+      "defence": 0.05,
+      "movement": 0.05
+     },
+     "forest": {
+      "attack": 0.05,
+      "defence": 0.05,
+      "movement": 0.05
+     }
+    }
+   },
+   "reward_2": {
+    "mastery": 60,
+    "category_rangers": {
+     "soft_attack": 0.1,
+     "defense": 0.1,
+     "max_organisation": 5
+    }
+   },
+   "reward_3": {
+    "mastery": 60,
+    "ranger_battalion": {
+     "supply_consumption": -0.03
+    },
+    "special_forces_no_supply_grace": 36
+   },
+   "reward_4": {
+    "mastery": 60,
+    "special_forces_training_time_factor": -0.1,
+    "rangers_special_forces_contribution_factor": -0.25
+   },
+   "reward_5": {
+    "mastery": 60,
+    "special_forces_attack_factor": 0.1
+   }
+  },
+  "category_fighter": {
+   "id": "category_fighter",
+   "sourceFile": "subdoctrines/air/air_fighter_aircraft_subdoctrines.txt",
+   "table": "air_subdoctrine_fighter_bombers",
+   "air_ground_attack": 0.1
+  },
+  "visible": {
+   "id": "visible",
+   "sourceFile": "subdoctrines/special_forces/special_forces_subdoctrines.txt",
+   "table": "rangers_2",
+   "has_dlc": "No Compromise, No Surrender"
+  },
+  "category_strat_bomber": {
+   "id": "category_strat_bomber",
+   "sourceFile": "subdoctrines/air/air_heavy_aircraft_subdoctrines.txt",
+   "table": "air_subdoctrine_heavy_aircraft_focus",
+   "air_agility": 0.1
+  },
+  "category_maritime_patrol_bomber": {
+   "id": "category_maritime_patrol_bomber",
+   "sourceFile": "subdoctrines/air/air_heavy_aircraft_subdoctrines.txt",
+   "table": "air_subdoctrine_open_ocean_air_patrol",
+   "air_range": 0.15
+  },
+  "category_heavy_fighter": {
+   "id": "category_heavy_fighter",
+   "sourceFile": "subdoctrines/air/air_medium_aircraft_subdoctrines.txt",
+   "table": "air_subdoctrine_bomber_interception",
+   "air_attack": 0.1
+  },
+  "category_tac_bomber": {
+   "id": "category_tac_bomber",
+   "sourceFile": "subdoctrines/air/air_medium_aircraft_subdoctrines.txt",
+   "table": "air_subdoctrine_tactical_battlefield_support",
+   "air_ground_attack": 0.1
+  },
+  "category_scout_plane": {
+   "id": "category_scout_plane",
+   "sourceFile": "subdoctrines/air/air_medium_aircraft_subdoctrines.txt",
+   "table": "air_subdoctrine_aerial_reconnaissance",
+   "air_agility": 0.1
+  },
+  "category_cas": {
+   "id": "category_cas",
+   "sourceFile": "subdoctrines/air/air_strike_aircraft_subdoctrines.txt",
+   "table": "air_subdoctrine_dive_bombers",
+   "air_ground_attack": 0.1
+  },
+  "category_carrier_cas": {
+   "id": "category_carrier_cas",
+   "sourceFile": "subdoctrines/air/air_strike_aircraft_subdoctrines.txt",
+   "table": "air_subdoctrine_carrier_strikes",
+   "air_range": 0.1
+  },
+  "category_carrier_nav_bomber": {
+   "id": "category_carrier_nav_bomber",
+   "sourceFile": "subdoctrines/air/air_strike_aircraft_subdoctrines.txt",
+   "table": "air_subdoctrine_carrier_strikes",
+   "air_range": 0.1
+  },
+  "category_nav_bomber": {
+   "id": "category_nav_bomber",
+   "sourceFile": "subdoctrines/air/air_strike_aircraft_subdoctrines.txt",
+   "table": "air_subdoctrine_naval_torpedo_tactics",
+   "naval_strike_attack": 0.1
+  },
+  "effect": {
+   "id": "effect",
+   "sourceFile": "subdoctrines/special_forces/special_forces_subdoctrines.txt",
+   "table": "rangers_2",
+   "unlock_subunit": "rangers_support"
+  },
+  "category_all_armor": {
+   "id": "category_all_armor",
+   "sourceFile": "subdoctrines/land/armor_subdoctrines.txt",
+   "table": "tank_destroyer_force",
+   "defense": 0.1,
+   "hard_attack": 0.1,
+   "ap_attack": 0.1
+  },
+  "armored_engineer": {
+   "id": "armored_engineer",
+   "sourceFile": "subdoctrines/land/armor_subdoctrines.txt",
+   "table": "mobile_defense",
+   "battalion_mult": {
+    "category": "category_all_armor",
+    "entrenchment": 0.02,
+    "add": true
+   }
+  },
+  "armored_car": {
+   "id": "armored_car",
+   "sourceFile": "subdoctrines/land/combat_support_subdoctrines.txt",
+   "table": "mobile_recon_and_assault",
+   "max_organisation": 3
+  },
+  "mechanized": {
+   "id": "mechanized",
+   "sourceFile": "subdoctrines/land/armor_subdoctrines.txt",
+   "table": "armored_cavalry_no_lar",
+   "max_organisation": 5,
+   "defense": 0.05
+  },
+  "motorized": {
+   "id": "motorized",
+   "sourceFile": "subdoctrines/land/armor_subdoctrines.txt",
+   "table": "armored_cavalry_no_lar",
+   "max_organisation": 5,
+   "defense": 0.1
+  },
+  "category_line_artillery": {
+   "id": "category_line_artillery",
+   "sourceFile": "subdoctrines/land/operations_subdoctrines.txt",
+   "table": "rapid_domination",
+   "soft_attack": 0.1
+  },
+  "engineer": {
+   "id": "engineer",
+   "sourceFile": "subdoctrines/land/combat_support_subdoctrines.txt",
+   "table": "field_engineering",
+   "river": {
+    "movement": 0.2
+   },
+   "forest": {
+    "movement": 0.2
+   }
+  },
+  "light_armor": {
+   "id": "light_armor",
+   "sourceFile": "subdoctrines/land/combat_support_subdoctrines.txt",
+   "table": "mobile_recon_and_assault_no_lar",
+   "max_organisation": 5
+  },
+  "category_self_propelled_artillery": {
+   "id": "category_self_propelled_artillery",
+   "sourceFile": "subdoctrines/land/combat_support_subdoctrines.txt",
+   "table": "self_propelled_support",
+   "soft_attack": 0.05
+  },
+  "category_self_propelled_anti_air": {
+   "id": "category_self_propelled_anti_air",
+   "sourceFile": "subdoctrines/land/combat_support_subdoctrines.txt",
+   "table": "self_propelled_support",
+   "air_attack": 0.05
+  },
+  "category_tank_destroyers": {
+   "id": "category_tank_destroyers",
+   "sourceFile": "subdoctrines/land/combat_support_subdoctrines.txt",
+   "table": "self_propelled_support",
+   "hard_attack": 0.05
+  },
+  "super_heavy_artillery": {
+   "id": "super_heavy_artillery",
+   "sourceFile": "subdoctrines/land/combat_support_subdoctrines.txt",
+   "table": "siege_artillery",
+   "battalion_mult": {
+    "category": "category_army",
+    "soft_attack": 0.1,
+    "defense": 0.1
+   }
+  },
+  "equipment_bonus": {
+   "id": "equipment_bonus",
+   "sourceFile": "subdoctrines/land/combat_support_subdoctrines.txt",
+   "table": "siege_artillery",
+   "railway_gun_equipment": {
+    "railway_gun_attack": 0.25,
+    "instant": true
+   },
+   "super_heavy_railway_gun_equipment": {
+    "railway_gun_attack": 0.25,
+    "instant": true
+   }
+  },
+  "assault_engineer": {
+   "id": "assault_engineer",
+   "sourceFile": "subdoctrines/land/combat_support_subdoctrines.txt",
+   "table": "field_engineering",
+   "river": {
+    "movement": 0.2
+   },
+   "forest": {
+    "movement": 0.2
+   }
+  },
+  "pioneer_support": {
+   "id": "pioneer_support",
+   "sourceFile": "subdoctrines/special_forces/special_forces_subdoctrines.txt",
+   "table": "marines_2",
+   "amphibious": {
+    "attack": 0.15,
+    "defence": 0.15,
+    "movement": 0.15
+   }
+  },
+  "category_all_infantry": {
+   "id": "category_all_infantry",
+   "sourceFile": "subdoctrines/land/operations_subdoctrines.txt",
+   "table": "rapid_domination",
+   "soft_attack": 0.1
+  },
+  "category_cavalry": {
+   "id": "category_cavalry",
+   "sourceFile": "subdoctrines/land/infantry_subdoctrines.txt",
+   "table": "great_war_infantry",
+   "supply_consumption": -0.02
+  },
+  "artillery": {
+   "id": "artillery",
+   "sourceFile": "subdoctrines/land/infantry_subdoctrines.txt",
+   "table": "assault_infantry",
+   "soft_attack": 0.2
+  },
+  "mastery": {
+   "id": "mastery",
+   "sourceFile": "subdoctrines/special_forces/special_forces_subdoctrines.txt",
+   "table": "rangers_2",
+   "multiplier": 6,
+   "categories": "category_rangers"
+  },
+  "logistics_company": {
+   "id": "logistics_company",
+   "sourceFile": "subdoctrines/land/infantry_subdoctrines.txt",
+   "table": "commandos",
+   "battalion_mult": {
+    "category": "category_light_infantry",
+    "max_strength": 5,
+    "add": true
+   }
+  },
+  "irregular_infantry": {
+   "id": "irregular_infantry",
+   "sourceFile": "subdoctrines/land/operations_subdoctrines.txt",
+   "table": "guerilla_war",
+   "soft_attack": 0.1,
+   "defense": 0.2
+  },
+  "militia": {
+   "id": "militia",
+   "sourceFile": "subdoctrines/land/operations_subdoctrines.txt",
+   "table": "guerilla_war",
+   "soft_attack": 0.1,
+   "defense": 0.2
+  },
+  "category_light_infantry": {
+   "id": "category_light_infantry",
+   "sourceFile": "subdoctrines/land/infantry_subdoctrines.txt",
+   "table": "great_war_infantry",
+   "defense": 0.1
+  },
+  "category_army": {
+   "id": "category_army",
+   "sourceFile": "subdoctrines/land/operations_subdoctrines.txt",
+   "table": "grand_assault",
+   "breakthrough": 0.1,
+   "soft_attack": 0.05
+  },
+  "category_tanks": {
+   "id": "category_tanks",
+   "sourceFile": "subdoctrines/land/operations_subdoctrines.txt",
+   "table": "deep_battle_no_lar",
+   "max_organisation": 4
+  },
+  "heavy_cruiser": {
+   "id": "heavy_cruiser",
+   "sourceFile": "subdoctrines/sea/navy_screen_doctrines.txt",
+   "table": "anti_aircraft_cruisers",
+   "armor_value": 0.1
+  },
+  "destroyer": {
+   "id": "destroyer",
+   "sourceFile": "subdoctrines/sea/navy_screen_doctrines.txt",
+   "table": "patrol_boats",
+   "naval_speed": 0.1,
+   "fuel_consumption": -0.25,
+   "supply_consumption": -0.01
+  },
+  "submarine": {
+   "id": "submarine",
+   "sourceFile": "subdoctrines/sea/navy_submarine_doctrines.txt",
+   "table": "submarine_coastal_defense",
+   "supply_consumption": -0.02
+  },
+  "rangers_support": {
+   "id": "rangers_support",
+   "sourceFile": "subdoctrines/special_forces/special_forces_subdoctrines.txt",
+   "table": "mountaineers_2",
+   "mountain": {
+    "attack": 0.1,
+    "defence": 0.1,
+    "movement": 0.1
+   }
+  },
+  "signal_company": {
+   "id": "signal_company",
+   "sourceFile": "subdoctrines/special_forces/special_forces_subdoctrines.txt",
+   "table": "paratroopers_1",
+   "battalion_mult": {
+    "category": "category_paratroopers",
+    "defense": 0.15
+   }
+  },
+  "field_hospital": {
+   "id": "field_hospital",
+   "sourceFile": "subdoctrines/special_forces/special_forces_subdoctrines.txt",
+   "table": "paratroopers_2",
+   "battalion_mult": {
+    "category": "category_paratroopers",
+    "default_morale": 0.15
+   }
+  },
+  "ranger_battalion": {
+   "id": "ranger_battalion",
+   "sourceFile": "subdoctrines/special_forces/special_forces_subdoctrines.txt",
+   "table": "rangers_2",
+   "acclimatization_hot_climate_gain_factor": 0.25,
+   "jungle": {
+    "attack": 0.1,
+    "defence": 0.1,
+    "movement": 0.05
+   }
+  }
+ },
+ "tracks": {
+  "mastery": {
+   "id": "mastery",
+   "sourceFile": "tracks/special_forces_tracks.txt",
+   "table": "special_forces_second",
+   "multiplier": 6,
+   "categories": "category_special_forces"
+  },
+  "active": {
+   "id": "active",
+   "sourceFile": "tracks/special_forces_tracks.txt",
+   "table": "special_forces_second",
+   "can_unlock_second_track_of_sf_doctrine": true
+  }
+ }
+}

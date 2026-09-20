@@ -1,0 +1,203 @@
+# HOI4 陆军编制设计器
+
+一个纯静态的网页工具，用于在浏览器中复现《Hearts of Iron IV》的**陆军师编制设计器**与
+**战斗计算器**：编辑师的营与支援连、实时查看属性变化，并计算地形、要塞、河流、
+进攻方向数、将领与特质对部队的影响。
+
+所有基础数据都直接来自本机游戏安装目录 `../game/` 的脚本文件，**随游戏版本自动更新**。
+
+> 当前提取自：**Operation Postern v1.19.3.0**（`game/launcher-settings.json`）。
+> 游戏更新后执行 `node tools/extract.js` 即可同步。
+>
+> 机制调研的技术报告见 [`docs/`](docs/)：师属性聚合、战斗宽度与惩罚机制。
+
+---
+
+## 快速开始
+
+### 方式一：直接打开（推荐）
+
+双击 `index.html` 即可。数据已内联为 `data/bundle.js`，无需任何服务器或构建步骤。
+
+### 方式二：本地 HTTP 服务
+
+```powershell
+# 在 webdesign 目录下
+python -m http.server 8080
+# 然后访问 http://localhost:8080/
+```
+
+### 方式三：VS Code Live Server
+
+用 VS Code 打开本目录，右键 `index.html` → Open with Live Server。
+
+---
+
+## 功能
+
+### 1. 编制设计
+
+* 5 列 × 5 行的编制网格 + 5 个师级支援连槽位 + 5 个团级支援槽位
+* 点击左侧单位 → 点击网格空位放置；点击已有单位可更换**装备型号**或移除
+* 右侧实时显示聚合后的师属性：软攻 / 硬攻 / 穿甲 / 防御 / 突破 / 装甲 / 硬度 /
+  组织度 / 兵力 / 宽度 / 速度 / 补给消耗 / 工业成本 / 资源需求
+* 自动校验：支援连类型重复、团级支援的营数要求、空编制提示
+* 内置 5 个预设编制；支持保存到浏览器本地、导出 / 导入 JSON
+
+### 2. 战斗模拟
+
+* 设定地形（8 种）、进攻方向数（1–5）、要塞等级、河流（小河 / 大河）、进攻方式（常规 / 两栖 / 空降）
+* 环境：夜战、制空权、近距离空中支援
+* 双方各自：编制、师数、将领技能与距离缩放、计划度、师经验、堑壕、补给水平、被包围状态
+* 输出：战斗宽度与超宽 / 堆叠惩罚、**逐条修正明细（含来源）**、有效属性对比、
+  每小时期望伤害、破防耗时推演
+* 右侧「地形对比」表：一键比较 8 种地形 × 4 种方向数的结果，可导出 CSV
+
+### 3. 将领与技能
+
+* 4 项陆军技能（进攻 / 防御 / 计划 / 后勤）逐级效果
+* 军团长 / 陆军元帅切换，元帅加成按 50% 折算
+* HQ 与前线距离缩放（1.00 ~ 1.06）
+* 119 个陆军相关特质可勾选，实时预览对当前编制的影响
+* 明确标注哪些地形 / 要塞 / 河流类特质在什么条件下**生效或未生效**
+
+### 4. 数据浏览
+
+营、支援连、团级支援、装备（已展开 archetype/parent 继承链）、地形、将领特质、
+战斗常数（defines）共 7 张表，全部来自游戏源文件。
+
+---
+
+## 目录结构
+
+```
+webdesign/
+├── index.html              入口页面
+├── css/style.css           样式
+├── js/
+│   ├── engine/
+│   │   ├── data.js         数据访问层（封装 HOI_DATA）
+│   │   ├── division.js     师编制与属性聚合引擎
+│   │   └── combat.js       战斗修正与推演引擎
+│   ├── ui/
+│   │   ├── common.js       DOM / 格式化工具
+│   │   ├── designer.js     编制设计视图
+│   │   ├── battle.js       战斗模拟视图
+│   │   ├── leader.js       将领与技能视图
+│   │   ├── dataview.js     数据浏览视图
+│   │   └── about.js        说明视图
+│   └── app.js              入口、标签页路由
+├── data/                   由 tools/extract.js 生成（已提交，保证离线可用）
+│   ├── bundle.js           全部数据的单文件打包（供 file:// 直接使用）
+│   └── *.json              分表数据
+└── tools/
+    ├── cwt.js              Clausewitz / Paradox 脚本格式解析器
+    ├── extract.js          从 ../game 提取全部数据
+    ├── selftest.js         编制引擎自检
+    ├── combattest.js       战斗引擎自检
+    └── uismoke.js          无浏览器环境下的界面渲染自检
+```
+
+---
+
+## 数据管线
+
+游戏更新后重新生成数据：
+
+```powershell
+node tools/extract.js
+```
+
+它会读取 `../game/` 并输出到 `data/`：
+
+| 输出 | 来源 |
+| --- | --- |
+| `units.json` | `game/common/units/*.txt` |
+| `equipment.json` | `game/common/units/equipment/*.txt`（已解析 archetype / parent 继承） |
+| `modules.json` | `game/common/units/equipment/modules/*.txt` |
+| `terrain.json` | `game/common/terrain/00_terrain.txt` |
+| `defines.json` | `game/common/defines/00_defines.lua` |
+| `traits.json` | `game/common/unit_leader/*.txt` |
+| `leader_skills.json` | `game/common/unit_leader/00_*_skills.txt` |
+| `doctrines.json` | `game/common/doctrines/**` |
+| `loc_zh.json` | `game/localisation/simp_chinese/*.yml`（按需裁剪） |
+| `bundle.js` | 以上全部打包成单个 JS，供 `file://` 直接使用 |
+
+## 自检
+
+```powershell
+node tools/selftest.js    # 编制属性聚合
+node tools/combattest.js  # 战斗修正与推演
+node tools/uismoke.js     # 界面渲染与交互（Node 端最小 DOM，无需浏览器）
+```
+
+---
+
+## 计算规则与置信度
+
+### 高置信度（直接来自游戏文件）
+
+* **营的属性来自装备**：对 `need` 里每种装备取所选型号的属性后**求和**（每种只计一次，
+  不乘 `need` 的数量）。步兵营 `need = { infantry_equipment = 100 }`、装备软攻 6 → 营软攻 6；
+  数量只用于生产与补充。摩托化营额外需要 `motorized_equipment`，而该装备没有
+  `soft_attack` 字段，因此软攻与普通步兵营相同；机械化营 = `infantry_equipment`(1) +
+  `mechanized_equipment`(11) 的穿甲等 —— 这些一致性验证了求和规则。
+* **乘数 vs 绝对值**：营文件里的 `soft_attack = -0.5`（工兵）、`defense = -0.4`（防空支援连）
+  是**乘数修正**（负值只有百分比语义才成立）；`max_strength` / `max_organisation` /
+  `entrenchment` 是绝对值。
+* **师级聚合**：攻防类求和；组织度与士气取所有营与支援连的**算术平均**
+  （所以线列炮兵营 org=0 会拉低师 org）；速度取最慢的战斗营；宽度求和。
+* **地形修正分三层**：营自身地形块 → 类型限定 modifier → 师级修正，
+  最终 `final = base × (1 + Σ修正)`。
+* **装甲 / 穿甲**：`最高值 × 0.4 + 平均值 × 0.6`（defines 的 ARMOR_VS_AVERAGE 是
+  **最高值**的权重）；平均值对所有营求，所以支援连会拉低师装甲。
+* **多方向加宽战场**：`可用宽度 = combat_width + combat_support_width × (方向数 − 1)`，
+  游戏内文本 `TERRAIN_ADDITIONAL_WIDTH: "Combat width per additional direction"`。
+* **超宽惩罚**：`max(-33%, -1% × (占用 − 可用) / 可用)`，作用于软攻/硬攻/突破/防御；
+  占用超过可用宽度的 1.33 倍时多出的师无法参战。
+* **装甲 / 穿甲是非对称机制**：装甲优势方获得更大的组织度骰（4 面 → 6 面）并减免所受伤害；
+  穿甲方**不获得额外加成**，只是剥夺对方的装甲保护，且穿甲不足时按
+  `PIERCING_THRESHOLD_DAMAGE_VALUES = {1.00, 0.80, 0.65, 0.50}` 四档打折。
+* **将领**：陆军只有进攻/防御/计划/后勤 4 项技能（机动/协同是海军专属）；
+  每点进攻 +2.5% offence、每点防御 +2.5% defence；地形特质在对应地形给
+  attack/defence +10%、movement +5%；元帅普通加成 ×0.5。
+* 全部常数取自 `00_defines.lua`，可在「数据浏览 → 战斗常数」中逐条查看。
+
+### 中等置信度（依据 defines 注释与第三方交叉验证）
+
+* 堆叠惩罚阈值 `5 + 3 × (方向数 − 1)`，每个超出的师 `-2%`
+  （`COMBAT_STACKING_EXTRA` 注释为 "extra stacking from directions"，但确切算法未见权威原文）。
+* 防守方被多方向进攻时的 `MULTIPLE_COMBATS_PENALTY = -50%` 为固定标量，
+  是否随方向数累加未证实。
+* 硬度的精确加权方式（按 HP 还是算术平均）未找到权威表述。
+
+### 近似（用于横向比较）
+
+* 伤害推演使用**确定性期望值**：命中率 10%（尚有防御点数）/ 40%（防御耗尽），
+  组织度伤害骰均值 2.5、兵力伤害骰均值 1.5。游戏内实际存在随机掷骰，绝对小时数会有波动。
+* 「攻击值 → 攻击次数」是否存在 10:1 缩放，各来源说法不一（wiki 片段支持除以 10，
+  而多个社区计算器使用原值）。本工具采用**原值** —— 按除以 10 会得到
+  「一个步兵师对射需要几十天」的明显失真结果。
+* 经验对战斗的加成按 `经验 × 25%` 线性近似（各等级的确切加成是引擎内建值，未公开）。
+
+### 尚未纳入
+
+* 学说（Doctrine）里程碑的逐级加成（数据已提取，未自动接入）
+* 战斗战术（Combat Tactics）的随机选取、天气、将领受伤
+* 模块化装备（坦克 / 飞机）的模块设计器
+* 增援机制与战斗中的装备损失分摊
+* 多方向进攻对要塞效果的削减（游戏内说明存在，但公式未公开）
+
+---
+
+## 版本控制
+
+本目录是独立的 git 仓库：
+
+```powershell
+git add -A
+git commit -m "说明"
+```
+
+> 注意：由于数据提取自 `../game/`，仓库内容会随游戏版本变化而变化；
+> `data/` 同时提交是为了让页面可以离线直接打开。

@@ -1,0 +1,74 @@
+分类,属性名,中文含义,类型/示例,作用/备注
+基础标识,abbreviation,缩写,字符串 INF,单位界面缩写
+基础标识,sprite,图标,字符串 infantry,3D模型/图标
+基础标识,map_icon_category,地图图标类别,infantry/armored/other/ship,地图图标类型
+基础标识,priority,优先级,数字,排序/AI优先级
+基础标识,ai_priority,AI优先级,数字,AI选择优先级
+基础标识,active,是否默认启用,yes/no,常需科技解锁
+基础标识,group,单位组,infantry/mobile/armor/support,决定归类
+基础标识,type,类型标签,infantry/armor/support/artillery,可多个
+基础标识,categories,类别标签,category_front_line等,用于科技/加成匹配
+基础标识,regimental,是否团级,yes/no,团级支援标记
+基础标识,divisional,是否师级,yes/no,师级支援标记
+基础标识,combat_width,战斗宽度,数字 2,占用战场宽度；0为支援连
+基础标识,special_forces,特种部队,yes/no,是否算特种部队
+基础标识,marines,海军陆战队,yes/no,是否算陆战队
+基础标识,mountaineers,山地兵,yes/no,是否算山地兵
+基础标识,rangers,游骑兵,yes/no,是否算游骑兵
+基础标识,cavalry,骑兵,yes/no,是否算骑兵
+基础标识,can_be_parachuted,可空降,yes/no,能否空降
+基础标识,can_exfiltrate_from_coast,可从海岸撤离,yes/no,能否从非港口海岸登船
+基础标识,affects_speed,影响速度,yes/no,是否影响师速度
+规模后勤,max_strength,最大兵力/HP,数字 25,营的HP规模不是人数
+规模后勤,max_organisation,最大组织度,数字 60,组织度绝对值
+规模后勤,default_morale,默认士气,0-1 0.3,士气基础
+规模后勤,manpower,人力,数字 1000,需要人力
+规模后勤,training_time,训练时间,数字 90,训练天数
+规模后勤,weight,重量,数字 0.5,运输/登陆重量
+规模后勤,supply_consumption,补给消耗,数字 0.06,补给消耗
+规模后勤,deployment_cost,部署成本,数字,部署时成本
+规模后勤,own_equipment_fuel_consumption_mult,自身装备燃料消耗乘数,数字 0.0,0为不耗燃料
+规模后勤,supply_consumption_factor,补给消耗因子,数字 -0.1,修正师补给消耗
+规模后勤,fuel_consumption_factor,燃料消耗因子,数字 -0.05,修正师燃料消耗
+规模后勤,maximum_speed,最大速度,数字 0.6,速度修正/上限
+战斗属性,soft_attack,软攻,修正值 0.1/-0.5,对软目标攻击修正
+战斗属性,hard_attack,硬攻,修正值,对硬目标攻击修正
+战斗属性,air_attack,对空攻击,修正值,对空攻击修正
+战斗属性,ap_attack,穿甲,修正值,穿甲修正
+战斗属性,defense,防御,修正值 注意拼写,单位防御修正
+战斗属性,breakthrough,突破,修正值,突破修正
+战斗属性,armor_value,装甲值,修正值,装甲值修正
+战斗属性,suppression,镇压,数字 1.5,镇压能力
+战斗属性,suppression_factor,镇压因子,数字 0.2,对师镇压加成
+战斗属性,recon,侦察,数字 1,侦察值
+战斗属性,initiative,主动性,数字 0.1,主动性
+战斗属性,entrenchment,堑壕,数字 2,堑壕加成
+战斗属性,reliability_factor,可靠性因子,数字 0.05,装备可靠性修正
+战斗属性,equipment_capture_factor,装备缴获因子,数字 0.05,缴获装备概率
+战斗属性,casualty_trickleback,伤亡回流,数字 0.2,伤亡恢复
+战斗属性,experience_loss_factor,经验损失因子,数字 -0.15,经验损失修正
+战斗属性,recovery,恢复,数字 0.1,恢复率
+装备需求,need,需求装备,块 {infantry_equipment=100},建造/补充所需装备数量
+装备需求,essential,必需装备,块,缺少时受惩罚
+装备需求,transport,运输装备,字符串 motorized_equipment,决定移动速度和类型
+装备需求,same_support_type,同支援类型,字符串,阻止同类型支援连重复
+装备需求,allowed_battalion_groups,允许营组,列表,允许加入哪些营组
+装备需求,battalion_mult,营乘数加成,块,对特定类别营的乘数加成
+地形修正,forest/hills/mountain/jungle/marsh/urban/plains/desert/river/amphibious/fort/snow,地形修正,块 含 attack/defence/movement,注意地形防御拼写为 defence
+地形修正,attack,攻击修正,数字,该地形下攻击修正
+地形修正,defence,防御修正,数字,该地形下防御修正
+地形修正,movement,移动修正,数字,该地形下移动修正
+特殊能力,deployed_leader_modifiers,部署将领修正,块,HQ单位给将领的修正
+特殊能力,enable_ability,启用能力,块,启用特殊能力
+特殊能力,allow_in_army_hq,允许在集团军HQ,yes/no,HQ单位限制
+特殊能力,allow_in_non_army_hq,允许在非集团军HQ,yes/no,HQ单位限制
+特殊能力,required_dlc,需要DLC,列表,需要哪些DLC
+特殊能力,critical_parts,关键部位,列表,海空军关键部位
+特殊能力,critical_part_damage_chance_mult,关键部位损坏概率乘数,数字,海空军
+特殊能力,hit_profile_mult,命中轮廓乘数,数字,海空军
+特殊能力,land_air_wing_size,陆基空军编队大小,数字,空军
+特殊能力,carrier_air_wing_size,舰载空军编队大小,数字,空军
+特殊能力,submarine_carrier_air_wing_size,潜艇母舰空军编队大小,数字,空军
+特殊能力,mega_carrier_air_wing_size,超级航母空军编队大小,数字,空军
+海空军,need_equipment,需求装备,块,海空军装备需求
+海空军,need_equipment_modules,需求装备模块,块,海空军模块需求

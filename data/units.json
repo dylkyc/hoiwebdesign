@@ -1,0 +1,7832 @@
+{
+ "fighter": {
+  "id": "fighter",
+  "sourceFile": "air.txt",
+  "sprite": "light_plane",
+  "priority": 1,
+  "active": true,
+  "types": [
+   "fighter"
+  ],
+  "categories": [
+   "category_fighter"
+  ],
+  "need": {
+   "small_plane_airframe": 1
+  },
+  "needsTransport": false
+ },
+ "cv_fighter": {
+  "id": "cv_fighter",
+  "sourceFile": "air.txt",
+  "sprite": "light_plane",
+  "priority": 1,
+  "active": true,
+  "types": [
+   "fighter"
+  ],
+  "categories": [
+   "category_fighter",
+   "category_carrier_fighter"
+  ],
+  "need": {
+   "cv_small_plane_airframe": 1
+  },
+  "needsTransport": false
+ },
+ "cas": {
+  "id": "cas",
+  "sourceFile": "air.txt",
+  "sprite": "light_plane",
+  "priority": 2,
+  "active": true,
+  "types": [
+   "cas"
+  ],
+  "categories": [
+   "category_cas"
+  ],
+  "need": {
+   "small_plane_cas_airframe": 1
+  },
+  "needsTransport": false
+ },
+ "cv_cas": {
+  "id": "cv_cas",
+  "sourceFile": "air.txt",
+  "sprite": "light_plane",
+  "priority": 2,
+  "active": true,
+  "types": [
+   "cas"
+  ],
+  "categories": [
+   "category_cas",
+   "category_carrier_cas"
+  ],
+  "need": {
+   "cv_small_plane_cas_airframe": 1
+  },
+  "needsTransport": false
+ },
+ "nav_bomber": {
+  "id": "nav_bomber",
+  "sourceFile": "air.txt",
+  "sprite": "light_plane",
+  "priority": 3,
+  "active": true,
+  "types": [
+   "naval_bomber"
+  ],
+  "categories": [
+   "category_nav_bomber"
+  ],
+  "need": {
+   "small_plane_naval_bomber_airframe": 1
+  },
+  "needsTransport": false
+ },
+ "cv_nav_bomber": {
+  "id": "cv_nav_bomber",
+  "sourceFile": "air.txt",
+  "sprite": "light_plane",
+  "priority": 3,
+  "active": true,
+  "types": [
+   "naval_bomber"
+  ],
+  "categories": [
+   "category_nav_bomber",
+   "category_carrier_nav_bomber"
+  ],
+  "need": {
+   "cv_small_plane_naval_bomber_airframe": 1
+  },
+  "needsTransport": false
+ },
+ "suicide_craft": {
+  "id": "suicide_craft",
+  "sourceFile": "air.txt",
+  "sprite": "light_plane",
+  "priority": 9,
+  "active": true,
+  "types": [
+   "suicide"
+  ],
+  "categories": [],
+  "need": {
+   "small_plane_suicide_airframe": 1
+  },
+  "needsTransport": false
+ },
+ "cv_suicide_craft": {
+  "id": "cv_suicide_craft",
+  "sourceFile": "air.txt",
+  "sprite": "light_plane",
+  "priority": 9,
+  "active": true,
+  "types": [
+   "suicide"
+  ],
+  "categories": [],
+  "need": {
+   "cv_small_plane_suicide_airframe": 1
+  },
+  "needsTransport": false
+ },
+ "tac_bomber": {
+  "id": "tac_bomber",
+  "sourceFile": "air.txt",
+  "sprite": "medium_plane",
+  "priority": 4,
+  "active": true,
+  "types": [
+   "tactical_bomber"
+  ],
+  "categories": [
+   "category_tac_bomber"
+  ],
+  "need": {
+   "medium_plane_airframe": 1
+  },
+  "needsTransport": false
+ },
+ "heavy_fighter": {
+  "id": "heavy_fighter",
+  "sourceFile": "air.txt",
+  "sprite": "medium_plane",
+  "priority": 1,
+  "active": true,
+  "types": [
+   "heavy_fighter"
+  ],
+  "categories": [
+   "category_heavy_fighter"
+  ],
+  "need": {
+   "medium_plane_fighter_airframe": 1
+  },
+  "needsTransport": false
+ },
+ "scout_plane": {
+  "id": "scout_plane",
+  "sourceFile": "air.txt",
+  "sprite": "light_plane",
+  "priority": 1,
+  "active": true,
+  "types": [
+   "scout_plane"
+  ],
+  "categories": [
+   "category_scout_plane"
+  ],
+  "need": {
+   "medium_plane_scout_plane_airframe": 1
+  },
+  "needsTransport": false
+ },
+ "strat_bomber": {
+  "id": "strat_bomber",
+  "sourceFile": "air.txt",
+  "sprite": "heavy_plane",
+  "priority": 5,
+  "active": true,
+  "types": [
+   "strategic_bomber"
+  ],
+  "categories": [
+   "category_strat_bomber"
+  ],
+  "need": {
+   "large_plane_airframe": 1
+  },
+  "needsTransport": false
+ },
+ "maritime_patrol_plane": {
+  "id": "maritime_patrol_plane",
+  "sourceFile": "air.txt",
+  "sprite": "heavy_plane",
+  "priority": 5,
+  "active": true,
+  "types": [
+   "maritime_patrol_plane"
+  ],
+  "categories": [
+   "category_strat_bomber",
+   "category_maritime_patrol_bomber"
+  ],
+  "need": {
+   "large_plane_maritime_patrol_plane_airframe": 1
+  },
+  "needsTransport": false
+ },
+ "jet_fighter": {
+  "id": "jet_fighter",
+  "sourceFile": "air.txt",
+  "sprite": "jet_plane",
+  "priority": 1,
+  "active": true,
+  "types": [
+   "fighter"
+  ],
+  "categories": [
+   "category_fighter"
+  ],
+  "need": {
+   "jet_fighter_equipment": 1
+  },
+  "needsTransport": false
+ },
+ "jet_tac_bomber": {
+  "id": "jet_tac_bomber",
+  "sourceFile": "air.txt",
+  "sprite": "medium_plane",
+  "priority": 4,
+  "active": true,
+  "types": [
+   "tactical_bomber"
+  ],
+  "categories": [
+   "category_tac_bomber"
+  ],
+  "need": {
+   "jet_tac_bomber_equipment": 1
+  },
+  "needsTransport": false
+ },
+ "jet_strat_bomber": {
+  "id": "jet_strat_bomber",
+  "sourceFile": "air.txt",
+  "sprite": "heavy_plane",
+  "priority": 5,
+  "active": true,
+  "types": [
+   "strategic_bomber"
+  ],
+  "categories": [
+   "category_strat_bomber"
+  ],
+  "need": {
+   "jet_strat_bomber_equipment": 1
+  },
+  "needsTransport": false
+ },
+ "rocket_interceptor": {
+  "id": "rocket_interceptor",
+  "sourceFile": "air.txt",
+  "sprite": "light_plane",
+  "priority": 7,
+  "active": true,
+  "types": [
+   "interceptor"
+  ],
+  "categories": [],
+  "need": {
+   "rocket_interceptor_equipment": 1
+  },
+  "needsTransport": false
+ },
+ "transport_plane": {
+  "id": "transport_plane",
+  "sourceFile": "air.txt",
+  "sprite": "heavy_plane",
+  "priority": 6,
+  "active": true,
+  "types": [
+   "air_transport"
+  ],
+  "categories": [],
+  "need": {
+   "transport_plane_equipment": 1
+  },
+  "needsTransport": false
+ },
+ "guided_missile": {
+  "id": "guided_missile",
+  "sourceFile": "air.txt",
+  "sprite": "missile_default",
+  "priority": 8,
+  "active": true,
+  "types": [
+   "missile"
+  ],
+  "categories": [],
+  "need": {
+   "guided_missile_equipment": 1
+  },
+  "needsTransport": false
+ },
+ "explosive_ammo": {
+  "id": "explosive_ammo",
+  "sourceFile": "air.txt",
+  "sprite": "missile_default",
+  "priority": 8,
+  "active": true,
+  "types": [
+   "emplacement_gun_ammo"
+  ],
+  "categories": [],
+  "need": {
+   "explosive_ammo_equipment": 1
+  },
+  "needsTransport": false
+ },
+ "ballistic_missile": {
+  "id": "ballistic_missile",
+  "sourceFile": "air.txt",
+  "sprite": "missile_default",
+  "priority": 8,
+  "active": true,
+  "types": [
+   "ballistic_missile"
+  ],
+  "categories": [],
+  "need": {
+   "ballistic_missile_equipment": 1
+  },
+  "needsTransport": false
+ },
+ "nuclear_missile": {
+  "id": "nuclear_missile",
+  "sourceFile": "air.txt",
+  "sprite": "missile_default",
+  "priority": 8,
+  "active": true,
+  "types": [
+   "nuclear_missile"
+  ],
+  "categories": [],
+  "need": {
+   "nuclear_missile_equipment": 1
+  },
+  "needsTransport": false
+ },
+ "sam_missile": {
+  "id": "sam_missile",
+  "sourceFile": "air.txt",
+  "sprite": "missile_default",
+  "priority": 8,
+  "active": true,
+  "types": [
+   "sam_missile"
+  ],
+  "categories": [],
+  "need": {
+   "sam_missile_equipment": 1
+  },
+  "needsTransport": false
+ },
+ "mothership": {
+  "id": "mothership",
+  "sourceFile": "air.txt",
+  "sprite": "mothership",
+  "priority": 6,
+  "active": true,
+  "types": [
+   "fighter"
+  ],
+  "categories": [
+   "category_fighter"
+  ],
+  "need": {
+   "mothership_equipment": 1
+  },
+  "needsTransport": false
+ },
+ "strat_bomber_intercontinental": {
+  "id": "strat_bomber_intercontinental",
+  "sourceFile": "air.txt",
+  "sprite": "strat_bomber_intercontinental",
+  "priority": 3,
+  "active": true,
+  "types": [
+   "strategic_bomber"
+  ],
+  "categories": [
+   "category_strat_bomber"
+  ],
+  "need": {
+   "strat_bomber_intercontinental_equipment": 1
+  },
+  "needsTransport": false
+ },
+ "amphibious_armor": {
+  "id": "amphibious_armor",
+  "sourceFile": "amphibious_armor.txt",
+  "abbreviation": "ATK",
+  "sprite": "amphibious_armor",
+  "map_icon_category": "armored",
+  "priority": 2501,
+  "ai_priority": 2000,
+  "active": true,
+  "group": "armor",
+  "combat_width": 2,
+  "special_forces": true,
+  "marines": true,
+  "max_strength": 2,
+  "max_organisation": 10,
+  "default_morale": 0.3,
+  "manpower": 500,
+  "training_time": 180,
+  "weight": 1,
+  "supply_consumption": 0.2,
+  "types": [
+   "armor"
+  ],
+  "categories": [
+   "category_tanks",
+   "category_front_line",
+   "category_all_armor",
+   "category_army",
+   "category_amphibious_tanks",
+   "category_marines_and_amphibious"
+  ],
+  "need": {
+   "amphibious_tank_chassis": 50
+  },
+  "terrain": {
+   "forest": {
+    "attack": -0.2,
+    "movement": -0.4
+   },
+   "mountain": {
+    "attack": -0.1
+   },
+   "plains": {
+    "attack": -0.1,
+    "movement": -0.1
+   },
+   "urban": {
+    "attack": -0.4,
+    "defence": -0.1
+   },
+   "jungle": {
+    "attack": -0.3,
+    "movement": -0.4
+   },
+   "marsh": {
+    "attack": 0.3
+   },
+   "river": {
+    "attack": 0.4
+   },
+   "amphibious": {
+    "attack": 0.6
+   }
+  },
+  "needsTransport": false
+ },
+ "amphibious_light_armor": {
+  "id": "amphibious_light_armor",
+  "sourceFile": "amphibious_armor.txt",
+  "abbreviation": "LAM",
+  "sprite": "amphibious_armor",
+  "map_icon_category": "armored",
+  "priority": 2501,
+  "ai_priority": 2000,
+  "active": true,
+  "group": "armor",
+  "combat_width": 2,
+  "special_forces": true,
+  "marines": true,
+  "max_strength": 2,
+  "max_organisation": 10,
+  "default_morale": 0.3,
+  "manpower": 500,
+  "training_time": 180,
+  "weight": 1,
+  "supply_consumption": 0.2,
+  "types": [
+   "armor",
+   "amphibious"
+  ],
+  "categories": [
+   "category_tanks",
+   "category_front_line",
+   "category_all_armor",
+   "category_army",
+   "category_amphibious_tanks"
+  ],
+  "need": {
+   "light_tank_amphibious_chassis": 50
+  },
+  "terrain": {
+   "forest": {
+    "attack": -0.2,
+    "movement": -0.4
+   },
+   "mountain": {
+    "attack": -0.1
+   },
+   "plains": {
+    "attack": -0.1,
+    "movement": -0.1
+   },
+   "urban": {
+    "attack": -0.4,
+    "defence": -0.1
+   },
+   "jungle": {
+    "attack": -0.3,
+    "movement": -0.4
+   },
+   "marsh": {
+    "attack": 0.3
+   },
+   "river": {
+    "attack": 0.4
+   },
+   "amphibious": {
+    "attack": 0.6
+   }
+  },
+  "needsTransport": false
+ },
+ "amphibious_medium_armor": {
+  "id": "amphibious_medium_armor",
+  "sourceFile": "amphibious_armor.txt",
+  "abbreviation": "MAM",
+  "sprite": "amphibious_armor",
+  "map_icon_category": "armored",
+  "priority": 2501,
+  "ai_priority": 2000,
+  "active": true,
+  "group": "armor",
+  "combat_width": 2,
+  "special_forces": true,
+  "marines": true,
+  "max_strength": 2,
+  "max_organisation": 10,
+  "default_morale": 0.3,
+  "manpower": 500,
+  "training_time": 180,
+  "weight": 1,
+  "supply_consumption": 0.2,
+  "types": [
+   "armor",
+   "amphibious"
+  ],
+  "categories": [
+   "category_tanks",
+   "category_front_line",
+   "category_all_armor",
+   "category_army",
+   "category_amphibious_tanks"
+  ],
+  "need": {
+   "medium_tank_amphibious_chassis": 50
+  },
+  "terrain": {
+   "forest": {
+    "attack": -0.2,
+    "movement": -0.4
+   },
+   "mountain": {
+    "attack": -0.1
+   },
+   "plains": {
+    "attack": -0.1,
+    "movement": -0.1
+   },
+   "urban": {
+    "attack": -0.4,
+    "defence": -0.1
+   },
+   "jungle": {
+    "attack": -0.3,
+    "movement": -0.4
+   },
+   "marsh": {
+    "attack": 0.3
+   },
+   "river": {
+    "attack": 0.4
+   },
+   "amphibious": {
+    "attack": 0.6
+   }
+  },
+  "needsTransport": false
+ },
+ "amphibious_heavy_armor": {
+  "id": "amphibious_heavy_armor",
+  "sourceFile": "amphibious_armor.txt",
+  "abbreviation": "HAM",
+  "sprite": "amphibious_armor",
+  "map_icon_category": "armored",
+  "priority": 2501,
+  "ai_priority": 2000,
+  "active": true,
+  "group": "armor",
+  "combat_width": 2,
+  "special_forces": true,
+  "marines": true,
+  "max_strength": 2,
+  "max_organisation": 10,
+  "default_morale": 0.3,
+  "manpower": 500,
+  "training_time": 180,
+  "weight": 1,
+  "supply_consumption": 0.2,
+  "types": [
+   "armor",
+   "amphibious"
+  ],
+  "categories": [
+   "category_tanks",
+   "category_front_line",
+   "category_all_armor",
+   "category_army",
+   "category_amphibious_tanks"
+  ],
+  "need": {
+   "heavy_tank_amphibious_chassis": 50
+  },
+  "terrain": {
+   "forest": {
+    "attack": -0.2,
+    "movement": -0.4
+   },
+   "mountain": {
+    "attack": -0.1
+   },
+   "plains": {
+    "attack": -0.1,
+    "movement": -0.1
+   },
+   "urban": {
+    "attack": -0.4,
+    "defence": -0.1
+   },
+   "jungle": {
+    "attack": -0.3,
+    "movement": -0.4
+   },
+   "marsh": {
+    "attack": 0.3
+   },
+   "river": {
+    "attack": 0.4
+   },
+   "amphibious": {
+    "attack": 0.6
+   }
+  },
+  "needsTransport": false
+ },
+ "amphibious_mechanized": {
+  "id": "amphibious_mechanized",
+  "sourceFile": "amphibious_mech.txt",
+  "abbreviation": "AMT",
+  "sprite": "amphibious_mechanized",
+  "map_icon_category": "infantry",
+  "priority": 610,
+  "ai_priority": 200,
+  "active": true,
+  "group": "mobile",
+  "combat_width": 2,
+  "special_forces": true,
+  "marines": true,
+  "max_strength": 30,
+  "max_organisation": 60,
+  "default_morale": 0.3,
+  "manpower": 1200,
+  "training_time": 120,
+  "weight": 1,
+  "supply_consumption": 0.18,
+  "soft_attack": 0.1,
+  "hard_attack": 0.5,
+  "suppression": 1,
+  "transport": "amphibious_mechanized_equipment",
+  "types": [
+   "mechanized"
+  ],
+  "categories": [
+   "category_front_line",
+   "category_all_infantry",
+   "category_army",
+   "category_special_forces",
+   "category_vehicle_infantry",
+   "category_mobile_and_mobile_combat_sup",
+   "category_marines_and_amphibious"
+  ],
+  "need": {
+   "amphibious_mechanized_equipment": 50,
+   "infantry_equipment": 100
+  },
+  "essential": [
+   "infantry_equipment",
+   "amphibious_mechanized_equipment"
+  ],
+  "terrain": {
+   "forest": {
+    "attack": -0.2
+   },
+   "mountain": {
+    "attack": -0.05
+   },
+   "urban": {
+    "attack": -0.2,
+    "defence": -0.05
+   },
+   "jungle": {
+    "attack": -0.3
+   },
+   "marsh": {
+    "attack": 0.2
+   },
+   "river": {
+    "attack": 0.3
+   },
+   "amphibious": {
+    "attack": 0.5
+   }
+  },
+  "needsTransport": true
+ },
+ "anti_air": {
+  "id": "anti_air",
+  "sourceFile": "anti-air.txt",
+  "abbreviation": "AA",
+  "sprite": "infantry",
+  "map_icon_category": "infantry",
+  "priority": 0,
+  "ai_priority": 0,
+  "active": true,
+  "group": "support",
+  "regimental": false,
+  "combat_width": 0,
+  "can_be_parachuted": false,
+  "affects_speed": false,
+  "max_strength": 0.2,
+  "max_organisation": 0,
+  "default_morale": 0.1,
+  "manpower": 300,
+  "training_time": 120,
+  "weight": 0.1,
+  "supply_consumption": 0.1,
+  "soft_attack": -0.4,
+  "hard_attack": -0.4,
+  "air_attack": -0.2,
+  "defense": -0.4,
+  "breakthrough": -0.4,
+  "types": [
+   "infantry",
+   "support"
+  ],
+  "categories": [
+   "category_support_battalions",
+   "category_army",
+   "category_anti_air",
+   "category_divisional_support_battalions"
+  ],
+  "need": {
+   "anti_air_equipment": 24
+  },
+  "needsTransport": false
+ },
+ "anti_air_brigade": {
+  "id": "anti_air_brigade",
+  "sourceFile": "anti-air_brigade.txt",
+  "abbreviation": "ANA",
+  "sprite": "infantry",
+  "map_icon_category": "infantry",
+  "priority": 301,
+  "ai_priority": 10,
+  "active": true,
+  "group": "combat_support",
+  "combat_width": 1,
+  "max_strength": 1.6,
+  "max_organisation": 0,
+  "default_morale": 0.1,
+  "manpower": 500,
+  "training_time": 120,
+  "weight": 0.5,
+  "supply_consumption": 0.1,
+  "types": [
+   "infantry",
+   "anti_air"
+  ],
+  "categories": [
+   "category_army",
+   "category_line_artillery",
+   "category_anti_air"
+  ],
+  "need": {
+   "anti_air_equipment": 36
+  },
+  "terrain": {
+   "forest": {
+    "attack": -0.1,
+    "movement": -0.1
+   },
+   "jungle": {
+    "attack": -0.2,
+    "movement": -0.2
+   },
+   "marsh": {
+    "attack": -0.2,
+    "movement": -0.2
+   },
+   "river": {
+    "attack": -0.2,
+    "movement": -0.2
+   },
+   "amphibious": {
+    "attack": -0.4
+   }
+  },
+  "needsTransport": false
+ },
+ "mot_anti_air_brigade": {
+  "id": "mot_anti_air_brigade",
+  "sourceFile": "anti-air_brigade.txt",
+  "abbreviation": "MAA",
+  "sprite": "infantry",
+  "map_icon_category": "infantry",
+  "priority": 301,
+  "ai_priority": 10,
+  "active": true,
+  "group": "mobile_combat_support",
+  "combat_width": 1,
+  "max_strength": 1.6,
+  "max_organisation": 0,
+  "default_morale": 0.1,
+  "manpower": 500,
+  "training_time": 120,
+  "weight": 0.5,
+  "supply_consumption": 0.15,
+  "transport": "motorized_equipment",
+  "types": [
+   "motorized",
+   "anti_air"
+  ],
+  "categories": [
+   "category_army",
+   "category_line_artillery",
+   "category_anti_air",
+   "category_mobile_and_mobile_combat_sup"
+  ],
+  "need": {
+   "anti_air_equipment": 36,
+   "motorized_equipment": 36
+  },
+  "essential": [
+   "motorized_equipment"
+  ],
+  "terrain": {
+   "forest": {
+    "attack": -0.1,
+    "movement": -0.5
+   },
+   "jungle": {
+    "attack": -0.2,
+    "movement": -0.5
+   },
+   "marsh": {
+    "attack": -0.2,
+    "movement": -0.2
+   },
+   "river": {
+    "attack": -0.2,
+    "movement": -0.2
+   },
+   "amphibious": {
+    "attack": -0.4
+   }
+  },
+  "needsTransport": true
+ },
+ "anti_tank": {
+  "id": "anti_tank",
+  "sourceFile": "anti_tank.txt",
+  "abbreviation": "AT",
+  "sprite": "anti_tank",
+  "map_icon_category": "infantry",
+  "priority": 0,
+  "ai_priority": 0,
+  "active": true,
+  "group": "support",
+  "regimental": false,
+  "combat_width": 0,
+  "can_be_parachuted": false,
+  "affects_speed": false,
+  "max_strength": 0.2,
+  "max_organisation": 0,
+  "default_morale": 0.1,
+  "manpower": 300,
+  "training_time": 120,
+  "weight": 0.1,
+  "supply_consumption": 0.08,
+  "soft_attack": -0.4,
+  "hard_attack": -0.5,
+  "ap_attack": -0.15,
+  "defense": -0.4,
+  "breakthrough": -0.4,
+  "types": [
+   "infantry",
+   "support"
+  ],
+  "categories": [
+   "category_front_line",
+   "category_support_battalions",
+   "category_divisional_support_battalions",
+   "category_army",
+   "category_anti_tank",
+   "category_mobile_anti_tank"
+  ],
+  "need": {
+   "anti_tank_equipment": 24
+  },
+  "needsTransport": false
+ },
+ "anti_tank_brigade": {
+  "id": "anti_tank_brigade",
+  "sourceFile": "anti_tank_brigade.txt",
+  "abbreviation": "ANT",
+  "sprite": "anti_tank",
+  "map_icon_category": "infantry",
+  "priority": 1197,
+  "ai_priority": 100,
+  "active": true,
+  "group": "combat_support",
+  "combat_width": 1,
+  "max_strength": 1.6,
+  "max_organisation": 0,
+  "default_morale": 0,
+  "manpower": 500,
+  "training_time": 120,
+  "weight": 0.5,
+  "supply_consumption": 0.1,
+  "types": [
+   "infantry",
+   "anti_tank"
+  ],
+  "categories": [
+   "category_front_line",
+   "category_army",
+   "category_line_artillery",
+   "category_anti_tank"
+  ],
+  "need": {
+   "anti_tank_equipment": 36
+  },
+  "terrain": {
+   "forest": {
+    "attack": -0.2,
+    "movement": -0.2
+   },
+   "hills": {
+    "movement": -0.05
+   },
+   "mountain": {
+    "movement": -0.2
+   },
+   "jungle": {
+    "attack": -0.25,
+    "movement": -0.2
+   },
+   "marsh": {
+    "attack": -0.2,
+    "movement": -0.3
+   },
+   "fort": {
+    "attack": 0.1
+   },
+   "river": {
+    "attack": -0.2,
+    "movement": -0.2
+   },
+   "amphibious": {
+    "attack": -0.4
+   }
+  },
+  "needsTransport": false
+ },
+ "mot_anti_tank_brigade": {
+  "id": "mot_anti_tank_brigade",
+  "sourceFile": "anti_tank_brigade.txt",
+  "abbreviation": "MAT",
+  "sprite": "anti_tank",
+  "map_icon_category": "infantry",
+  "priority": 1197,
+  "ai_priority": 100,
+  "active": true,
+  "group": "mobile_combat_support",
+  "combat_width": 1,
+  "max_strength": 1.6,
+  "max_organisation": 0,
+  "default_morale": 0,
+  "manpower": 500,
+  "training_time": 120,
+  "weight": 0.5,
+  "supply_consumption": 0.15,
+  "transport": "motorized_equipment",
+  "types": [
+   "motorized",
+   "anti_tank"
+  ],
+  "categories": [
+   "category_front_line",
+   "category_army",
+   "category_line_artillery",
+   "category_mobile_and_mobile_combat_sup",
+   "category_anti_tank",
+   "category_mobile_anti_tank"
+  ],
+  "need": {
+   "anti_tank_equipment": 36,
+   "motorized_equipment": 36
+  },
+  "essential": [
+   "motorized_equipment"
+  ],
+  "terrain": {
+   "forest": {
+    "attack": -0.2,
+    "movement": -0.5
+   },
+   "hills": {
+    "movement": -0.05
+   },
+   "mountain": {
+    "movement": -0.2
+   },
+   "jungle": {
+    "attack": -0.25,
+    "movement": -0.5
+   },
+   "marsh": {
+    "attack": -0.2,
+    "movement": -0.3
+   },
+   "fort": {
+    "attack": 0.1
+   },
+   "river": {
+    "attack": -0.2,
+    "movement": -0.2
+   },
+   "amphibious": {
+    "attack": -0.4
+   }
+  },
+  "needsTransport": true
+ },
+ "armored_car": {
+  "id": "armored_car",
+  "sourceFile": "armored_car_battalion.txt",
+  "abbreviation": "CAR",
+  "sprite": "armored_car",
+  "map_icon_category": "armored",
+  "priority": 501,
+  "ai_priority": 200,
+  "active": true,
+  "group": "mobile",
+  "combat_width": 2,
+  "max_strength": 5,
+  "max_organisation": 20,
+  "default_morale": 0.3,
+  "manpower": 500,
+  "training_time": 180,
+  "weight": 0.8,
+  "supply_consumption": 0.14,
+  "suppression": 2.5,
+  "types": [
+   "motorized"
+  ],
+  "categories": [
+   "category_front_line",
+   "category_army",
+   "category_mobile_and_mobile_combat_sup"
+  ],
+  "need": {
+   "armored_car_equipment": 60
+  },
+  "terrain": {
+   "forest": {
+    "attack": -0.2,
+    "movement": -0.4
+   },
+   "mountain": {
+    "attack": -0.1,
+    "movement": -0.1
+   },
+   "urban": {
+    "attack": -0.3
+   },
+   "jungle": {
+    "attack": -0.3,
+    "movement": -0.5
+   },
+   "marsh": {
+    "attack": -0.1,
+    "movement": -0.2
+   },
+   "desert": {
+    "movement": 0.15
+   },
+   "river": {
+    "attack": -0.2,
+    "movement": -0.2
+   },
+   "amphibious": {
+    "attack": -0.4
+   }
+  },
+  "needsTransport": false
+ },
+ "artillery": {
+  "id": "artillery",
+  "sourceFile": "artillery.txt",
+  "abbreviation": "ART",
+  "sprite": "artillery",
+  "map_icon_category": "infantry",
+  "priority": 0,
+  "ai_priority": 0,
+  "active": true,
+  "group": "support",
+  "regimental": false,
+  "combat_width": 0,
+  "can_be_parachuted": false,
+  "affects_speed": false,
+  "max_strength": 0.2,
+  "max_organisation": 0,
+  "default_morale": 0.1,
+  "manpower": 300,
+  "training_time": 120,
+  "weight": 0.1,
+  "supply_consumption": 0.16,
+  "soft_attack": -0.5,
+  "hard_attack": -0.5,
+  "defense": -0.5,
+  "breakthrough": -0.5,
+  "is_artillery_brigade": true,
+  "types": [
+   "infantry",
+   "support"
+  ],
+  "categories": [
+   "category_support_battalions",
+   "category_divisional_support_battalions",
+   "category_army",
+   "category_artillery",
+   "category_support_artillery"
+  ],
+  "need": {
+   "artillery_equipment": 12
+  },
+  "needsTransport": false
+ },
+ "rocket_artillery": {
+  "id": "rocket_artillery",
+  "sourceFile": "artillery.txt",
+  "abbreviation": "RART",
+  "sprite": "artillery",
+  "map_icon_category": "infantry",
+  "priority": 0,
+  "ai_priority": 0,
+  "active": true,
+  "group": "support",
+  "regimental": false,
+  "combat_width": 0,
+  "can_be_parachuted": false,
+  "affects_speed": false,
+  "max_strength": 0.2,
+  "max_organisation": 0,
+  "default_morale": 0.1,
+  "manpower": 300,
+  "training_time": 120,
+  "weight": 0.1,
+  "supply_consumption": 0.16,
+  "soft_attack": -0.5,
+  "hard_attack": -0.5,
+  "defense": -0.5,
+  "breakthrough": -0.5,
+  "is_artillery_brigade": true,
+  "types": [
+   "infantry",
+   "support"
+  ],
+  "categories": [
+   "category_support_battalions",
+   "category_divisional_support_battalions",
+   "category_army",
+   "category_artillery",
+   "category_support_artillery",
+   "category_rocket_artillery"
+  ],
+  "need": {
+   "rocket_artillery_equipment": 12
+  },
+  "needsTransport": false
+ },
+ "super_heavy_artillery": {
+  "id": "super_heavy_artillery",
+  "sourceFile": "artillery.txt",
+  "abbreviation": "SHART",
+  "sprite": "super_heavy_artillery",
+  "map_icon_category": "infantry",
+  "priority": 0,
+  "ai_priority": 0,
+  "active": true,
+  "group": "support",
+  "regimental": false,
+  "combat_width": 0,
+  "can_be_parachuted": false,
+  "affects_speed": true,
+  "max_strength": 0.2,
+  "max_organisation": 0,
+  "default_morale": 0.1,
+  "manpower": 1000,
+  "training_time": 180,
+  "weight": 0.1,
+  "supply_consumption": 0.25,
+  "same_support_type": "super_heavy_artillery",
+  "is_artillery_brigade": true,
+  "types": [
+   "infantry",
+   "support"
+  ],
+  "categories": [
+   "category_support_battalions",
+   "category_divisional_support_battalions",
+   "category_army",
+   "category_artillery",
+   "category_support_artillery"
+  ],
+  "need": {
+   "super_heavy_artillery_equipment": 3
+  },
+  "essential": [
+   "super_heavy_artillery_equipment"
+  ],
+  "needsTransport": false
+ },
+ "self_propelled_super_heavy_artillery": {
+  "id": "self_propelled_super_heavy_artillery",
+  "sourceFile": "artillery.txt",
+  "abbreviation": "SPSHART",
+  "sprite": "self_propelled_super_heavy_artillery",
+  "map_icon_category": "infantry",
+  "priority": 0,
+  "ai_priority": 0,
+  "active": true,
+  "group": "support",
+  "regimental": false,
+  "combat_width": 0,
+  "can_be_parachuted": false,
+  "affects_speed": false,
+  "max_strength": 0.2,
+  "max_organisation": 0,
+  "default_morale": 0.1,
+  "manpower": 1000,
+  "training_time": 180,
+  "weight": 0.1,
+  "supply_consumption": 0.35,
+  "same_support_type": "super_heavy_artillery",
+  "is_artillery_brigade": true,
+  "types": [
+   "infantry",
+   "support"
+  ],
+  "categories": [
+   "category_support_battalions",
+   "category_divisional_support_battalions",
+   "category_army",
+   "category_artillery",
+   "category_support_artillery"
+  ],
+  "need": {
+   "self_propelled_super_heavy_artillery_equipment": 3
+  },
+  "essential": [
+   "self_propelled_super_heavy_artillery_equipment"
+  ],
+  "needsTransport": false
+ },
+ "artillery_brigade": {
+  "id": "artillery_brigade",
+  "sourceFile": "artillery_brigade.txt",
+  "abbreviation": "ART",
+  "sprite": "artillery",
+  "map_icon_category": "infantry",
+  "priority": 1198,
+  "ai_priority": 100,
+  "active": true,
+  "group": "combat_support",
+  "combat_width": 3,
+  "max_strength": 1.6,
+  "max_organisation": 0,
+  "default_morale": 0.1,
+  "manpower": 500,
+  "training_time": 120,
+  "weight": 0.5,
+  "supply_consumption": 0.21,
+  "is_artillery_brigade": true,
+  "types": [
+   "infantry",
+   "artillery"
+  ],
+  "categories": [
+   "category_army",
+   "category_line_artillery",
+   "category_artillery"
+  ],
+  "need": {
+   "artillery_equipment": 24
+  },
+  "terrain": {
+   "forest": {
+    "attack": -0.2,
+    "movement": -0.2
+   },
+   "hills": {
+    "movement": -0.05
+   },
+   "mountain": {
+    "movement": -0.2
+   },
+   "jungle": {
+    "attack": -0.25,
+    "movement": -0.2
+   },
+   "marsh": {
+    "attack": -0.2,
+    "movement": -0.3
+   },
+   "fort": {
+    "attack": 0.1
+   },
+   "river": {
+    "attack": -0.2,
+    "movement": -0.2
+   },
+   "amphibious": {
+    "attack": -0.4
+   }
+  },
+  "needsTransport": false
+ },
+ "mot_artillery_brigade": {
+  "id": "mot_artillery_brigade",
+  "sourceFile": "artillery_brigade.txt",
+  "abbreviation": "MRT",
+  "sprite": "artillery",
+  "map_icon_category": "infantry",
+  "priority": 1198,
+  "ai_priority": 100,
+  "active": true,
+  "group": "mobile_combat_support",
+  "combat_width": 3,
+  "max_strength": 1.6,
+  "max_organisation": 0,
+  "default_morale": 0.1,
+  "manpower": 500,
+  "training_time": 120,
+  "weight": 0.5,
+  "supply_consumption": 0.25,
+  "transport": "motorized_equipment",
+  "is_artillery_brigade": true,
+  "types": [
+   "motorized",
+   "artillery"
+  ],
+  "categories": [
+   "category_army",
+   "category_line_artillery",
+   "category_artillery",
+   "category_mobile_and_mobile_combat_sup"
+  ],
+  "need": {
+   "artillery_equipment": 24,
+   "motorized_equipment": 36
+  },
+  "essential": [
+   "motorized_equipment"
+  ],
+  "terrain": {
+   "forest": {
+    "attack": -0.2,
+    "movement": -0.5
+   },
+   "hills": {
+    "movement": -0.05
+   },
+   "mountain": {
+    "movement": -0.2
+   },
+   "jungle": {
+    "attack": -0.25,
+    "movement": -0.5
+   },
+   "marsh": {
+    "attack": -0.2,
+    "movement": -0.3
+   },
+   "fort": {
+    "attack": 0.1
+   },
+   "river": {
+    "attack": -0.2,
+    "movement": -0.2
+   },
+   "amphibious": {
+    "attack": -0.4
+   }
+  },
+  "needsTransport": true
+ },
+ "rocket_artillery_brigade": {
+  "id": "rocket_artillery_brigade",
+  "sourceFile": "artillery_brigade.txt",
+  "abbreviation": "RRT",
+  "sprite": "artillery",
+  "map_icon_category": "infantry",
+  "priority": 1199,
+  "ai_priority": 100,
+  "active": true,
+  "group": "combat_support",
+  "combat_width": 3,
+  "max_strength": 1.6,
+  "max_organisation": 0,
+  "default_morale": 0.1,
+  "manpower": 500,
+  "training_time": 120,
+  "weight": 0.5,
+  "supply_consumption": 0.22,
+  "is_artillery_brigade": true,
+  "types": [
+   "infantry",
+   "artillery"
+  ],
+  "categories": [
+   "category_army",
+   "category_line_artillery",
+   "category_artillery",
+   "category_rocket_artillery"
+  ],
+  "need": {
+   "rocket_artillery_equipment": 24
+  },
+  "terrain": {
+   "forest": {
+    "attack": -0.2,
+    "movement": -0.2
+   },
+   "hills": {
+    "movement": -0.05
+   },
+   "mountain": {
+    "movement": -0.2
+   },
+   "jungle": {
+    "attack": -0.25,
+    "movement": -0.2
+   },
+   "marsh": {
+    "attack": -0.2,
+    "movement": -0.3
+   },
+   "fort": {
+    "attack": 0.1
+   },
+   "river": {
+    "attack": -0.2,
+    "movement": -0.2
+   },
+   "amphibious": {
+    "attack": -0.4
+   }
+  },
+  "needsTransport": false
+ },
+ "mot_rocket_artillery_brigade": {
+  "id": "mot_rocket_artillery_brigade",
+  "sourceFile": "artillery_brigade.txt",
+  "abbreviation": "TRA",
+  "sprite": "artillery",
+  "map_icon_category": "infantry",
+  "priority": 1199,
+  "ai_priority": 100,
+  "active": true,
+  "group": "mobile_combat_support",
+  "combat_width": 3,
+  "max_strength": 1.6,
+  "max_organisation": 0,
+  "default_morale": 0.1,
+  "manpower": 500,
+  "training_time": 120,
+  "weight": 0.5,
+  "supply_consumption": 0.25,
+  "transport": "motorized_equipment",
+  "is_artillery_brigade": true,
+  "types": [
+   "motorized",
+   "artillery"
+  ],
+  "categories": [
+   "category_army",
+   "category_line_artillery",
+   "category_artillery",
+   "category_rocket_artillery",
+   "category_mobile_and_mobile_combat_sup"
+  ],
+  "need": {
+   "rocket_artillery_equipment": 24,
+   "motorized_equipment": 36
+  },
+  "terrain": {
+   "forest": {
+    "attack": -0.2,
+    "movement": -0.5
+   },
+   "hills": {
+    "movement": -0.05
+   },
+   "mountain": {
+    "movement": -0.2
+   },
+   "jungle": {
+    "attack": -0.25,
+    "movement": -0.5
+   },
+   "marsh": {
+    "attack": -0.2,
+    "movement": -0.3
+   },
+   "fort": {
+    "attack": 0.1
+   },
+   "river": {
+    "attack": -0.2,
+    "movement": -0.2
+   },
+   "amphibious": {
+    "attack": -0.4
+   }
+  },
+  "needsTransport": true
+ },
+ "motorized_rocket_brigade": {
+  "id": "motorized_rocket_brigade",
+  "sourceFile": "artillery_brigade.txt",
+  "abbreviation": "MRA",
+  "sprite": "motorized",
+  "map_icon_category": "infantry",
+  "priority": 1199,
+  "ai_priority": 100,
+  "active": false,
+  "group": "mobile_combat_support",
+  "combat_width": 3,
+  "max_strength": 1.6,
+  "max_organisation": 0,
+  "default_morale": 0.1,
+  "manpower": 500,
+  "training_time": 120,
+  "weight": 0.5,
+  "supply_consumption": 0.25,
+  "is_artillery_brigade": true,
+  "types": [
+   "artillery",
+   "motorized",
+   "rocket"
+  ],
+  "categories": [
+   "category_army",
+   "category_line_artillery",
+   "category_artillery",
+   "category_rocket_artillery",
+   "category_mobile_and_mobile_combat_sup"
+  ],
+  "need": {
+   "motorized_rocket_equipment": 16,
+   "motorized_equipment": 16
+  },
+  "terrain": {
+   "forest": {
+    "attack": -0.1,
+    "movement": -0.5
+   },
+   "hills": {
+    "movement": -0.05
+   },
+   "mountain": {
+    "movement": -0.2
+   },
+   "jungle": {
+    "attack": -0.25,
+    "movement": -0.5
+   },
+   "marsh": {
+    "attack": -0.2,
+    "movement": -0.5
+   },
+   "fort": {
+    "attack": 0.1
+   },
+   "river": {
+    "attack": -0.2,
+    "movement": -0.2
+   },
+   "amphibious": {
+    "attack": -0.4
+   }
+  },
+  "needsTransport": false
+ },
+ "battle_cruiser": {
+  "id": "battle_cruiser",
+  "sourceFile": "battlecruiser.txt",
+  "sprite": "battle_cruiser",
+  "map_icon_category": "ship",
+  "priority": 8,
+  "active": true,
+  "max_organisation": 50,
+  "supply_consumption": 0.32,
+  "types": [
+   "capital_ship"
+  ],
+  "categories": [],
+  "needsTransport": false
+ },
+ "battleship": {
+  "id": "battleship",
+  "sourceFile": "battleship.txt",
+  "sprite": "battleship",
+  "map_icon_category": "ship",
+  "priority": 9,
+  "active": true,
+  "max_organisation": 50,
+  "supply_consumption": 0.56,
+  "types": [
+   "capital_ship"
+  ],
+  "categories": [],
+  "needsTransport": false
+ },
+ "blackshirt_assault_battalion": {
+  "id": "blackshirt_assault_battalion",
+  "sourceFile": "blackshirt_assault_battalion.txt",
+  "abbreviation": "BAB",
+  "sprite": "infantry",
+  "map_icon_category": "infantry",
+  "priority": 0,
+  "ai_priority": 0,
+  "active": false,
+  "group": "support",
+  "regimental": false,
+  "combat_width": 0,
+  "can_be_parachuted": true,
+  "affects_speed": false,
+  "max_strength": 40,
+  "max_organisation": 10,
+  "default_morale": 0.2,
+  "manpower": 1000,
+  "training_time": 120,
+  "weight": 0.4,
+  "supply_consumption": 0.06,
+  "soft_attack": 0.1,
+  "breakthrough": 0.3,
+  "suppression": 1.5,
+  "types": [
+   "infantry",
+   "support"
+  ],
+  "categories": [
+   "category_support_battalions",
+   "category_divisional_support_battalions",
+   "category_army"
+  ],
+  "need": {
+   "infantry_equipment": 100,
+   "support_equipment": 10
+  },
+  "needsTransport": false
+ },
+ "bus": {
+  "id": "bus",
+  "sourceFile": "bus.txt",
+  "abbreviation": "BUS",
+  "sprite": "motorized",
+  "map_icon_category": "infantry",
+  "priority": 1000,
+  "ai_priority": 0,
+  "active": false,
+  "group": "mobile",
+  "combat_width": 2,
+  "can_be_parachuted": true,
+  "affects_speed": false,
+  "max_strength": 400,
+  "max_organisation": 100,
+  "default_morale": 0.2,
+  "manpower": 10,
+  "training_time": 120,
+  "weight": [
+   0.4,
+   1
+  ],
+  "supply_consumption": 0.04,
+  "maximum_speed": 6,
+  "soft_attack": -1,
+  "hard_attack": -1,
+  "ap_attack": -1,
+  "defense": 8,
+  "breakthrough": -1,
+  "suppression": 0,
+  "types": [
+   "motorized"
+  ],
+  "categories": [
+   "category_bus"
+  ],
+  "need": {
+   "support_equipment": 5,
+   "motorized_equipment": 1,
+   "infantry_equipment": 2
+  },
+  "terrain": {
+   "forest": {
+    "attack": -0.1,
+    "movement": -0.5
+   },
+   "mountain": {
+    "attack": -0.05
+   },
+   "urban": {
+    "attack": -0.1
+   },
+   "jungle": {
+    "attack": -0.2,
+    "movement": -0.5
+   },
+   "marsh": {
+    "attack": -0.1,
+    "movement": -0.3
+   },
+   "river": {
+    "attack": -0.1,
+    "movement": -0.1
+   },
+   "amphibious": {
+    "attack": -0.2
+   }
+  },
+  "needsTransport": false
+ },
+ "carrier": {
+  "id": "carrier",
+  "sourceFile": "carrier.txt",
+  "sprite": "carrier",
+  "map_icon_category": "ship",
+  "priority": 10,
+  "active": true,
+  "max_organisation": 40,
+  "supply_consumption": 0.8,
+  "types": [
+   "carrier"
+  ],
+  "categories": [],
+  "need": {
+   "ship_hull_carrier": 1
+  },
+  "needsTransport": false
+ },
+ "cavalry": {
+  "id": "cavalry",
+  "sourceFile": "cavalry.txt",
+  "abbreviation": "CAV",
+  "sprite": "cavalry",
+  "map_icon_category": "other",
+  "priority": 599,
+  "ai_priority": 200,
+  "active": true,
+  "group": "mobile",
+  "combat_width": 2,
+  "cavalry": true,
+  "max_strength": 25,
+  "max_organisation": 70,
+  "default_morale": 0.3,
+  "manpower": 1000,
+  "training_time": 120,
+  "weight": 0.5,
+  "supply_consumption": 0.06,
+  "maximum_speed": 0.6,
+  "suppression": 2,
+  "types": [
+   "infantry"
+  ],
+  "categories": [
+   "category_front_line",
+   "category_cavalry",
+   "category_army"
+  ],
+  "need": {
+   "infantry_equipment": 120
+  },
+  "terrain": {
+   "forest": {
+    "attack": -0.05
+   },
+   "hills": {
+    "attack": -0.05
+   },
+   "mountain": {
+    "attack": -0.1,
+    "movement": -0.05
+   },
+   "urban": {
+    "attack": -0.05
+   },
+   "jungle": {
+    "attack": -0.1
+   },
+   "amphibious": {
+    "attack": -0.4
+   }
+  },
+  "needsTransport": false
+ },
+ "camelry": {
+  "id": "camelry",
+  "sourceFile": "cavalry.txt",
+  "abbreviation": "CAM",
+  "sprite": "camelry",
+  "map_icon_category": "other",
+  "priority": 599,
+  "ai_priority": 200,
+  "active": false,
+  "group": "mobile",
+  "combat_width": 2,
+  "cavalry": true,
+  "max_strength": 30,
+  "max_organisation": 70,
+  "default_morale": 0.3,
+  "manpower": 1000,
+  "training_time": 160,
+  "weight": 0.6,
+  "supply_consumption": 0.1,
+  "maximum_speed": 0.4,
+  "suppression": 2,
+  "types": [
+   "infantry"
+  ],
+  "categories": [
+   "category_front_line",
+   "category_cavalry",
+   "category_army"
+  ],
+  "need": {
+   "infantry_equipment": 150
+  },
+  "terrain": {
+   "forest": {
+    "attack": -0.05
+   },
+   "hills": {
+    "attack": -0.05,
+    "movement": -0.05
+   },
+   "mountain": {
+    "attack": -0.1,
+    "movement": -0.05
+   },
+   "plains": {
+    "movement": 0.15
+   },
+   "urban": {
+    "attack": -0.05,
+    "movement": -0.05
+   },
+   "jungle": {
+    "attack": -0.1
+   },
+   "marsh": {
+    "movement": 0.05
+   },
+   "desert": {
+    "attack": 0.05,
+    "defence": 0.05,
+    "movement": 0.1
+   },
+   "amphibious": {
+    "attack": -0.4
+   }
+  },
+  "needsTransport": false
+ },
+ "destroyer": {
+  "id": "destroyer",
+  "sourceFile": "destroyer.txt",
+  "sprite": "destroyer",
+  "map_icon_category": "ship",
+  "priority": 3,
+  "active": true,
+  "max_organisation": 35,
+  "supply_consumption": 0.04,
+  "types": [
+   "screen_ship"
+  ],
+  "categories": [],
+  "need": {
+   "ship_hull_light": 1
+  },
+  "needsTransport": false
+ },
+ "engineer": {
+  "id": "engineer",
+  "sourceFile": "engineer.txt",
+  "abbreviation": "ENG",
+  "sprite": "infantry",
+  "map_icon_category": "infantry",
+  "priority": 0,
+  "ai_priority": 0,
+  "active": false,
+  "group": "support",
+  "regimental": false,
+  "combat_width": 0,
+  "can_be_parachuted": true,
+  "affects_speed": false,
+  "max_strength": 2,
+  "max_organisation": 20,
+  "default_morale": 0.3,
+  "manpower": 300,
+  "training_time": 120,
+  "weight": 0.1,
+  "supply_consumption": 0.02,
+  "soft_attack": -0.5,
+  "defense": 0.1,
+  "breakthrough": 0.5,
+  "entrenchment": 2,
+  "same_support_type": "engineer",
+  "types": [
+   "infantry",
+   "support"
+  ],
+  "categories": [
+   "category_front_line",
+   "category_support_battalions",
+   "category_divisional_support_battalions",
+   "category_army"
+  ],
+  "need": {
+   "infantry_equipment": 10,
+   "support_equipment": 30
+  },
+  "essential": [
+   "support_equipment"
+  ],
+  "battalionMult": [
+   {
+    "category": "category_light_infantry",
+    "entrenchment": 0.2,
+    "add": true
+   }
+  ],
+  "terrain": {
+   "forest": {
+    "defence": 0.25,
+    "movement": 0.05
+   },
+   "hills": {
+    "defence": 0.1
+   },
+   "jungle": {
+    "defence": 0.25
+   },
+   "marsh": {
+    "defence": 0.25,
+    "movement": 0.2
+   },
+   "fort": {
+    "attack": 0.1,
+    "defence": 0.25
+   },
+   "river": {
+    "defence": 0.25,
+    "movement": 0.25
+   },
+   "amphibious": {
+    "attack": 0.15
+   }
+  },
+  "needsTransport": false
+ },
+ "pioneer_support": {
+  "id": "pioneer_support",
+  "sourceFile": "engineer.txt",
+  "abbreviation": "PIO",
+  "sprite": "infantry",
+  "map_icon_category": "infantry",
+  "priority": 0,
+  "ai_priority": 0,
+  "active": false,
+  "group": "support",
+  "regimental": false,
+  "combat_width": 0,
+  "can_be_parachuted": true,
+  "affects_speed": false,
+  "max_strength": 2,
+  "max_organisation": 20,
+  "default_morale": 0.3,
+  "manpower": 300,
+  "training_time": 120,
+  "weight": 0.1,
+  "supply_consumption": 0.02,
+  "soft_attack": -0.5,
+  "defense": 0.1,
+  "breakthrough": 0.5,
+  "entrenchment": [
+   2,
+   2.5
+  ],
+  "same_support_type": "engineer",
+  "types": [
+   "infantry",
+   "support"
+  ],
+  "categories": [
+   "category_front_line",
+   "category_support_battalions",
+   "category_divisional_support_battalions",
+   "category_army",
+   "category_marines",
+   "category_marines_and_amphibious"
+  ],
+  "need": {
+   "infantry_equipment": 10,
+   "support_equipment": 40
+  },
+  "essential": [
+   "support_equipment"
+  ],
+  "battalionMult": [
+   {
+    "category": "category_marines",
+    "breakthrough": 0.15,
+    "add": false
+   }
+  ],
+  "terrain": {
+   "marsh": {
+    "attack": 0.1,
+    "defence": 0.2,
+    "movement": 0.2
+   },
+   "fort": {
+    "attack": 0.15,
+    "defence": 0.2
+   },
+   "river": {
+    "attack": 0.1,
+    "defence": 0.2,
+    "movement": 0.25
+   }
+  },
+  "needsTransport": false
+ },
+ "jungle_pioneers_support": {
+  "id": "jungle_pioneers_support",
+  "sourceFile": "engineer.txt",
+  "abbreviation": "JLS",
+  "sprite": "infantry",
+  "map_icon_category": "infantry",
+  "priority": 0,
+  "ai_priority": 0,
+  "active": false,
+  "group": "support",
+  "regimental": false,
+  "combat_width": 0,
+  "can_be_parachuted": true,
+  "max_strength": 1,
+  "max_organisation": 30,
+  "default_morale": 0.3,
+  "manpower": 500,
+  "training_time": 120,
+  "weight": 0.1,
+  "supply_consumption": 0.1,
+  "defense": 0.05,
+  "breakthrough": 0.3,
+  "entrenchment": 2,
+  "same_support_type": "engineer",
+  "types": [
+   "infantry",
+   "support"
+  ],
+  "categories": [
+   "category_support_battalions",
+   "category_divisional_support_battalions",
+   "category_army"
+  ],
+  "need": {
+   "infantry_equipment": 10,
+   "support_equipment": 40
+  },
+  "essential": [
+   "infantry_equipment",
+   "support_equipment"
+  ],
+  "terrain": {
+   "forest": {
+    "attack": 0.1,
+    "defence": 0.05,
+    "movement": 0.3
+   },
+   "jungle": {
+    "attack": 0.1,
+    "defence": 0.2,
+    "movement": 0.3
+   },
+   "river": {
+    "attack": 0.1,
+    "defence": 0.25,
+    "movement": 0.25
+   }
+  },
+  "needsTransport": false
+ },
+ "assault_engineer": {
+  "id": "assault_engineer",
+  "sourceFile": "engineer.txt",
+  "abbreviation": "ASEC",
+  "sprite": "assault_engineer",
+  "map_icon_category": "armored",
+  "priority": 0,
+  "ai_priority": 0,
+  "active": false,
+  "group": "support",
+  "regimental": false,
+  "combat_width": 0,
+  "can_be_parachuted": false,
+  "affects_speed": false,
+  "max_strength": 2,
+  "max_organisation": 20,
+  "default_morale": 0.3,
+  "manpower": 300,
+  "training_time": 120,
+  "weight": 0.1,
+  "supply_consumption": 0.025,
+  "soft_attack": -0.5,
+  "defense": 0.1,
+  "breakthrough": 1.5,
+  "entrenchment": 2,
+  "same_support_type": "engineer",
+  "types": [
+   "armor",
+   "support"
+  ],
+  "categories": [
+   "category_front_line",
+   "category_support_battalions",
+   "category_divisional_support_battalions",
+   "category_tanks",
+   "category_all_armor",
+   "category_army"
+  ],
+  "need": {
+   "armored_support_vehicle": 20,
+   "support_equipment": 20
+  },
+  "essential": [
+   "support_equipment",
+   "armored_support_vehicle"
+  ],
+  "battalionMult": [
+   {
+    "category": "category_light_infantry",
+    "breakthrough": 0.1,
+    "add": false
+   }
+  ],
+  "terrain": {
+   "forest": {
+    "attack": 0.05,
+    "defence": 0.1
+   },
+   "hills": {
+    "attack": 0.05,
+    "defence": 0.1
+   },
+   "urban": {
+    "attack": 0.2,
+    "movement": 0.05
+   },
+   "jungle": {
+    "attack": 0.05,
+    "defence": 0.1
+   },
+   "marsh": {
+    "attack": 0.05,
+    "defence": 0.1,
+    "movement": 0.1
+   },
+   "fort": {
+    "attack": 0.25,
+    "defence": 0.1
+   },
+   "river": {
+    "attack": 0.05,
+    "defence": 0.1,
+    "movement": 0.25
+   },
+   "amphibious": {
+    "attack": 0.15
+   }
+  },
+  "needsTransport": false
+ },
+ "armored_engineer": {
+  "id": "armored_engineer",
+  "sourceFile": "engineer.txt",
+  "abbreviation": "AREC",
+  "sprite": "armored_engineer",
+  "map_icon_category": "armored",
+  "priority": 0,
+  "ai_priority": 0,
+  "active": false,
+  "group": "support",
+  "regimental": false,
+  "combat_width": 0,
+  "can_be_parachuted": false,
+  "affects_speed": false,
+  "max_strength": 2,
+  "max_organisation": 20,
+  "default_morale": 0.3,
+  "manpower": 300,
+  "training_time": 120,
+  "weight": 0.1,
+  "supply_consumption": 0.035,
+  "soft_attack": -0.5,
+  "defense": 0.15,
+  "breakthrough": 1,
+  "entrenchment": 3,
+  "same_support_type": "engineer",
+  "types": [
+   "armor",
+   "support"
+  ],
+  "categories": [
+   "category_front_line",
+   "category_support_battalions",
+   "category_divisional_support_battalions",
+   "category_tanks",
+   "category_all_armor",
+   "category_army"
+  ],
+  "need": {
+   "armored_support_vehicle": 30,
+   "support_equipment": 15
+  },
+  "essential": [
+   "support_equipment",
+   "armored_support_vehicle"
+  ],
+  "battalionMult": [
+   {
+    "category": "category_all_infantry",
+    "entrenchment": 0.2,
+    "add": true
+   },
+   {
+    "category": "category_all_armor",
+    "breakthrough": 0.05,
+    "add": false
+   }
+  ],
+  "terrain": {
+   "forest": {
+    "defence": 0.25,
+    "movement": 0.1
+   },
+   "hills": {
+    "defence": 0.1,
+    "movement": 0.05
+   },
+   "plains": {
+    "movement": 0.1
+   },
+   "urban": {
+    "attack": 0.2,
+    "defence": 0.1,
+    "movement": 0.1
+   },
+   "jungle": {
+    "defence": 0.15,
+    "movement": 0.05
+   },
+   "marsh": {
+    "defence": 0.15,
+    "movement": 0.2
+   },
+   "desert": {
+    "movement": 0.1
+   },
+   "fort": {
+    "attack": 0.15,
+    "defence": 0.25
+   },
+   "river": {
+    "attack": 0.1,
+    "defence": 0.15,
+    "movement": 0.4
+   },
+   "amphibious": {
+    "attack": 0.2
+   }
+  },
+  "needsTransport": false
+ },
+ "field_hospital": {
+  "id": "field_hospital",
+  "sourceFile": "field_hospital.txt",
+  "abbreviation": "HOS",
+  "sprite": "infantry",
+  "map_icon_category": "infantry",
+  "priority": 0,
+  "ai_priority": 0,
+  "active": false,
+  "group": "support",
+  "regimental": false,
+  "combat_width": 0,
+  "can_be_parachuted": true,
+  "affects_speed": false,
+  "max_strength": 2,
+  "max_organisation": 20,
+  "default_morale": 0.3,
+  "manpower": 500,
+  "training_time": 120,
+  "weight": 0.1,
+  "supply_consumption": 0.05,
+  "own_equipment_fuel_consumption_mult": 0,
+  "casualty_trickleback": 0.2,
+  "experience_loss_factor": -0.15,
+  "same_support_type": "field_hospital",
+  "types": [
+   "infantry",
+   "support"
+  ],
+  "categories": [
+   "category_support_battalions",
+   "category_divisional_support_battalions",
+   "category_army"
+  ],
+  "need": {
+   "support_equipment": 30,
+   "motorized_equipment": 20
+  },
+  "essential": [
+   "support_equipment",
+   "motorized_equipment"
+  ],
+  "battalionMult": [
+   {
+    "category": "category_all_infantry",
+    "max_strength": 0.1,
+    "add": false
+   }
+  ],
+  "needsTransport": false
+ },
+ "helicopter_field_hospital": {
+  "id": "helicopter_field_hospital",
+  "sourceFile": "field_hospital.txt",
+  "abbreviation": "HELF",
+  "sprite": "helicopter_brigade",
+  "map_icon_category": "infantry",
+  "priority": 0,
+  "ai_priority": 0,
+  "active": false,
+  "group": "support",
+  "regimental": false,
+  "combat_width": 0,
+  "can_be_parachuted": true,
+  "affects_speed": false,
+  "max_strength": 2,
+  "max_organisation": 20,
+  "default_morale": 0.3,
+  "manpower": 500,
+  "training_time": 120,
+  "weight": 0.1,
+  "supply_consumption": 0.07,
+  "casualty_trickleback": 0.25,
+  "experience_loss_factor": -0.1,
+  "same_support_type": [
+   "field_hospital",
+   "helicopter_field_hospital"
+  ],
+  "types": [
+   "infantry",
+   "support"
+  ],
+  "categories": [
+   "category_support_battalions",
+   "category_divisional_support_battalions",
+   "category_army",
+   "category_helicopter_support_companies"
+  ],
+  "need": {
+   "support_equipment": 30,
+   "helicopter_equipment": 15,
+   "motorized_equipment": 15
+  },
+  "essential": [
+   "support_equipment",
+   "helicopter_equipment",
+   "motorized_equipment"
+  ],
+  "battalionMult": [
+   {
+    "category": "category_all_infantry",
+    "max_strength": 0.05,
+    "add": false
+   }
+  ],
+  "needsTransport": false
+ },
+ "fire_support": {
+  "id": "fire_support",
+  "sourceFile": "fire_support.txt",
+  "abbreviation": "FSC",
+  "sprite": "infantry",
+  "map_icon_category": "infantry",
+  "priority": 0,
+  "ai_priority": 0,
+  "active": false,
+  "group": "support",
+  "divisional": false,
+  "combat_width": 0,
+  "can_be_parachuted": true,
+  "affects_speed": false,
+  "max_strength": 0.6,
+  "max_organisation": 30,
+  "default_morale": 0.2,
+  "manpower": 240,
+  "training_time": 120,
+  "weight": 0.1,
+  "supply_consumption": 0.06,
+  "soft_attack": -0.5,
+  "hard_attack": -0.5,
+  "defense": -0.25,
+  "is_artillery_brigade": false,
+  "types": [
+   "infantry",
+   "support"
+  ],
+  "categories": [
+   "category_support_battalions",
+   "category_regimental_support_battalions",
+   "category_army"
+  ],
+  "need": {
+   "infantry_equipment": 30,
+   "support_equipment": 5
+  },
+  "essential": [
+   "support_equipment",
+   "infantry_equipment"
+  ],
+  "allowedBattalionGroups": [
+   "infantry",
+   "mobile",
+   "combat_support"
+  ],
+  "needsTransport": false
+ },
+ "mot_fire_support": {
+  "id": "mot_fire_support",
+  "sourceFile": "fire_support.txt",
+  "abbreviation": "FSC",
+  "sprite": "infantry",
+  "map_icon_category": "infantry",
+  "priority": 0,
+  "ai_priority": 0,
+  "active": false,
+  "group": "support",
+  "divisional": false,
+  "combat_width": 0,
+  "can_be_parachuted": false,
+  "affects_speed": false,
+  "max_strength": 0.6,
+  "max_organisation": 30,
+  "default_morale": 0.2,
+  "manpower": 240,
+  "training_time": 120,
+  "weight": 0.1,
+  "supply_consumption": 0.06,
+  "own_equipment_fuel_consumption_mult": 0.25,
+  "soft_attack": -0.5,
+  "hard_attack": -0.5,
+  "defense": -0.25,
+  "breakthrough": -0.25,
+  "is_artillery_brigade": false,
+  "types": [
+   "infantry",
+   "support"
+  ],
+  "categories": [
+   "category_support_battalions",
+   "category_regimental_support_battalions",
+   "category_army"
+  ],
+  "need": {
+   "infantry_equipment": 30,
+   "support_equipment": 5,
+   "motorized_equipment": 5
+  },
+  "essential": [
+   "support_equipment",
+   "infantry_equipment",
+   "motorized_equipment"
+  ],
+  "allowedBattalionGroups": [
+   "infantry",
+   "mobile",
+   "combat_support",
+   "mobile_combat_support",
+   "armor",
+   "armor_combat_support"
+  ],
+  "needsTransport": false
+ },
+ "field_guns": {
+  "id": "field_guns",
+  "sourceFile": "fire_support.txt",
+  "abbreviation": "IFG",
+  "sprite": "artillery",
+  "map_icon_category": "infantry",
+  "priority": 0,
+  "ai_priority": 0,
+  "active": true,
+  "group": "support",
+  "divisional": false,
+  "combat_width": 0,
+  "can_be_parachuted": true,
+  "affects_speed": false,
+  "max_strength": 0.1,
+  "max_organisation": 0,
+  "default_morale": 0.1,
+  "manpower": 180,
+  "training_time": 120,
+  "weight": 0.1,
+  "supply_consumption": 0.1,
+  "soft_attack": -0.75,
+  "hard_attack": -0.75,
+  "defense": -0.75,
+  "breakthrough": -0.75,
+  "is_artillery_brigade": true,
+  "types": [
+   "infantry",
+   "support"
+  ],
+  "categories": [
+   "category_support_battalions",
+   "category_regimental_support_battalions",
+   "category_army",
+   "category_regimental_support_artillery"
+  ],
+  "need": {
+   "artillery_equipment": 6
+  },
+  "allowedBattalionGroups": [
+   "infantry",
+   "mobile",
+   "combat_support"
+  ],
+  "needsTransport": false
+ },
+ "rocket_battery": {
+  "id": "rocket_battery",
+  "sourceFile": "fire_support.txt",
+  "abbreviation": "RBC",
+  "sprite": "artillery",
+  "map_icon_category": "infantry",
+  "priority": 1199,
+  "ai_priority": 100,
+  "active": true,
+  "group": "support",
+  "divisional": false,
+  "can_be_parachuted": true,
+  "affects_speed": false,
+  "max_strength": 0.1,
+  "max_organisation": 0,
+  "default_morale": 0.1,
+  "manpower": 180,
+  "training_time": 120,
+  "weight": 0.1,
+  "supply_consumption": 0.1,
+  "soft_attack": -0.75,
+  "hard_attack": -0.75,
+  "defense": -0.75,
+  "breakthrough": -0.75,
+  "is_artillery_brigade": true,
+  "types": [
+   "support",
+   "infantry"
+  ],
+  "categories": [
+   "category_regimental_support_battalions",
+   "category_support_battalions",
+   "category_army",
+   "category_regimental_support_artillery"
+  ],
+  "need": {
+   "rocket_artillery_equipment": 6
+  },
+  "allowedBattalionGroups": [
+   "infantry",
+   "mobile",
+   "combat_support"
+  ],
+  "needsTransport": false
+ },
+ "anti_air_battery": {
+  "id": "anti_air_battery",
+  "sourceFile": "fire_support.txt",
+  "abbreviation": "RAA",
+  "sprite": "infantry",
+  "map_icon_category": "infantry",
+  "priority": 0,
+  "ai_priority": 0,
+  "active": true,
+  "group": "support",
+  "divisional": false,
+  "combat_width": 0,
+  "can_be_parachuted": true,
+  "affects_speed": false,
+  "max_strength": 0.1,
+  "max_organisation": 0,
+  "default_morale": 0.1,
+  "manpower": 180,
+  "training_time": 120,
+  "weight": 0.1,
+  "supply_consumption": 0.06,
+  "soft_attack": -0.6,
+  "hard_attack": -0.6,
+  "air_attack": -0.6,
+  "defense": -0.6,
+  "breakthrough": -0.6,
+  "types": [
+   "infantry",
+   "support"
+  ],
+  "categories": [
+   "category_support_battalions",
+   "category_army",
+   "category_anti_air",
+   "category_regimental_support_battalions"
+  ],
+  "need": {
+   "anti_air_equipment": 16
+  },
+  "allowedBattalionGroups": [
+   "infantry",
+   "mobile",
+   "combat_support"
+  ],
+  "needsTransport": false
+ },
+ "anti_tank_battery": {
+  "id": "anti_tank_battery",
+  "sourceFile": "fire_support.txt",
+  "abbreviation": "RAT",
+  "sprite": "anti_tank",
+  "map_icon_category": "infantry",
+  "priority": 0,
+  "ai_priority": 0,
+  "active": true,
+  "group": "support",
+  "divisional": false,
+  "combat_width": 0,
+  "can_be_parachuted": true,
+  "affects_speed": false,
+  "max_strength": 0.1,
+  "max_organisation": 0,
+  "default_morale": 0.1,
+  "manpower": 180,
+  "weight": 0.1,
+  "supply_consumption": 0.06,
+  "soft_attack": -0.6,
+  "hard_attack": -0.65,
+  "ap_attack": -0.2,
+  "defense": -0.6,
+  "breakthrough": -0.6,
+  "types": [
+   "infantry",
+   "support"
+  ],
+  "categories": [
+   "category_front_line",
+   "category_support_battalions",
+   "category_regimental_support_battalions",
+   "category_army",
+   "category_anti_tank",
+   "category_mobile_anti_tank"
+  ],
+  "need": {
+   "anti_tank_equipment": 16
+  },
+  "allowedBattalionGroups": [
+   "infantry",
+   "mobile",
+   "combat_support"
+  ],
+  "needsTransport": false
+ },
+ "light_flame_tank": {
+  "id": "light_flame_tank",
+  "sourceFile": "flame_tank.txt",
+  "abbreviation": "LFT",
+  "sprite": "light_flame_tank",
+  "map_icon_category": "armored",
+  "priority": 0,
+  "ai_priority": 0,
+  "active": false,
+  "group": "support",
+  "regimental": false,
+  "combat_width": 0,
+  "can_be_parachuted": true,
+  "max_strength": 2,
+  "max_organisation": 20,
+  "default_morale": 0.3,
+  "manpower": 300,
+  "training_time": 120,
+  "weight": 0.1,
+  "supply_consumption": 0.02,
+  "soft_attack": -0.5,
+  "hard_attack": -0.75,
+  "defense": -0.75,
+  "breakthrough": -0.5,
+  "armor_value": -0.75,
+  "same_support_type": "flame",
+  "types": [
+   "armor",
+   "flame",
+   "support"
+  ],
+  "categories": [
+   "category_front_line",
+   "category_support_battalions",
+   "category_divisional_support_battalions",
+   "category_tanks",
+   "category_all_armor",
+   "category_army"
+  ],
+  "need": {
+   "light_tank_flame_chassis": 15
+  },
+  "essential": [
+   "light_tank_flame_chassis"
+  ],
+  "battalionMult": [
+   {
+    "category": "category_all_infantry",
+    "breakthrough": 0.05,
+    "add": false
+   }
+  ],
+  "terrain": {
+   "forest": {
+    "attack": 0.05
+   },
+   "hills": {
+    "attack": 0.05
+   },
+   "mountain": {
+    "attack": 0.05
+   },
+   "urban": {
+    "attack": 0.1
+   },
+   "jungle": {
+    "attack": 0.1
+   },
+   "marsh": {
+    "attack": 0.05
+   },
+   "fort": {
+    "attack": 0.1,
+    "movement": 0.1
+   },
+   "river": {
+    "attack": 0.1
+   },
+   "amphibious": {
+    "attack": 0.1
+   }
+  },
+  "needsTransport": false
+ },
+ "medium_flame_tank": {
+  "id": "medium_flame_tank",
+  "sourceFile": "flame_tank.txt",
+  "abbreviation": "MFT",
+  "sprite": "medium_armor",
+  "map_icon_category": "armored",
+  "priority": 0,
+  "ai_priority": 0,
+  "active": false,
+  "group": "support",
+  "regimental": false,
+  "combat_width": 0,
+  "can_be_parachuted": false,
+  "max_strength": 2,
+  "max_organisation": 20,
+  "default_morale": 0.3,
+  "manpower": 300,
+  "training_time": 120,
+  "weight": 0.1,
+  "supply_consumption": 0.025,
+  "soft_attack": -0.45,
+  "hard_attack": -0.7,
+  "defense": -0.7,
+  "breakthrough": -0.45,
+  "armor_value": -0.7,
+  "same_support_type": "flame",
+  "types": [
+   "armor",
+   "flame",
+   "support"
+  ],
+  "categories": [
+   "category_front_line",
+   "category_support_battalions",
+   "category_divisional_support_battalions",
+   "category_tanks",
+   "category_all_armor",
+   "category_army"
+  ],
+  "need": {
+   "medium_tank_flame_chassis": 15
+  },
+  "essential": [
+   "medium_tank_flame_chassis"
+  ],
+  "battalionMult": [
+   {
+    "category": "category_all_infantry",
+    "breakthrough": 0.05,
+    "add": false
+   }
+  ],
+  "terrain": {
+   "forest": {
+    "attack": 0.1
+   },
+   "hills": {
+    "attack": 0.05
+   },
+   "mountain": {
+    "attack": 0.05
+   },
+   "urban": {
+    "attack": 0.15
+   },
+   "jungle": {
+    "attack": 0.15
+   },
+   "marsh": {
+    "attack": 0.05
+   },
+   "fort": {
+    "attack": 0.2,
+    "movement": 0.1
+   },
+   "river": {
+    "attack": 0.1
+   },
+   "amphibious": {
+    "attack": 0.1
+   }
+  },
+  "needsTransport": false
+ },
+ "heavy_flame_tank": {
+  "id": "heavy_flame_tank",
+  "sourceFile": "flame_tank.txt",
+  "abbreviation": "HFT",
+  "sprite": "heavy_armor",
+  "map_icon_category": "armored",
+  "priority": 0,
+  "ai_priority": 0,
+  "active": false,
+  "group": "support",
+  "regimental": false,
+  "combat_width": 0,
+  "can_be_parachuted": false,
+  "max_strength": 2,
+  "max_organisation": 20,
+  "default_morale": 0.3,
+  "manpower": 300,
+  "training_time": 120,
+  "weight": 0.1,
+  "supply_consumption": 0.03,
+  "soft_attack": -0.4,
+  "hard_attack": -0.625,
+  "defense": -0.625,
+  "breakthrough": -0.4,
+  "armor_value": -0.625,
+  "same_support_type": "flame",
+  "types": [
+   "armor",
+   "flame",
+   "support"
+  ],
+  "categories": [
+   "category_front_line",
+   "category_support_battalions",
+   "category_divisional_support_battalions",
+   "category_tanks",
+   "category_all_armor",
+   "category_army"
+  ],
+  "need": {
+   "heavy_tank_flame_chassis": 15
+  },
+  "essential": [
+   "heavy_tank_flame_chassis"
+  ],
+  "battalionMult": [
+   {
+    "category": "category_all_infantry",
+    "breakthrough": 0.05,
+    "add": false
+   }
+  ],
+  "terrain": {
+   "forest": {
+    "attack": 0.1
+   },
+   "hills": {
+    "attack": 0.05
+   },
+   "urban": {
+    "attack": 0.1
+   },
+   "jungle": {
+    "attack": 0.1
+   },
+   "marsh": {
+    "attack": 0.05
+   },
+   "fort": {
+    "attack": 0.25,
+    "movement": 0.1
+   },
+   "river": {
+    "attack": 0.05
+   },
+   "amphibious": {
+    "attack": 0.05
+   }
+  },
+  "needsTransport": false
+ },
+ "heavy_armor": {
+  "id": "heavy_armor",
+  "sourceFile": "heavy_armor.txt",
+  "abbreviation": "HTK",
+  "sprite": "heavy_armor",
+  "map_icon_category": "armored",
+  "priority": 2503,
+  "ai_priority": 2503,
+  "active": true,
+  "group": "armor",
+  "combat_width": 2,
+  "max_strength": 2,
+  "max_organisation": 10,
+  "default_morale": 0.3,
+  "manpower": 500,
+  "training_time": 180,
+  "weight": 1.5,
+  "supply_consumption": 0.32,
+  "breakthrough": 0.15,
+  "suppression": 2.5,
+  "types": [
+   "armor"
+  ],
+  "categories": [
+   "category_tanks",
+   "category_front_line",
+   "category_all_armor",
+   "category_army"
+  ],
+  "need": {
+   "heavy_tank_chassis": 40
+  },
+  "terrain": {
+   "forest": {
+    "attack": -0.4,
+    "movement": -0.4
+   },
+   "hills": {
+    "attack": -0.2
+   },
+   "mountain": {
+    "attack": -0.3
+   },
+   "urban": {
+    "attack": -0.5,
+    "defence": -0.2
+   },
+   "jungle": {
+    "attack": -0.6,
+    "movement": -0.4
+   },
+   "marsh": {
+    "attack": -0.4,
+    "movement": -0.2
+   },
+   "fort": {
+    "attack": 0.1
+   },
+   "river": {
+    "attack": -0.4,
+    "movement": -0.4
+   },
+   "amphibious": {
+    "attack": -0.9
+   }
+  },
+  "needsTransport": false
+ },
+ "heavy_cruiser": {
+  "id": "heavy_cruiser",
+  "sourceFile": "heavy_cruiser.txt",
+  "sprite": "heavy_cruiser",
+  "map_icon_category": "ship",
+  "priority": 6,
+  "active": true,
+  "max_organisation": 40,
+  "supply_consumption": 0.24,
+  "types": [
+   "capital_ship"
+  ],
+  "categories": [],
+  "need": {
+   "ship_hull_cruiser": 1
+  },
+  "needsTransport": false
+ },
+ "helicopter_brigade": {
+  "id": "helicopter_brigade",
+  "sourceFile": "helicopter_brigade.txt",
+  "abbreviation": "HELB",
+  "sprite": "helicopter_brigade",
+  "map_icon_category": "infantry",
+  "priority": 0,
+  "ai_priority": 0,
+  "active": false,
+  "group": "support",
+  "regimental": false,
+  "combat_width": 0,
+  "can_be_parachuted": false,
+  "affects_speed": true,
+  "max_strength": 2,
+  "max_organisation": 20,
+  "default_morale": 0.3,
+  "manpower": 500,
+  "training_time": 120,
+  "weight": 0.1,
+  "supply_consumption": 0.07,
+  "supply_consumption_factor": -0.05,
+  "recon": 1,
+  "casualty_trickleback": 0.1,
+  "experience_loss_factor": -0.05,
+  "same_support_type": [
+   "helicopter_recon",
+   "helicopter_transport",
+   "helicopter_field_hospital"
+  ],
+  "types": [
+   "infantry",
+   "support"
+  ],
+  "categories": [
+   "category_support_battalions",
+   "category_divisional_support_battalions",
+   "category_army",
+   "category_helicopter_support_companies"
+  ],
+  "need": {
+   "helicopter_equipment": 15,
+   "support_equipment": 15
+  },
+  "essential": [
+   "support_equipment",
+   "helicopter_equipment"
+  ],
+  "battalionMult": [
+   {
+    "category": "category_all_infantry",
+    "max_strength": 0.03,
+    "add": false
+   }
+  ],
+  "needsTransport": false
+ },
+ "hq_support_company": {
+  "id": "hq_support_company",
+  "sourceFile": "hq_support.txt",
+  "abbreviation": "HQ",
+  "sprite": "infantry",
+  "map_icon_category": "infantry",
+  "priority": 0,
+  "ai_priority": 0,
+  "active": true,
+  "group": "support",
+  "regimental": false,
+  "combat_width": 0,
+  "can_be_parachuted": true,
+  "affects_speed": false,
+  "max_strength": 1,
+  "max_organisation": 30,
+  "default_morale": 0.05,
+  "manpower": 200,
+  "training_time": 120,
+  "weight": 0.1,
+  "deployment_cost": 1,
+  "allow_in_army_hq": true,
+  "allow_in_non_army_hq": false,
+  "types": [
+   "infantry",
+   "support"
+  ],
+  "categories": [
+   "category_support_battalions",
+   "category_divisional_support_battalions",
+   "category_army"
+  ],
+  "need": {
+   "infantry_equipment": 20
+  },
+  "essential": [
+   "infantry_equipment"
+  ],
+  "deployedLeaderModifiers": {
+   "skill_bonus_factor": 0.2
+  },
+  "needsTransport": false
+ },
+ "hq_engineer": {
+  "id": "hq_engineer",
+  "sourceFile": "hq_support.txt",
+  "abbreviation": "HQE",
+  "sprite": "infantry",
+  "map_icon_category": "infantry",
+  "priority": 0,
+  "ai_priority": 0,
+  "active": false,
+  "group": "support",
+  "regimental": false,
+  "combat_width": 0,
+  "can_be_parachuted": true,
+  "affects_speed": false,
+  "max_strength": 1,
+  "max_organisation": 30,
+  "default_morale": 0.05,
+  "manpower": 200,
+  "training_time": 120,
+  "weight": 0.1,
+  "deployment_cost": 1,
+  "soft_attack": -0.5,
+  "defense": 0.1,
+  "breakthrough": 0.5,
+  "entrenchment": 2,
+  "allow_in_army_hq": true,
+  "allow_in_non_army_hq": false,
+  "enable_ability": [
+   "deeper_dig_in"
+  ],
+  "types": [
+   "infantry",
+   "support"
+  ],
+  "categories": [
+   "category_front_line",
+   "category_support_battalions",
+   "category_divisional_support_battalions",
+   "category_army"
+  ],
+  "need": {
+   "infantry_equipment": 20,
+   "support_equipment": 10
+  },
+  "essential": [
+   "infantry_equipment",
+   "support_equipment"
+  ],
+  "deployedLeaderModifiers": {
+   "fortification_damage": 0.2,
+   "amphibious_invasion_defence": 0.05
+  },
+  "needsTransport": false
+ },
+ "hq_recon": {
+  "id": "hq_recon",
+  "sourceFile": "hq_support.txt",
+  "abbreviation": "HQR",
+  "sprite": "infantry",
+  "map_icon_category": "infantry",
+  "priority": 0,
+  "ai_priority": 0,
+  "active": false,
+  "group": "support",
+  "regimental": false,
+  "combat_width": 0,
+  "can_be_parachuted": true,
+  "affects_speed": false,
+  "max_strength": 1,
+  "max_organisation": 30,
+  "default_morale": 0.05,
+  "manpower": 200,
+  "training_time": 120,
+  "weight": 0.1,
+  "deployment_cost": 1,
+  "soft_attack": -0.9,
+  "hard_attack": -0.9,
+  "defense": -0.5,
+  "breakthrough": -0.5,
+  "recon": 1,
+  "allow_in_army_hq": true,
+  "allow_in_non_army_hq": false,
+  "enable_ability": [
+   "defense_in_depth"
+  ],
+  "types": [
+   "infantry",
+   "support"
+  ],
+  "categories": [
+   "category_front_line",
+   "category_support_battalions",
+   "category_divisional_support_battalions",
+   "category_army",
+   "category_recon"
+  ],
+  "need": {
+   "infantry_equipment": 20,
+   "support_equipment": 10
+  },
+  "essential": [
+   "infantry_equipment",
+   "support_equipment"
+  ],
+  "deployedLeaderModifiers": {
+   "terrain_trait_xp_gain_factor": 0.2,
+   "recon_factor": 0.1
+  },
+  "needsTransport": false
+ },
+ "hq_military_police": {
+  "id": "hq_military_police",
+  "sourceFile": "hq_support.txt",
+  "abbreviation": "HQP",
+  "sprite": "infantry",
+  "map_icon_category": "infantry",
+  "priority": 0,
+  "ai_priority": 0,
+  "active": false,
+  "group": "support",
+  "regimental": false,
+  "combat_width": 0,
+  "can_be_parachuted": true,
+  "affects_speed": false,
+  "max_strength": 1,
+  "max_organisation": 30,
+  "default_morale": 0.05,
+  "manpower": 200,
+  "training_time": 120,
+  "weight": 0.1,
+  "deployment_cost": 1,
+  "suppression_factor": 0.2,
+  "allow_in_army_hq": true,
+  "allow_in_non_army_hq": false,
+  "types": [
+   "infantry",
+   "support"
+  ],
+  "categories": [
+   "category_support_battalions",
+   "category_divisional_support_battalions",
+   "category_army"
+  ],
+  "need": {
+   "support_equipment": 10
+  },
+  "essential": [
+   "support_equipment"
+  ],
+  "deployedLeaderModifiers": {
+   "army_speed_factor": 0.05
+  },
+  "needsTransport": false
+ },
+ "hq_maintenance": {
+  "id": "hq_maintenance",
+  "sourceFile": "hq_support.txt",
+  "abbreviation": "HQM",
+  "sprite": "infantry",
+  "map_icon_category": "infantry",
+  "priority": 0,
+  "ai_priority": 0,
+  "active": false,
+  "group": "support",
+  "regimental": false,
+  "combat_width": 0,
+  "can_be_parachuted": true,
+  "affects_speed": false,
+  "max_strength": 1,
+  "max_organisation": 30,
+  "default_morale": 0.05,
+  "manpower": 200,
+  "training_time": 120,
+  "weight": 0.1,
+  "deployment_cost": 1,
+  "reliability_factor": 0.05,
+  "equipment_capture_factor": 0.05,
+  "allow_in_army_hq": true,
+  "allow_in_non_army_hq": false,
+  "types": [
+   "infantry",
+   "support"
+  ],
+  "categories": [
+   "category_support_battalions",
+   "category_divisional_support_battalions",
+   "category_army"
+  ],
+  "need": {
+   "support_equipment": 10
+  },
+  "essential": [
+   "support_equipment"
+  ],
+  "deployedLeaderModifiers": {
+   "attrition": -0.1,
+   "equipment_capture_factor": 0.02
+  },
+  "needsTransport": false
+ },
+ "hq_field_hospital": {
+  "id": "hq_field_hospital",
+  "sourceFile": "hq_support.txt",
+  "abbreviation": "HQF",
+  "sprite": "infantry",
+  "map_icon_category": "infantry",
+  "priority": 0,
+  "ai_priority": 0,
+  "active": false,
+  "group": "support",
+  "regimental": false,
+  "combat_width": 0,
+  "can_be_parachuted": true,
+  "affects_speed": false,
+  "max_strength": 1,
+  "max_organisation": 30,
+  "default_morale": 0.05,
+  "manpower": 200,
+  "training_time": 120,
+  "weight": 0.1,
+  "deployment_cost": 1,
+  "casualty_trickleback": 0.2,
+  "experience_loss_factor": -0.15,
+  "allow_in_army_hq": true,
+  "allow_in_non_army_hq": false,
+  "enable_ability": [
+   "extra_medics"
+  ],
+  "types": [
+   "infantry",
+   "support"
+  ],
+  "categories": [
+   "category_support_battalions",
+   "category_divisional_support_battalions",
+   "category_army"
+  ],
+  "need": {
+   "support_equipment": 10
+  },
+  "essential": [
+   "support_equipment"
+  ],
+  "deployedLeaderModifiers": {
+   "wounded_chance_factor": -0.25,
+   "sickness_chance": -0.25,
+   "experience_gain_army_unit_factor": 0.1
+  },
+  "needsTransport": false
+ },
+ "hq_logistics": {
+  "id": "hq_logistics",
+  "sourceFile": "hq_support.txt",
+  "abbreviation": "HQL",
+  "sprite": "infantry",
+  "map_icon_category": "infantry",
+  "priority": 0,
+  "ai_priority": 0,
+  "active": false,
+  "group": "support",
+  "regimental": false,
+  "combat_width": 0,
+  "can_be_parachuted": true,
+  "affects_speed": false,
+  "max_strength": 1,
+  "max_organisation": 30,
+  "default_morale": 0.05,
+  "manpower": 200,
+  "training_time": 120,
+  "weight": 0.1,
+  "deployment_cost": 1,
+  "fuel_consumption_factor": -0.05,
+  "allow_in_army_hq": true,
+  "allow_in_non_army_hq": false,
+  "enable_ability": [
+   "front_overrun"
+  ],
+  "types": [
+   "infantry",
+   "support"
+  ],
+  "categories": [
+   "category_support_battalions",
+   "category_divisional_support_battalions",
+   "category_army"
+  ],
+  "need": {
+   "support_equipment": 10
+  },
+  "essential": [
+   "support_equipment"
+  ],
+  "deployedLeaderModifiers": {
+   "max_commander_army_size": 2,
+   "supply_consumption_factor": -0.05
+  },
+  "needsTransport": false
+ },
+ "hq_signal": {
+  "id": "hq_signal",
+  "sourceFile": "hq_support.txt",
+  "abbreviation": "HQS",
+  "sprite": "infantry",
+  "map_icon_category": "infantry",
+  "priority": 0,
+  "ai_priority": 0,
+  "active": false,
+  "group": "support",
+  "regimental": false,
+  "combat_width": 0,
+  "can_be_parachuted": true,
+  "affects_speed": false,
+  "max_strength": 1,
+  "max_organisation": 30,
+  "default_morale": 0.05,
+  "manpower": 200,
+  "training_time": 120,
+  "weight": 0.1,
+  "deployment_cost": 1,
+  "allow_in_army_hq": true,
+  "allow_in_non_army_hq": false,
+  "enable_ability": [
+   "rotating_reserves"
+  ],
+  "types": [
+   "infantry",
+   "support"
+  ],
+  "categories": [
+   "category_support_battalions",
+   "category_divisional_support_battalions",
+   "category_army"
+  ],
+  "need": {
+   "support_equipment": 10
+  },
+  "essential": [
+   "support_equipment"
+  ],
+  "deployedLeaderModifiers": {
+   "max_planning": 0.03,
+   "recon_factor_while_entrenched": 0.1,
+   "enemy_operative_capture_chance_factor": 0.1
+  },
+  "needsTransport": false
+ },
+ "hq_naval_liaison": {
+  "id": "hq_naval_liaison",
+  "sourceFile": "hq_support.txt",
+  "abbreviation": "HQNL",
+  "sprite": "infantry",
+  "map_icon_category": "infantry",
+  "priority": 0,
+  "ai_priority": 0,
+  "active": true,
+  "group": "support",
+  "regimental": false,
+  "combat_width": 0,
+  "can_be_parachuted": true,
+  "affects_speed": false,
+  "max_strength": 1,
+  "max_organisation": 30,
+  "default_morale": 0.05,
+  "manpower": 200,
+  "training_time": 120,
+  "weight": 0.1,
+  "deployment_cost": 1,
+  "allow_in_army_hq": true,
+  "allow_in_non_army_hq": false,
+  "types": [
+   "infantry",
+   "support"
+  ],
+  "categories": [
+   "category_support_battalions",
+   "category_divisional_support_battalions",
+   "category_army"
+  ],
+  "need": {
+   "support_equipment": 10
+  },
+  "essential": [
+   "support_equipment"
+  ],
+  "deployedLeaderModifiers": {
+   "shore_bombardment_bonus": 0.15,
+   "extra_marine_supply_grace": 24,
+   "amphibious_invasion": 0.05
+  },
+  "needsTransport": false
+ },
+ "hq_air_liaison": {
+  "id": "hq_air_liaison",
+  "sourceFile": "hq_support.txt",
+  "abbreviation": "HQAL",
+  "sprite": "infantry",
+  "map_icon_category": "infantry",
+  "priority": 0,
+  "ai_priority": 0,
+  "active": true,
+  "group": "support",
+  "regimental": false,
+  "combat_width": 0,
+  "can_be_parachuted": true,
+  "affects_speed": false,
+  "max_strength": 1,
+  "max_organisation": 30,
+  "default_morale": 0.05,
+  "manpower": 200,
+  "training_time": 120,
+  "weight": 0.1,
+  "deployment_cost": 1,
+  "allow_in_army_hq": true,
+  "allow_in_non_army_hq": false,
+  "types": [
+   "infantry",
+   "support"
+  ],
+  "categories": [
+   "category_support_battalions",
+   "category_divisional_support_battalions",
+   "category_army"
+  ],
+  "need": {
+   "support_equipment": 10
+  },
+  "essential": [
+   "support_equipment"
+  ],
+  "deployedLeaderModifiers": {
+   "air_invasion_preparation": -0.05,
+   "cas_damage_reduction": 0.05,
+   "air_superiority_bonus_in_combat": 0.05
+  },
+  "needsTransport": false
+ },
+ "hq_specops": {
+  "id": "hq_specops",
+  "sourceFile": "hq_support.txt",
+  "abbreviation": "HQSO",
+  "sprite": "infantry",
+  "map_icon_category": "infantry",
+  "priority": 0,
+  "ai_priority": 0,
+  "active": true,
+  "group": "support",
+  "regimental": false,
+  "combat_width": 0,
+  "can_be_parachuted": true,
+  "affects_speed": false,
+  "max_strength": 1,
+  "max_organisation": 30,
+  "default_morale": 0.05,
+  "manpower": 200,
+  "training_time": 120,
+  "weight": 0.1,
+  "deployment_cost": 1,
+  "allow_in_army_hq": true,
+  "allow_in_non_army_hq": false,
+  "types": [
+   "infantry",
+   "support"
+  ],
+  "categories": [
+   "category_support_battalions",
+   "category_divisional_support_battalions",
+   "category_army"
+  ],
+  "need": {
+   "support_equipment": 10
+  },
+  "essential": [
+   "support_equipment"
+  ],
+  "deployedLeaderModifiers": {
+   "special_forces_out_of_supply_factor": -0.1,
+   "special_forces_attack_factor": 0.05
+  },
+  "needsTransport": false
+ },
+ "hq_infantry": {
+  "id": "hq_infantry",
+  "sourceFile": "hq_support.txt",
+  "abbreviation": "HINF",
+  "sprite": "infantry",
+  "map_icon_category": "infantry",
+  "priority": 0,
+  "ai_priority": 0,
+  "active": true,
+  "group": "infantry",
+  "regimental": false,
+  "combat_width": 2,
+  "max_strength": 15,
+  "max_organisation": 60,
+  "default_morale": 0.3,
+  "manpower": 600,
+  "training_time": 90,
+  "weight": 0.5,
+  "deployment_cost": 3,
+  "suppression": 1.5,
+  "allow_in_army_hq": true,
+  "allow_in_non_army_hq": false,
+  "types": [
+   "infantry"
+  ],
+  "categories": [
+   "category_front_line",
+   "category_light_infantry",
+   "category_all_infantry",
+   "category_army"
+  ],
+  "need": {
+   "infantry_equipment": 60
+  },
+  "needsTransport": false
+ },
+ "hq_motorized": {
+  "id": "hq_motorized",
+  "sourceFile": "hq_support.txt",
+  "abbreviation": "HMOT",
+  "sprite": "motorized",
+  "map_icon_category": "infantry",
+  "priority": 0,
+  "ai_priority": 0,
+  "active": false,
+  "group": "mobile",
+  "combat_width": 2,
+  "max_strength": 15,
+  "max_organisation": 60,
+  "default_morale": 0.3,
+  "manpower": 600,
+  "training_time": 90,
+  "weight": 0.75,
+  "supply_consumption": 0.08,
+  "deployment_cost": 3,
+  "suppression": 2.2,
+  "transport": "motorized_equipment",
+  "allow_in_army_hq": true,
+  "allow_in_non_army_hq": false,
+  "types": [
+   "motorized"
+  ],
+  "categories": [
+   "category_front_line",
+   "category_all_infantry",
+   "category_army",
+   "category_vehicle_infantry"
+  ],
+  "need": {
+   "infantry_equipment": 60,
+   "motorized_equipment": 20
+  },
+  "terrain": {
+   "forest": {
+    "attack": -0.1,
+    "movement": -0.5
+   },
+   "mountain": {
+    "attack": -0.05
+   },
+   "urban": {
+    "attack": -0.1
+   },
+   "jungle": {
+    "attack": -0.2,
+    "movement": -0.5
+   },
+   "marsh": {
+    "attack": -0.1,
+    "movement": -0.3
+   },
+   "river": {
+    "attack": -0.1,
+    "movement": -0.1
+   },
+   "amphibious": {
+    "attack": -0.2
+   }
+  },
+  "needsTransport": true
+ },
+ "hq_armored_car": {
+  "id": "hq_armored_car",
+  "sourceFile": "hq_support.txt",
+  "abbreviation": "HCAR",
+  "sprite": "armored_car",
+  "map_icon_category": "armored",
+  "priority": 0,
+  "ai_priority": 0,
+  "active": true,
+  "group": "mobile",
+  "combat_width": 2,
+  "max_strength": 15,
+  "max_organisation": 60,
+  "default_morale": 0.3,
+  "manpower": 600,
+  "training_time": 90,
+  "weight": 0.75,
+  "supply_consumption": 0.14,
+  "deployment_cost": 3,
+  "suppression": 2.5,
+  "allow_in_army_hq": true,
+  "allow_in_non_army_hq": false,
+  "types": [
+   "motorized"
+  ],
+  "categories": [
+   "category_front_line",
+   "category_army",
+   "category_vehicle_infantry",
+   "category_mobile_and_mobile_combat_sup"
+  ],
+  "need": {
+   "infantry_equipment": 50,
+   "armored_car_equipment": 30
+  },
+  "terrain": {
+   "forest": {
+    "attack": -0.2,
+    "movement": -0.4
+   },
+   "mountain": {
+    "attack": -0.1,
+    "movement": -0.1
+   },
+   "urban": {
+    "attack": -0.3
+   },
+   "jungle": {
+    "attack": -0.3,
+    "movement": -0.5
+   },
+   "marsh": {
+    "attack": -0.1,
+    "movement": -0.2
+   },
+   "desert": {
+    "movement": 0.15
+   },
+   "river": {
+    "attack": -0.2,
+    "movement": -0.2
+   },
+   "amphibious": {
+    "attack": -0.4
+   }
+  },
+  "needsTransport": false
+ },
+ "hq_paratrooper": {
+  "id": "hq_paratrooper",
+  "sourceFile": "hq_support.txt",
+  "abbreviation": "HPAR",
+  "sprite": "infantry",
+  "map_icon_category": "infantry",
+  "priority": 0,
+  "ai_priority": 0,
+  "active": false,
+  "group": "infantry",
+  "combat_width": 2,
+  "special_forces": true,
+  "can_be_parachuted": true,
+  "max_strength": 14,
+  "max_organisation": 70,
+  "default_morale": 0.4,
+  "manpower": 600,
+  "training_time": 150,
+  "weight": 0.5,
+  "deployment_cost": 3,
+  "suppression": 1,
+  "allow_in_army_hq": true,
+  "allow_in_non_army_hq": false,
+  "types": [
+   "infantry"
+  ],
+  "categories": [
+   "category_front_line",
+   "category_light_infantry",
+   "category_all_infantry",
+   "category_army",
+   "category_special_forces",
+   "category_paratroopers"
+  ],
+  "need": {
+   "infantry_equipment": 80
+  },
+  "needsTransport": false
+ },
+ "hq_light_armor": {
+  "id": "hq_light_armor",
+  "sourceFile": "hq_support.txt",
+  "abbreviation": "HLTK",
+  "sprite": "light_armor",
+  "map_icon_category": "armored",
+  "priority": 0,
+  "ai_priority": 0,
+  "active": true,
+  "group": "armor",
+  "combat_width": 2,
+  "max_strength": 10,
+  "max_organisation": 40,
+  "default_morale": 0.1,
+  "manpower": 600,
+  "training_time": 180,
+  "weight": 1,
+  "supply_consumption": 0.26,
+  "deployment_cost": 3,
+  "breakthrough": 0.1,
+  "suppression": 2.5,
+  "allow_in_army_hq": true,
+  "allow_in_non_army_hq": false,
+  "types": [
+   "armor"
+  ],
+  "categories": [
+   "category_tanks",
+   "category_front_line",
+   "category_all_armor",
+   "category_army"
+  ],
+  "need": {
+   "infantry_equipment": 40,
+   "light_tank_chassis": 30
+  },
+  "terrain": {
+   "forest": {
+    "attack": -0.2,
+    "movement": -0.4
+   },
+   "mountain": {
+    "attack": -0.1
+   },
+   "urban": {
+    "attack": -0.4,
+    "defence": -0.1
+   },
+   "jungle": {
+    "attack": -0.3,
+    "movement": -0.4
+   },
+   "marsh": {
+    "attack": -0.1,
+    "movement": -0.1
+   },
+   "river": {
+    "attack": -0.2,
+    "movement": -0.2
+   },
+   "amphibious": {
+    "attack": -0.4
+   }
+  },
+  "needsTransport": false
+ },
+ "hq_medium_armor": {
+  "id": "hq_medium_armor",
+  "sourceFile": "hq_support.txt",
+  "abbreviation": "HMTK",
+  "sprite": "medium_armor",
+  "map_icon_category": "armored",
+  "priority": 0,
+  "ai_priority": 0,
+  "active": true,
+  "group": "armor",
+  "combat_width": 2,
+  "max_strength": 10,
+  "max_organisation": 35,
+  "default_morale": 0.1,
+  "manpower": 600,
+  "training_time": 180,
+  "weight": 1,
+  "supply_consumption": 0.28,
+  "deployment_cost": 3,
+  "breakthrough": 0.15,
+  "suppression": 2.5,
+  "allow_in_army_hq": true,
+  "allow_in_non_army_hq": false,
+  "types": [
+   "armor"
+  ],
+  "categories": [
+   "category_tanks",
+   "category_front_line",
+   "category_all_armor",
+   "category_army"
+  ],
+  "need": {
+   "infantry_equipment": 40,
+   "medium_tank_chassis": 30
+  },
+  "terrain": {
+   "forest": {
+    "attack": -0.3,
+    "movement": -0.4
+   },
+   "hills": {
+    "attack": -0.1
+   },
+   "mountain": {
+    "attack": -0.2
+   },
+   "urban": {
+    "attack": -0.4,
+    "defence": -0.1
+   },
+   "jungle": {
+    "attack": -0.4,
+    "movement": -0.4
+   },
+   "marsh": {
+    "attack": -0.1,
+    "movement": -0.1
+   },
+   "river": {
+    "attack": -0.2,
+    "movement": -0.2
+   },
+   "amphibious": {
+    "attack": -0.8
+   }
+  },
+  "needsTransport": false
+ },
+ "hq_heavy_armor": {
+  "id": "hq_heavy_armor",
+  "sourceFile": "hq_support.txt",
+  "abbreviation": "HHTK",
+  "sprite": "heavy_armor",
+  "map_icon_category": "armored",
+  "priority": 0,
+  "ai_priority": 0,
+  "active": true,
+  "group": "armor",
+  "combat_width": 2,
+  "max_strength": 10,
+  "max_organisation": 30,
+  "default_morale": 0.1,
+  "manpower": 600,
+  "training_time": 180,
+  "weight": 1.5,
+  "supply_consumption": 0.34,
+  "deployment_cost": 3,
+  "breakthrough": 0.15,
+  "suppression": 2.5,
+  "allow_in_army_hq": true,
+  "allow_in_non_army_hq": false,
+  "types": [
+   "armor"
+  ],
+  "categories": [
+   "category_tanks",
+   "category_front_line",
+   "category_all_armor",
+   "category_army"
+  ],
+  "need": {
+   "infantry_equipment": 40,
+   "heavy_tank_chassis": 20
+  },
+  "terrain": {
+   "forest": {
+    "attack": -0.4,
+    "movement": -0.4
+   },
+   "hills": {
+    "attack": -0.2
+   },
+   "mountain": {
+    "attack": -0.3
+   },
+   "urban": {
+    "attack": -0.5,
+    "defence": -0.2
+   },
+   "jungle": {
+    "attack": -0.6,
+    "movement": -0.4
+   },
+   "marsh": {
+    "attack": -0.4,
+    "movement": -0.2
+   },
+   "fort": {
+    "attack": 0.1
+   },
+   "river": {
+    "attack": -0.4,
+    "movement": -0.4
+   },
+   "amphibious": {
+    "attack": -0.9
+   }
+  },
+  "needsTransport": false
+ },
+ "infantry": {
+  "id": "infantry",
+  "sourceFile": "infantry.txt",
+  "abbreviation": "INF",
+  "sprite": "infantry",
+  "map_icon_category": "infantry",
+  "priority": 600,
+  "ai_priority": 200,
+  "active": false,
+  "group": "infantry",
+  "combat_width": 2,
+  "max_strength": 25,
+  "max_organisation": 60,
+  "default_morale": 0.3,
+  "manpower": 1000,
+  "training_time": 90,
+  "weight": 0.5,
+  "supply_consumption": 0.06,
+  "suppression": 1.5,
+  "types": [
+   "infantry"
+  ],
+  "categories": [
+   "category_front_line",
+   "category_light_infantry",
+   "category_all_infantry",
+   "category_army",
+   "category_infantry_and_bicycle"
+  ],
+  "need": {
+   "infantry_equipment": 100
+  },
+  "needsTransport": false
+ },
+ "bicycle_battalion": {
+  "id": "bicycle_battalion",
+  "sourceFile": "infantry.txt",
+  "abbreviation": "BIC",
+  "sprite": "bicycle",
+  "map_icon_category": "infantry",
+  "priority": 600,
+  "ai_priority": 150,
+  "active": false,
+  "group": "infantry",
+  "combat_width": 2,
+  "max_strength": 25,
+  "max_organisation": 60,
+  "default_morale": 0.3,
+  "manpower": 1000,
+  "training_time": 90,
+  "weight": 0.5,
+  "supply_consumption": 0.06,
+  "maximum_speed": 0.6,
+  "suppression": 2,
+  "types": [
+   "infantry"
+  ],
+  "categories": [
+   "category_front_line",
+   "category_light_infantry",
+   "category_all_infantry",
+   "category_army",
+   "category_infantry_and_bicycle"
+  ],
+  "need": {
+   "infantry_equipment": 100,
+   "support_equipment": 10
+  },
+  "terrain": {
+   "forest": {
+    "movement": 0
+   },
+   "hills": {
+    "movement": 0.1
+   },
+   "mountain": {
+    "movement": 0.05
+   },
+   "plains": {
+    "movement": 0.2
+   },
+   "urban": {
+    "movement": 0.2
+   },
+   "jungle": {
+    "movement": 0
+   },
+   "marsh": {
+    "movement": 0.05
+   },
+   "desert": {
+    "movement": 0.05
+   },
+   "river": {
+    "movement": -0.05
+   },
+   "amphibious": {
+    "movement": -0.05
+   }
+  },
+  "needsTransport": false
+ },
+ "marine": {
+  "id": "marine",
+  "sourceFile": "infantry.txt",
+  "abbreviation": "MRN",
+  "sprite": "infantry",
+  "map_icon_category": "infantry",
+  "priority": 601,
+  "ai_priority": 200,
+  "active": false,
+  "group": "infantry",
+  "combat_width": 2,
+  "special_forces": true,
+  "marines": true,
+  "max_strength": 20,
+  "max_organisation": 70,
+  "default_morale": 0.4,
+  "manpower": 1000,
+  "training_time": 120,
+  "weight": 0.5,
+  "supply_consumption": 0.05,
+  "breakthrough": 0.3,
+  "suppression": 1,
+  "types": [
+   "infantry"
+  ],
+  "categories": [
+   "category_front_line",
+   "category_light_infantry",
+   "category_all_infantry",
+   "category_army",
+   "category_special_forces",
+   "category_marines",
+   "category_special_forces_leg_infantry",
+   "category_marines_and_amphibious"
+  ],
+  "need": {
+   "infantry_equipment": 150
+  },
+  "terrain": {
+   "marsh": {
+    "attack": 0.3
+   },
+   "river": {
+    "attack": 0.3
+   },
+   "amphibious": {
+    "attack": 0.5
+   }
+  },
+  "needsTransport": false
+ },
+ "marine_commando": {
+  "id": "marine_commando",
+  "sourceFile": "infantry.txt",
+  "abbreviation": "MRC",
+  "sprite": "infantry",
+  "map_icon_category": "infantry",
+  "priority": 601,
+  "ai_priority": 200,
+  "active": false,
+  "group": "infantry",
+  "combat_width": 2,
+  "special_forces": true,
+  "marines": true,
+  "can_exfiltrate_from_coast": true,
+  "max_strength": 20,
+  "max_organisation": 70,
+  "default_morale": 0.4,
+  "manpower": 1000,
+  "training_time": 120,
+  "weight": 0.5,
+  "supply_consumption": 0.05,
+  "breakthrough": 0.3,
+  "suppression": 1,
+  "types": [
+   "infantry"
+  ],
+  "categories": [
+   "category_front_line",
+   "category_light_infantry",
+   "category_all_infantry",
+   "category_army",
+   "category_special_forces",
+   "category_marines",
+   "category_special_forces_leg_infantry",
+   "category_marines_and_amphibious"
+  ],
+  "need": {
+   "infantry_equipment": 150
+  },
+  "terrain": {
+   "marsh": {
+    "attack": 0.3
+   },
+   "river": {
+    "attack": 0.3
+   },
+   "amphibious": {
+    "attack": 0.5
+   }
+  },
+  "needsTransport": false
+ },
+ "mountaineers": {
+  "id": "mountaineers",
+  "sourceFile": "infantry.txt",
+  "abbreviation": "MTN",
+  "sprite": "infantry",
+  "map_icon_category": "infantry",
+  "priority": 601,
+  "ai_priority": 200,
+  "active": false,
+  "group": "infantry",
+  "combat_width": 2,
+  "special_forces": true,
+  "mountaineers": true,
+  "max_strength": 20,
+  "max_organisation": 70,
+  "default_morale": 0.4,
+  "manpower": 1000,
+  "training_time": 120,
+  "weight": 0.5,
+  "supply_consumption": 0.05,
+  "breakthrough": 0.3,
+  "suppression": 1,
+  "types": [
+   "infantry"
+  ],
+  "categories": [
+   "category_front_line",
+   "category_light_infantry",
+   "category_all_infantry",
+   "category_army",
+   "category_special_forces",
+   "category_mountaineers",
+   "category_special_forces_leg_infantry"
+  ],
+  "need": {
+   "infantry_equipment": 140
+  },
+  "terrain": {
+   "hills": {
+    "attack": 0.2,
+    "defence": 0.05,
+    "movement": 0.1
+   },
+   "mountain": {
+    "attack": 0.35,
+    "defence": 0.1,
+    "movement": 0.2
+   }
+  },
+  "needsTransport": false
+ },
+ "ranger_battalion": {
+  "id": "ranger_battalion",
+  "sourceFile": "infantry.txt",
+  "abbreviation": "RANBAT",
+  "sprite": "infantry",
+  "map_icon_category": "infantry",
+  "priority": 601,
+  "ai_priority": 200,
+  "active": false,
+  "group": "infantry",
+  "combat_width": 2,
+  "special_forces": true,
+  "rangers": true,
+  "max_strength": 20,
+  "max_organisation": 70,
+  "default_morale": 0.4,
+  "manpower": 1000,
+  "training_time": 120,
+  "weight": 0.5,
+  "supply_consumption": 0.05,
+  "breakthrough": 0.3,
+  "suppression": 1,
+  "types": [
+   "infantry"
+  ],
+  "categories": [
+   "category_front_line",
+   "category_light_infantry",
+   "category_all_infantry",
+   "category_army",
+   "category_special_forces",
+   "category_rangers",
+   "category_special_forces_leg_infantry"
+  ],
+  "need": {
+   "infantry_equipment": 140
+  },
+  "terrain": {
+   "forest": {
+    "attack": 0.1,
+    "defence": 0.1,
+    "movement": 0.15
+   },
+   "jungle": {
+    "attack": 0.2,
+    "defence": 0.1,
+    "movement": 0.15
+   }
+  },
+  "needsTransport": false
+ },
+ "paratrooper": {
+  "id": "paratrooper",
+  "sourceFile": "infantry.txt",
+  "abbreviation": "PAR",
+  "sprite": "infantry",
+  "map_icon_category": "infantry",
+  "priority": 2,
+  "ai_priority": 2,
+  "active": false,
+  "group": "infantry",
+  "combat_width": 2,
+  "special_forces": true,
+  "can_be_parachuted": true,
+  "max_strength": 22,
+  "max_organisation": 70,
+  "default_morale": 0.4,
+  "manpower": 1000,
+  "training_time": 150,
+  "weight": 0.5,
+  "supply_consumption": 0.05,
+  "suppression": 1,
+  "types": [
+   "infantry"
+  ],
+  "categories": [
+   "category_front_line",
+   "category_light_infantry",
+   "category_all_infantry",
+   "category_army",
+   "category_special_forces",
+   "category_paratroopers",
+   "category_special_forces_leg_infantry"
+  ],
+  "need": {
+   "infantry_equipment": 130
+  },
+  "needsTransport": false
+ },
+ "motorized": {
+  "id": "motorized",
+  "sourceFile": "infantry.txt",
+  "abbreviation": "MOT",
+  "sprite": "motorized",
+  "map_icon_category": "infantry",
+  "priority": 599,
+  "ai_priority": 200,
+  "active": false,
+  "group": "mobile",
+  "combat_width": 2,
+  "max_strength": 25,
+  "max_organisation": 60,
+  "default_morale": 0.3,
+  "manpower": 1200,
+  "training_time": 90,
+  "weight": 0.75,
+  "supply_consumption": 0.065,
+  "suppression": 2.2,
+  "transport": "motorized_equipment",
+  "types": [
+   "motorized"
+  ],
+  "categories": [
+   "category_front_line",
+   "category_all_infantry",
+   "category_army",
+   "category_vehicle_infantry",
+   "category_mobile_and_mobile_combat_sup"
+  ],
+  "need": {
+   "infantry_equipment": 100,
+   "motorized_equipment": 35
+  },
+  "terrain": {
+   "forest": {
+    "attack": -0.1,
+    "movement": -0.5
+   },
+   "mountain": {
+    "attack": -0.05
+   },
+   "urban": {
+    "attack": -0.1
+   },
+   "jungle": {
+    "attack": -0.2,
+    "movement": -0.5
+   },
+   "marsh": {
+    "attack": -0.1,
+    "movement": -0.3
+   },
+   "river": {
+    "attack": -0.1,
+    "movement": -0.1
+   },
+   "amphibious": {
+    "attack": -0.2
+   }
+  },
+  "needsTransport": true
+ },
+ "mechanized": {
+  "id": "mechanized",
+  "sourceFile": "infantry.txt",
+  "abbreviation": "MEC",
+  "sprite": "mechanized",
+  "map_icon_category": "infantry",
+  "priority": 610,
+  "ai_priority": 200,
+  "active": true,
+  "group": "mobile",
+  "combat_width": 2,
+  "max_strength": 30,
+  "max_organisation": 60,
+  "default_morale": 0.3,
+  "manpower": 1200,
+  "training_time": 120,
+  "weight": 1,
+  "supply_consumption": 0.14,
+  "soft_attack": 0.1,
+  "hard_attack": 4,
+  "suppression": 2,
+  "transport": "mechanized_equipment",
+  "types": [
+   "mechanized"
+  ],
+  "categories": [
+   "category_front_line",
+   "category_all_infantry",
+   "category_army",
+   "category_vehicle_infantry",
+   "category_mobile_and_mobile_combat_sup"
+  ],
+  "need": {
+   "mechanized_equipment": 40,
+   "infantry_equipment": 100
+  },
+  "essential": [
+   "infantry_equipment",
+   "mechanized_equipment"
+  ],
+  "terrain": {
+   "forest": {
+    "attack": -0.2
+   },
+   "mountain": {
+    "attack": -0.05
+   },
+   "urban": {
+    "attack": -0.2,
+    "defence": -0.05
+   },
+   "jungle": {
+    "attack": -0.3
+   },
+   "marsh": {
+    "attack": -0.1
+   },
+   "river": {
+    "attack": -0.2,
+    "movement": -0.2
+   },
+   "amphibious": {
+    "attack": -0.4
+   }
+  },
+  "needsTransport": true
+ },
+ "fake_intel_unit": {
+  "id": "fake_intel_unit",
+  "sourceFile": "infantry.txt",
+  "sprite": "infantry",
+  "map_icon_category": "infantry",
+  "priority": 0,
+  "ai_priority": 0,
+  "active": false,
+  "group": "infantry",
+  "combat_width": 1,
+  "max_strength": 1,
+  "max_organisation": 100,
+  "default_morale": 0.3,
+  "manpower": 0,
+  "training_time": 90,
+  "weight": 0.5,
+  "supply_consumption": 0,
+  "suppression": 1,
+  "types": [
+   "infantry"
+  ],
+  "categories": [
+   "category_front_line",
+   "category_light_infantry",
+   "category_all_infantry",
+   "category_army"
+  ],
+  "need": {
+   "infantry_equipment": 1
+  },
+  "needsTransport": false
+ },
+ "penal_battalion": {
+  "id": "penal_battalion",
+  "sourceFile": "infantry.txt",
+  "abbreviation": "PEN",
+  "sprite": "infantry",
+  "map_icon_category": "infantry",
+  "priority": 400,
+  "ai_priority": 150,
+  "active": false,
+  "group": "infantry",
+  "combat_width": 2,
+  "max_strength": 15,
+  "max_organisation": 70,
+  "default_morale": 0.4,
+  "manpower": 850,
+  "training_time": 50,
+  "weight": 0.5,
+  "supply_consumption": 0.05,
+  "suppression": 0.5,
+  "types": [
+   "infantry"
+  ],
+  "categories": [
+   "category_front_line",
+   "category_light_infantry",
+   "category_all_infantry",
+   "category_army"
+  ],
+  "need": {
+   "infantry_equipment": 85
+  },
+  "needsTransport": false
+ },
+ "irregular_infantry": {
+  "id": "irregular_infantry",
+  "sourceFile": "infantry.txt",
+  "abbreviation": "IRR",
+  "sprite": "infantry",
+  "map_icon_category": "infantry",
+  "priority": 400,
+  "ai_priority": 150,
+  "active": false,
+  "group": "infantry",
+  "combat_width": 2,
+  "max_strength": 30,
+  "max_organisation": 45,
+  "default_morale": 0.2,
+  "manpower": 1000,
+  "training_time": 30,
+  "weight": 0.5,
+  "supply_consumption": 0.04,
+  "soft_attack": -0.05,
+  "defense": -0.15,
+  "suppression": 1.5,
+  "types": [
+   "infantry"
+  ],
+  "categories": [
+   "category_front_line",
+   "category_light_infantry",
+   "category_all_infantry",
+   "category_army"
+  ],
+  "need": {
+   "infantry_equipment": 80
+  },
+  "terrain": {
+   "forest": {
+    "attack": 0.15,
+    "defence": 0.05
+   },
+   "hills": {
+    "attack": 0.15,
+    "defence": 0.05
+   },
+   "mountain": {
+    "attack": 0.15,
+    "defence": 0.05
+   },
+   "desert": {
+    "attack": 0.25,
+    "defence": 0.1
+   }
+  },
+  "needsTransport": false
+ },
+ "militia": {
+  "id": "militia",
+  "sourceFile": "infantry.txt",
+  "abbreviation": "MIL",
+  "sprite": "infantry",
+  "map_icon_category": "infantry",
+  "priority": 400,
+  "ai_priority": 150,
+  "active": false,
+  "group": "infantry",
+  "combat_width": 2,
+  "max_strength": 25,
+  "max_organisation": 50,
+  "default_morale": 0.3,
+  "manpower": 1000,
+  "training_time": 80,
+  "weight": 0.5,
+  "supply_consumption": 0.06,
+  "suppression": 1.5,
+  "types": [
+   "infantry"
+  ],
+  "categories": [
+   "category_front_line",
+   "category_light_infantry",
+   "category_all_infantry",
+   "category_army",
+   "category_militia"
+  ],
+  "need": {
+   "infantry_equipment": 100
+  },
+  "needsTransport": false
+ },
+ "land_cruiser": {
+  "id": "land_cruiser",
+  "sourceFile": "land_cruiser.txt",
+  "abbreviation": "LCB",
+  "sprite": "land_cruiser",
+  "map_icon_category": "armored",
+  "priority": 2520,
+  "ai_priority": 2520,
+  "active": true,
+  "group": "support",
+  "regimental": false,
+  "combat_width": 0,
+  "max_strength": 15,
+  "max_organisation": 60,
+  "default_morale": 0.3,
+  "manpower": 1000,
+  "training_time": 250,
+  "weight": 2,
+  "supply_consumption": 0.6,
+  "suppression": 4,
+  "types": [
+   "support",
+   "armor"
+  ],
+  "categories": [
+   "category_tanks",
+   "category_support_battalions",
+   "category_divisional_support_battalions",
+   "category_front_line",
+   "category_all_armor",
+   "category_army"
+  ],
+  "need": {
+   "land_cruiser_chassis": 1
+  },
+  "terrain": {
+   "forest": {
+    "attack": -0.3,
+    "defence": -0.3,
+    "movement": -0.2
+   },
+   "hills": {
+    "attack": -0.2,
+    "defence": -0.2,
+    "movement": -0.25
+   },
+   "mountain": {
+    "attack": -0.3,
+    "defence": -0.3,
+    "movement": -0.3
+   },
+   "urban": {
+    "attack": -0.3,
+    "defence": -0.3
+   },
+   "jungle": {
+    "attack": -0.4,
+    "defence": -0.4,
+    "movement": -0.35
+   },
+   "marsh": {
+    "attack": -0.4,
+    "defence": -0.4,
+    "movement": -0.5
+   },
+   "fort": {
+    "attack": 0.2,
+    "defence": 0.1
+   },
+   "river": {
+    "attack": -0.35,
+    "defence": -0.35,
+    "movement": -0.5
+   },
+   "amphibious": {
+    "attack": -0.7
+   }
+  },
+  "needsTransport": false
+ },
+ "light_armor": {
+  "id": "light_armor",
+  "sourceFile": "light_armor.txt",
+  "abbreviation": "LTK",
+  "sprite": "light_armor",
+  "map_icon_category": "armored",
+  "priority": 2501,
+  "ai_priority": 2000,
+  "active": true,
+  "group": "armor",
+  "combat_width": 2,
+  "max_strength": 2,
+  "max_organisation": 10,
+  "default_morale": 0.3,
+  "manpower": 500,
+  "training_time": 180,
+  "weight": 1,
+  "supply_consumption": 0.22,
+  "breakthrough": 0.15,
+  "suppression": 2.5,
+  "types": [
+   "armor"
+  ],
+  "categories": [
+   "category_tanks",
+   "category_front_line",
+   "category_all_armor",
+   "category_army"
+  ],
+  "need": {
+   "light_tank_chassis": 60
+  },
+  "terrain": {
+   "forest": {
+    "attack": -0.2,
+    "movement": -0.4
+   },
+   "mountain": {
+    "attack": -0.1
+   },
+   "urban": {
+    "attack": -0.4,
+    "defence": -0.1
+   },
+   "jungle": {
+    "attack": -0.3,
+    "movement": -0.4
+   },
+   "marsh": {
+    "attack": -0.1,
+    "movement": -0.1
+   },
+   "river": {
+    "attack": -0.2,
+    "movement": -0.2
+   },
+   "amphibious": {
+    "attack": -0.4
+   }
+  },
+  "needsTransport": false
+ },
+ "light_cruiser": {
+  "id": "light_cruiser",
+  "sourceFile": "light_cruiser.txt",
+  "sprite": "light_cruiser",
+  "map_icon_category": "ship",
+  "priority": 5,
+  "active": true,
+  "max_organisation": 40,
+  "supply_consumption": 0.16,
+  "types": [
+   "screen_ship"
+  ],
+  "categories": [],
+  "need": {
+   "ship_hull_cruiser": 1
+  },
+  "needsTransport": false
+ },
+ "logistics_company": {
+  "id": "logistics_company",
+  "sourceFile": "logistics.txt",
+  "abbreviation": "LOG",
+  "sprite": "infantry",
+  "map_icon_category": "infantry",
+  "priority": 0,
+  "ai_priority": 0,
+  "active": false,
+  "group": "support",
+  "regimental": false,
+  "combat_width": 0,
+  "can_be_parachuted": true,
+  "affects_speed": false,
+  "max_strength": 1,
+  "max_organisation": 10,
+  "default_morale": 0.3,
+  "manpower": 500,
+  "training_time": 120,
+  "weight": 0.1,
+  "own_equipment_fuel_consumption_mult": 0,
+  "supply_consumption_factor": -0.1,
+  "fuel_consumption_factor": -0.05,
+  "same_support_type": "logistics_company",
+  "types": [
+   "infantry",
+   "support"
+  ],
+  "categories": [
+   "category_support_battalions",
+   "category_divisional_support_battalions",
+   "category_army"
+  ],
+  "need": {
+   "support_equipment": 20,
+   "motorized_equipment": 10
+  },
+  "essential": [
+   "support_equipment",
+   "motorized_equipment"
+  ],
+  "needsTransport": false
+ },
+ "helicopter_transport": {
+  "id": "helicopter_transport",
+  "sourceFile": "logistics.txt",
+  "abbreviation": "HELT",
+  "sprite": "helicopter_brigade",
+  "map_icon_category": "infantry",
+  "priority": 0,
+  "ai_priority": 0,
+  "active": false,
+  "group": "support",
+  "regimental": false,
+  "combat_width": 0,
+  "can_be_parachuted": false,
+  "affects_speed": false,
+  "max_strength": 1,
+  "max_organisation": 12,
+  "default_morale": 0.3,
+  "manpower": 500,
+  "training_time": 120,
+  "weight": 0.1,
+  "supply_consumption_factor": -0.15,
+  "same_support_type": [
+   "logistics_company",
+   "helicopter_transport"
+  ],
+  "types": [
+   "support"
+  ],
+  "categories": [
+   "category_support_battalions",
+   "category_divisional_support_battalions",
+   "category_army",
+   "category_helicopter_support_companies"
+  ],
+  "need": {
+   "support_equipment": 20,
+   "helicopter_equipment": 10,
+   "motorized_equipment": 10
+  },
+  "essential": [
+   "support_equipment",
+   "helicopter_equipment"
+  ],
+  "terrain": {
+   "forest": {
+    "movement": 0.05
+   },
+   "hills": {
+    "movement": 0.05
+   },
+   "mountain": {
+    "movement": 0.05
+   },
+   "plains": {
+    "movement": 0.05
+   },
+   "jungle": {
+    "movement": 0.05
+   },
+   "marsh": {
+    "movement": 0.05
+   },
+   "desert": {
+    "movement": 0.05
+   },
+   "river": {
+    "movement": 0.05
+   }
+  },
+  "needsTransport": false
+ },
+ "maintenance_company": {
+  "id": "maintenance_company",
+  "sourceFile": "maintenance.txt",
+  "abbreviation": "MAIN",
+  "sprite": "infantry",
+  "map_icon_category": "infantry",
+  "priority": 0,
+  "ai_priority": 0,
+  "active": false,
+  "group": "support",
+  "regimental": false,
+  "combat_width": 0,
+  "can_be_parachuted": true,
+  "affects_speed": false,
+  "max_strength": 1,
+  "max_organisation": 20,
+  "default_morale": 0.3,
+  "manpower": 500,
+  "training_time": 120,
+  "weight": 0.1,
+  "supply_consumption": 0.03,
+  "reliability_factor": 0.05,
+  "equipment_capture_factor": 0.05,
+  "same_support_type": "maintenance_company",
+  "types": [
+   "infantry",
+   "support"
+  ],
+  "categories": [
+   "category_support_battalions",
+   "category_divisional_support_battalions",
+   "category_army"
+  ],
+  "need": {
+   "support_equipment": 25
+  },
+  "essential": [
+   "support_equipment"
+  ],
+  "needsTransport": false
+ },
+ "armored_maintenance": {
+  "id": "armored_maintenance",
+  "sourceFile": "maintenance.txt",
+  "abbreviation": "AMC",
+  "sprite": "armored_maintenance",
+  "map_icon_category": "armored",
+  "priority": 0,
+  "ai_priority": 0,
+  "active": false,
+  "group": "support",
+  "regimental": false,
+  "combat_width": 0,
+  "can_be_parachuted": false,
+  "affects_speed": false,
+  "max_strength": 1,
+  "max_organisation": 20,
+  "default_morale": 0.3,
+  "manpower": 500,
+  "training_time": 120,
+  "weight": 0.1,
+  "supply_consumption": 0.035,
+  "reliability_factor": 0.02,
+  "equipment_capture_factor": 0.1,
+  "recovery": 0.1,
+  "same_support_type": "maintenance_company",
+  "types": [
+   "armor",
+   "support"
+  ],
+  "categories": [
+   "category_support_battalions",
+   "category_divisional_support_battalions",
+   "category_tanks",
+   "category_all_armor",
+   "category_army"
+  ],
+  "need": {
+   "support_equipment": 15,
+   "armored_support_vehicle": 20
+  },
+  "essential": [
+   "support_equipment",
+   "armored_support_vehicle"
+  ],
+  "battalionMult": [
+   {
+    "category": "category_all_armor",
+    "max_strength": 0.1,
+    "add": true
+   }
+  ],
+  "needsTransport": false
+ },
+ "medium_armor": {
+  "id": "medium_armor",
+  "sourceFile": "medium_armor.txt",
+  "abbreviation": "MTK",
+  "sprite": "medium_armor",
+  "map_icon_category": "armored",
+  "priority": 2502,
+  "ai_priority": 3500,
+  "active": true,
+  "group": "armor",
+  "combat_width": 2,
+  "max_strength": 2,
+  "max_organisation": 10,
+  "default_morale": 0.3,
+  "manpower": 500,
+  "training_time": 180,
+  "weight": 1.25,
+  "supply_consumption": 0.25,
+  "breakthrough": 0.15,
+  "suppression": 2.5,
+  "types": [
+   "armor"
+  ],
+  "categories": [
+   "category_tanks",
+   "category_front_line",
+   "category_all_armor",
+   "category_army"
+  ],
+  "need": {
+   "medium_tank_chassis": 50
+  },
+  "terrain": {
+   "forest": {
+    "attack": -0.3,
+    "movement": -0.4
+   },
+   "hills": {
+    "attack": -0.1
+   },
+   "mountain": {
+    "attack": -0.2
+   },
+   "urban": {
+    "attack": -0.4,
+    "defence": -0.1
+   },
+   "jungle": {
+    "attack": -0.4,
+    "movement": -0.4
+   },
+   "marsh": {
+    "attack": -0.1,
+    "movement": -0.1
+   },
+   "river": {
+    "attack": -0.2,
+    "movement": -0.2
+   },
+   "amphibious": {
+    "attack": -0.8
+   }
+  },
+  "needsTransport": false
+ },
+ "military_police": {
+  "id": "military_police",
+  "sourceFile": "military_police.txt",
+  "abbreviation": "MP",
+  "sprite": "infantry",
+  "map_icon_category": "infantry",
+  "priority": 0,
+  "ai_priority": 0,
+  "active": false,
+  "group": "support",
+  "regimental": false,
+  "combat_width": 0,
+  "can_be_parachuted": true,
+  "affects_speed": false,
+  "max_strength": 1,
+  "max_organisation": 0,
+  "default_morale": 0.3,
+  "manpower": 500,
+  "training_time": 120,
+  "weight": 0.1,
+  "supply_consumption": 0.02,
+  "suppression_factor": 0.2,
+  "same_support_type": "military_police",
+  "types": [
+   "infantry",
+   "support"
+  ],
+  "categories": [
+   "category_support_battalions",
+   "category_divisional_support_battalions",
+   "category_army"
+  ],
+  "need": {
+   "support_equipment": 10,
+   "infantry_equipment": 40
+  },
+  "essential": [
+   "infantry_equipment",
+   "support_equipment"
+  ],
+  "battalionMult": [
+   {
+    "category": "category_all_infantry",
+    "add": false
+   }
+  ],
+  "needsTransport": false
+ },
+ "motorized_military_police": {
+  "id": "motorized_military_police",
+  "sourceFile": "military_police.txt",
+  "abbreviation": "MMP",
+  "sprite": "motorized_military_police",
+  "map_icon_category": "infantry",
+  "priority": 0,
+  "ai_priority": 0,
+  "active": false,
+  "group": "support",
+  "regimental": false,
+  "combat_width": 0,
+  "can_be_parachuted": false,
+  "affects_speed": false,
+  "max_strength": 2,
+  "max_organisation": 10,
+  "default_morale": 0.3,
+  "manpower": 500,
+  "training_time": 120,
+  "weight": 0.1,
+  "supply_consumption": 0.03,
+  "suppression_factor": 0.3,
+  "recon": 1,
+  "same_support_type": "military_police",
+  "types": [
+   "infantry",
+   "support"
+  ],
+  "categories": [
+   "category_support_battalions",
+   "category_divisional_support_battalions",
+   "category_army"
+  ],
+  "need": {
+   "support_equipment": 5,
+   "infantry_equipment": 20,
+   "motorbike_equipment": 20
+  },
+  "essential": [
+   "infantry_equipment",
+   "support_equipment",
+   "motorbike_equipment"
+  ],
+  "battalionMult": [
+   {
+    "category": "category_all_infantry",
+    "add": false
+   },
+   {
+    "category": "category_vehicle_infantry",
+    "add": false
+   }
+  ],
+  "needsTransport": false
+ },
+ "modern_armor": {
+  "id": "modern_armor",
+  "sourceFile": "modern_armor.txt",
+  "abbreviation": "OTK",
+  "sprite": "medium_armor",
+  "map_icon_category": "armored",
+  "priority": 2510,
+  "ai_priority": 3510,
+  "active": true,
+  "group": "armor",
+  "combat_width": 2,
+  "max_strength": 2,
+  "max_organisation": 10,
+  "default_morale": 0.3,
+  "manpower": 500,
+  "training_time": 180,
+  "weight": 1.5,
+  "supply_consumption": 0.25,
+  "breakthrough": 0.15,
+  "suppression": 2.5,
+  "types": [
+   "armor"
+  ],
+  "categories": [
+   "category_tanks",
+   "category_front_line",
+   "category_all_armor",
+   "category_army"
+  ],
+  "need": {
+   "modern_tank_chassis": 50
+  },
+  "terrain": {
+   "forest": {
+    "attack": -0.3,
+    "movement": -0.4
+   },
+   "hills": {
+    "attack": -0.1
+   },
+   "mountain": {
+    "attack": -0.2
+   },
+   "urban": {
+    "attack": -0.4,
+    "defence": -0.1
+   },
+   "jungle": {
+    "attack": -0.4,
+    "movement": -0.4
+   },
+   "marsh": {
+    "attack": -0.1,
+    "movement": -0.1
+   },
+   "river": {
+    "attack": -0.2,
+    "movement": -0.2
+   },
+   "amphibious": {
+    "attack": -0.7
+   }
+  },
+  "needsTransport": false
+ },
+ "railway_gun": {
+  "id": "railway_gun",
+  "sourceFile": "railway_gun.txt",
+  "sprite": "railway_gun",
+  "map_icon_category": "other",
+  "priority": 1,
+  "active": true,
+  "max_strength": 2000,
+  "weight": 1,
+  "supply_consumption": 0.2,
+  "types": [
+   "railway_gun"
+  ],
+  "categories": [],
+  "need": {
+   "railway_gun_equipment": 1
+  },
+  "needsTransport": false
+ },
+ "super_heavy_railway_gun": {
+  "id": "super_heavy_railway_gun",
+  "sourceFile": "railway_gun.txt",
+  "sprite": "super_heavy_railway_gun",
+  "map_icon_category": "other",
+  "priority": 1,
+  "active": true,
+  "max_strength": 3500,
+  "weight": 1,
+  "supply_consumption": 0.5,
+  "types": [
+   "railway_gun"
+  ],
+  "categories": [],
+  "need": {
+   "super_heavy_railway_gun_equipment": 1
+  },
+  "needsTransport": false
+ },
+ "recon": {
+  "id": "recon",
+  "sourceFile": "recon.txt",
+  "abbreviation": "CREC",
+  "sprite": "infantry",
+  "map_icon_category": "infantry",
+  "priority": 0,
+  "ai_priority": 0,
+  "active": false,
+  "group": "support",
+  "regimental": false,
+  "combat_width": 0,
+  "can_be_parachuted": true,
+  "max_strength": 2,
+  "max_organisation": 20,
+  "default_morale": 0.3,
+  "manpower": 500,
+  "training_time": 120,
+  "weight": 0.1,
+  "supply_consumption": 0.02,
+  "maximum_speed": 0.6,
+  "soft_attack": -0.9,
+  "hard_attack": -0.9,
+  "defense": -0.5,
+  "breakthrough": -0.5,
+  "recon": 1,
+  "same_support_type": "recon",
+  "types": [
+   "infantry",
+   "support"
+  ],
+  "categories": [
+   "category_front_line",
+   "category_support_battalions",
+   "category_divisional_support_battalions",
+   "category_army",
+   "category_recon"
+  ],
+  "need": {
+   "infantry_equipment": 40,
+   "support_equipment": 10
+  },
+  "essential": [
+   "infantry_equipment",
+   "support_equipment"
+  ],
+  "battalionMult": [
+   {
+    "category": "category_artillery",
+    "soft_attack": 0.1,
+    "add": false
+   }
+  ],
+  "terrain": {
+   "forest": {
+    "movement": 0.05
+   },
+   "hills": {
+    "movement": 0.1
+   },
+   "mountain": {
+    "movement": 0.1
+   },
+   "plains": {
+    "movement": 0.05
+   },
+   "jungle": {
+    "movement": 0.1
+   },
+   "marsh": {
+    "movement": 0.1
+   },
+   "desert": {
+    "movement": 0.05
+   },
+   "river": {
+    "movement": 0.1
+   }
+  },
+  "needsTransport": false
+ },
+ "mot_recon": {
+  "id": "mot_recon",
+  "sourceFile": "recon.txt",
+  "abbreviation": "MREC",
+  "sprite": "infantry",
+  "map_icon_category": "infantry",
+  "priority": 0,
+  "ai_priority": 0,
+  "active": false,
+  "group": "support",
+  "regimental": false,
+  "combat_width": 0,
+  "can_be_parachuted": true,
+  "max_strength": 2,
+  "max_organisation": 20,
+  "default_morale": 0.3,
+  "manpower": 500,
+  "training_time": 120,
+  "weight": 0.1,
+  "supply_consumption": 0.02,
+  "soft_attack": -0.9,
+  "hard_attack": -0.9,
+  "defense": -0.09,
+  "breakthrough": -0.5,
+  "recon": 1.5,
+  "transport": "motorized_equipment",
+  "same_support_type": "recon",
+  "types": [
+   "infantry",
+   "support"
+  ],
+  "categories": [
+   "category_front_line",
+   "category_support_battalions",
+   "category_divisional_support_battalions",
+   "category_army",
+   "category_recon"
+  ],
+  "need": {
+   "infantry_equipment": 40,
+   "support_equipment": 10,
+   "motorized_equipment": 20
+  },
+  "essential": [
+   "infantry_equipment",
+   "support_equipment",
+   "motorized_equipment"
+  ],
+  "battalionMult": [
+   {
+    "category": "category_artillery",
+    "soft_attack": 0.1,
+    "add": false
+   }
+  ],
+  "terrain": {
+   "forest": {
+    "movement": 0.05
+   },
+   "hills": {
+    "movement": 0.1
+   },
+   "mountain": {
+    "movement": 0.1
+   },
+   "plains": {
+    "movement": 0.15
+   },
+   "jungle": {
+    "movement": 0.05
+   },
+   "marsh": {
+    "movement": 0.1
+   },
+   "desert": {
+    "movement": 0.2
+   },
+   "river": {
+    "movement": 0.1
+   }
+  },
+  "needsTransport": true
+ },
+ "armored_car_recon": {
+  "id": "armored_car_recon",
+  "sourceFile": "recon.txt",
+  "abbreviation": "AREC",
+  "sprite": "infantry",
+  "map_icon_category": "infantry",
+  "priority": 0,
+  "ai_priority": 0,
+  "active": false,
+  "group": "support",
+  "regimental": false,
+  "combat_width": 0,
+  "can_be_parachuted": true,
+  "max_strength": 2,
+  "max_organisation": 20,
+  "default_morale": 0.3,
+  "manpower": 500,
+  "training_time": 120,
+  "weight": 0.1,
+  "supply_consumption": 0.02,
+  "soft_attack": -0.5,
+  "hard_attack": -0.5,
+  "defense": -0.5,
+  "breakthrough": -0.2,
+  "recon": 2,
+  "same_support_type": "recon",
+  "types": [
+   "infantry",
+   "support"
+  ],
+  "categories": [
+   "category_front_line",
+   "category_support_battalions",
+   "category_divisional_support_battalions",
+   "category_army",
+   "category_recon"
+  ],
+  "need": {
+   "armored_car_equipment": 24
+  },
+  "essential": [
+   "armored_car_equipment"
+  ],
+  "battalionMult": [
+   {
+    "category": "category_artillery",
+    "soft_attack": 0.1,
+    "add": false
+   }
+  ],
+  "terrain": {
+   "forest": {
+    "movement": 0.05
+   },
+   "hills": {
+    "movement": 0.1
+   },
+   "mountain": {
+    "movement": 0.05
+   },
+   "plains": {
+    "movement": 0.15
+   },
+   "jungle": {
+    "movement": 0.05
+   },
+   "desert": {
+    "movement": 0.15
+   },
+   "river": {
+    "movement": 0.1
+   }
+  },
+  "needsTransport": false
+ },
+ "light_tank_recon": {
+  "id": "light_tank_recon",
+  "sourceFile": "recon.txt",
+  "abbreviation": "TREC",
+  "sprite": "infantry",
+  "map_icon_category": "infantry",
+  "priority": 0,
+  "ai_priority": 0,
+  "active": false,
+  "group": "support",
+  "regimental": false,
+  "combat_width": 0,
+  "can_be_parachuted": false,
+  "max_strength": 2,
+  "max_organisation": 20,
+  "default_morale": 0.3,
+  "manpower": 500,
+  "training_time": 120,
+  "weight": 0.1,
+  "supply_consumption": 0.02,
+  "soft_attack": -0.6,
+  "hard_attack": -0.6,
+  "defense": -0.6,
+  "breakthrough": -0.6,
+  "armor_value": -0.6,
+  "recon": 1,
+  "same_support_type": "recon",
+  "types": [
+   "infantry",
+   "support"
+  ],
+  "categories": [
+   "category_front_line",
+   "category_support_battalions",
+   "category_divisional_support_battalions",
+   "category_army",
+   "category_all_armor",
+   "category_recon"
+  ],
+  "need": {
+   "light_tank_chassis": 24
+  },
+  "essential": [
+   "light_tank_chassis"
+  ],
+  "battalionMult": [
+   {
+    "category": "category_all_armor",
+    "hard_attack": 0.1,
+    "add": false
+   }
+  ],
+  "terrain": {
+   "forest": {
+    "movement": 0.1
+   },
+   "hills": {
+    "movement": 0.1
+   },
+   "mountain": {
+    "movement": 0.1
+   },
+   "plains": {
+    "movement": 0.1
+   },
+   "jungle": {
+    "movement": 0.1
+   },
+   "marsh": {
+    "movement": 0.1
+   },
+   "desert": {
+    "movement": 0.1
+   },
+   "river": {
+    "movement": 0.1
+   }
+  },
+  "needsTransport": false
+ },
+ "airborne_light_armor": {
+  "id": "airborne_light_armor",
+  "sourceFile": "recon.txt",
+  "abbreviation": "LTA",
+  "sprite": "light_armor",
+  "map_icon_category": "infantry",
+  "priority": 0,
+  "ai_priority": 0,
+  "active": false,
+  "group": "support",
+  "regimental": false,
+  "combat_width": 0,
+  "can_be_parachuted": [
+   true,
+   true
+  ],
+  "max_strength": 2,
+  "max_organisation": 20,
+  "default_morale": 0.3,
+  "manpower": 500,
+  "training_time": 120,
+  "weight": 0.1,
+  "supply_consumption": 0.02,
+  "soft_attack": -0.25,
+  "hard_attack": -0.25,
+  "defense": -0.5,
+  "breakthrough": -0.25,
+  "armor_value": -0.5,
+  "recon": 1,
+  "same_support_type": "recon",
+  "types": [
+   "infantry",
+   "support"
+  ],
+  "categories": [
+   "category_front_line",
+   "category_support_battalions",
+   "category_divisional_support_battalions",
+   "category_army",
+   "category_all_armor",
+   "category_paratroopers"
+  ],
+  "need": {
+   "light_tank_chassis": 24
+  },
+  "essential": [
+   "light_tank_chassis"
+  ],
+  "terrain": {
+   "forest": {
+    "movement": 0.1
+   },
+   "hills": {
+    "movement": 0.1
+   },
+   "mountain": {
+    "movement": 0.1
+   },
+   "plains": {
+    "movement": 0.1
+   },
+   "jungle": {
+    "movement": 0.1
+   },
+   "marsh": {
+    "movement": 0.1
+   },
+   "desert": {
+    "movement": 0.1
+   },
+   "river": {
+    "movement": 0.1
+   }
+  },
+  "needsTransport": false
+ },
+ "rangers_support": {
+  "id": "rangers_support",
+  "sourceFile": "recon.txt",
+  "abbreviation": "RAN",
+  "sprite": "infantry",
+  "map_icon_category": "infantry",
+  "priority": 0,
+  "ai_priority": 0,
+  "active": false,
+  "group": "support",
+  "regimental": false,
+  "combat_width": 0,
+  "can_be_parachuted": true,
+  "max_strength": 2,
+  "max_organisation": 30,
+  "default_morale": 0.3,
+  "manpower": 500,
+  "training_time": 120,
+  "weight": 0.1,
+  "supply_consumption": 0.06,
+  "maximum_speed": 0.6,
+  "recon": 1,
+  "same_support_type": "recon",
+  "types": [
+   "infantry",
+   "support"
+  ],
+  "categories": [
+   "category_front_line",
+   "category_support_battalions",
+   "category_divisional_support_battalions",
+   "category_army",
+   "category_recon",
+   "category_mountaineers",
+   "category_rangers"
+  ],
+  "need": {
+   "infantry_equipment": 40,
+   "support_equipment": 15
+  },
+  "essential": [
+   "infantry_equipment",
+   "support_equipment"
+  ],
+  "terrain": {
+   "forest": {
+    "attack": 0.05,
+    "movement": 0.15
+   },
+   "hills": {
+    "attack": 0.05,
+    "movement": 0.15
+   },
+   "mountain": {
+    "defence": 0.05,
+    "movement": 0.1
+   },
+   "plains": {
+    "attack": 0.05,
+    "movement": 0.1
+   },
+   "jungle": {
+    "movement": 0.1
+   }
+  },
+  "needsTransport": false
+ },
+ "northern_territory_recon_support": {
+  "id": "northern_territory_recon_support",
+  "sourceFile": "recon.txt",
+  "abbreviation": "NTR",
+  "sprite": "infantry",
+  "map_icon_category": "infantry",
+  "priority": 0,
+  "ai_priority": 0,
+  "active": false,
+  "group": "support",
+  "regimental": false,
+  "combat_width": 0,
+  "can_be_parachuted": true,
+  "max_strength": 2,
+  "max_organisation": 30,
+  "default_morale": 0.3,
+  "manpower": 500,
+  "training_time": 120,
+  "weight": 0.1,
+  "supply_consumption": 0.04,
+  "maximum_speed": 0.6,
+  "recon": 1,
+  "same_support_type": "recon",
+  "types": [
+   "infantry",
+   "support"
+  ],
+  "categories": [
+   "category_front_line",
+   "category_support_battalions",
+   "category_divisional_support_battalions",
+   "category_army",
+   "category_recon",
+   "category_mountaineers",
+   "category_rangers"
+  ],
+  "need": {
+   "infantry_equipment": 20,
+   "support_equipment": 10
+  },
+  "essential": [
+   "infantry_equipment",
+   "support_equipment"
+  ],
+  "terrain": {
+   "forest": {
+    "attack": 0.075,
+    "movement": 0.2
+   },
+   "hills": {
+    "attack": 0.075,
+    "movement": 0.2
+   },
+   "mountain": {
+    "defence": 0.05,
+    "movement": 0.1
+   },
+   "plains": {
+    "attack": 0.05,
+    "movement": 0.1
+   },
+   "jungle": {
+    "movement": 0.1
+   }
+  },
+  "needsTransport": false
+ },
+ "winter_logistics_support": {
+  "id": "winter_logistics_support",
+  "sourceFile": "recon.txt",
+  "abbreviation": "WIN",
+  "sprite": "infantry",
+  "map_icon_category": "infantry",
+  "priority": 0,
+  "ai_priority": 0,
+  "active": false,
+  "group": "support",
+  "regimental": false,
+  "combat_width": 0,
+  "can_be_parachuted": true,
+  "max_strength": 2,
+  "max_organisation": 45,
+  "default_morale": 0.3,
+  "manpower": 500,
+  "training_time": 120,
+  "weight": 0.1,
+  "supply_consumption": 0.05,
+  "soft_attack": -0.5,
+  "hard_attack": -0.5,
+  "breakthrough": -0.5,
+  "armor_value": -0.5,
+  "types": [
+   "infantry",
+   "support"
+  ],
+  "categories": [
+   "category_front_line",
+   "category_support_battalions",
+   "category_divisional_support_battalions",
+   "category_army"
+  ],
+  "need": {
+   "infantry_equipment": 40,
+   "support_equipment": 10
+  },
+  "essential": [
+   "infantry_equipment",
+   "support_equipment"
+  ],
+  "terrain": {
+   "snow": {
+    "attack": 0.25,
+    "defence": 0.25,
+    "movement": 0.3
+   }
+  },
+  "needsTransport": false
+ },
+ "long_range_patrol_support": {
+  "id": "long_range_patrol_support",
+  "sourceFile": "recon.txt",
+  "abbreviation": "LRP",
+  "sprite": "infantry",
+  "map_icon_category": "infantry",
+  "priority": 0,
+  "ai_priority": 0,
+  "active": false,
+  "group": "support",
+  "regimental": false,
+  "combat_width": 0,
+  "can_be_parachuted": true,
+  "max_strength": 10,
+  "max_organisation": 60,
+  "default_morale": 0.3,
+  "manpower": 500,
+  "training_time": 120,
+  "weight": 0.3,
+  "supply_consumption": 0.04,
+  "maximum_speed": 0.6,
+  "soft_attack": 0.1,
+  "breakthrough": 0.3,
+  "recon": 2,
+  "equipment_capture_factor": 0.05,
+  "same_support_type": "recon",
+  "types": [
+   "infantry",
+   "support"
+  ],
+  "categories": [
+   "category_front_line",
+   "category_support_battalions",
+   "category_divisional_support_battalions",
+   "category_army",
+   "category_recon"
+  ],
+  "need": {
+   "infantry_equipment": 40,
+   "support_equipment": 10
+  },
+  "essential": [
+   "infantry_equipment",
+   "support_equipment"
+  ],
+  "battalionMult": [
+   {
+    "category": "category_light_infantry",
+    "add": true
+   }
+  ],
+  "terrain": {
+   "forest": {
+    "attack": 0.05,
+    "movement": 0.15
+   },
+   "hills": {
+    "attack": 0.05,
+    "movement": 0.15
+   },
+   "mountain": {
+    "movement": 0.15
+   },
+   "plains": {
+    "attack": 0.05,
+    "movement": 0.1
+   },
+   "jungle": {
+    "movement": 0.1
+   },
+   "marsh": {
+    "attack": 0.05,
+    "movement": 0.1
+   },
+   "desert": {
+    "movement": 0.1
+   },
+   "river": {
+    "movement": 0.1
+   },
+   "snow": {
+    "attack": 0.1,
+    "defence": 0.1
+   }
+  },
+  "needsTransport": false
+ },
+ "helicopter_recon": {
+  "id": "helicopter_recon",
+  "sourceFile": "recon.txt",
+  "abbreviation": "HELR",
+  "sprite": "helicopter_brigade",
+  "map_icon_category": "infantry",
+  "priority": 0,
+  "ai_priority": 0,
+  "active": false,
+  "group": "support",
+  "regimental": false,
+  "combat_width": 0,
+  "can_be_parachuted": false,
+  "affects_speed": false,
+  "max_strength": 2,
+  "max_organisation": 20,
+  "default_morale": 0.3,
+  "manpower": 500,
+  "training_time": 120,
+  "weight": 0.1,
+  "supply_consumption": 0.07,
+  "recon": 2,
+  "transport": "motorized_equipment",
+  "same_support_type": [
+   "recon",
+   "helicopter_recon"
+  ],
+  "types": [
+   "support"
+  ],
+  "categories": [
+   "category_support_battalions",
+   "category_divisional_support_battalions",
+   "category_army",
+   "category_recon",
+   "category_helicopter_support_companies"
+  ],
+  "need": {
+   "infantry_equipment": 20,
+   "support_equipment": 10,
+   "helicopter_equipment": 20
+  },
+  "essential": [
+   "infantry_equipment",
+   "support_equipment",
+   "helicopter_equipment"
+  ],
+  "battalionMult": [
+   {
+    "category": "category_artillery",
+    "soft_attack": 0.1,
+    "add": false
+   }
+  ],
+  "terrain": {
+   "forest": {
+    "movement": 0.15
+   },
+   "hills": {
+    "movement": 0.1
+   },
+   "mountain": {
+    "movement": 0.1
+   },
+   "plains": {
+    "movement": 0.15
+   },
+   "jungle": {
+    "movement": 0.15
+   },
+   "marsh": {
+    "movement": 0.15
+   },
+   "desert": {
+    "movement": 0.15
+   },
+   "river": {
+    "movement": 0.15
+   }
+  },
+  "needsTransport": true
+ },
+ "elephantry": {
+  "id": "elephantry",
+  "sourceFile": "recon.txt",
+  "abbreviation": "ELE",
+  "sprite": "infantry",
+  "map_icon_category": "infantry",
+  "priority": 0,
+  "ai_priority": 0,
+  "active": false,
+  "group": "support",
+  "regimental": false,
+  "combat_width": 0,
+  "max_strength": 2,
+  "max_organisation": 20,
+  "default_morale": 0.2,
+  "manpower": 700,
+  "weight": 0.3,
+  "supply_consumption": 0.06,
+  "maximum_speed": 0.5,
+  "soft_attack": -0.9,
+  "hard_attack": -0.9,
+  "defense": -0.6,
+  "breakthrough": -0.5,
+  "same_support_type": "recon",
+  "types": [
+   "infantry",
+   "support"
+  ],
+  "categories": [
+   "category_front_line",
+   "category_support_battalions",
+   "category_divisional_support_battalions",
+   "category_army",
+   "category_recon"
+  ],
+  "need": {
+   "infantry_equipment": 50,
+   "support_equipment": 35
+  },
+  "battalionMult": [
+   {
+    "category": "category_artillery",
+    "soft_attack": 0.15,
+    "add": false
+   }
+  ],
+  "terrain": {
+   "forest": {
+    "attack": 0.05,
+    "movement": 0.05
+   },
+   "hills": {
+    "attack": 0.1,
+    "movement": 0.1
+   },
+   "mountain": {
+    "attack": 0.1,
+    "movement": 0.1
+   },
+   "urban": {
+    "attack": -0.2,
+    "movement": -0.25
+   },
+   "jungle": {
+    "attack": 0.1,
+    "movement": 0.15
+   },
+   "marsh": {
+    "attack": -0.2,
+    "movement": -0.2
+   },
+   "amphibious": {
+    "attack": -0.2
+   }
+  },
+  "needsTransport": false
+ },
+ "repair_ship": {
+  "id": "repair_ship",
+  "sourceFile": "repair_ships.txt",
+  "sprite": "repair_ship",
+  "map_icon_category": "ship",
+  "priority": 3,
+  "active": true,
+  "max_organisation": 40,
+  "supply_consumption": 0.04,
+  "types": [
+   "support_ship"
+  ],
+  "categories": [],
+  "need": {
+   "repair_ship_1": 1
+  },
+  "needsTransport": false
+ },
+ "signal_company": {
+  "id": "signal_company",
+  "sourceFile": "signal.txt",
+  "abbreviation": "SIG",
+  "sprite": "infantry",
+  "map_icon_category": "infantry",
+  "priority": 0,
+  "ai_priority": 0,
+  "active": false,
+  "group": "support",
+  "regimental": false,
+  "combat_width": 0,
+  "can_be_parachuted": true,
+  "affects_speed": false,
+  "max_strength": 1,
+  "max_organisation": 20,
+  "default_morale": 0.3,
+  "manpower": 500,
+  "training_time": 120,
+  "weight": 0.1,
+  "supply_consumption": 0.02,
+  "own_equipment_fuel_consumption_mult": 0,
+  "initiative": 0.1,
+  "same_support_type": "signal_company",
+  "types": [
+   "infantry",
+   "support"
+  ],
+  "categories": [
+   "category_support_battalions",
+   "category_divisional_support_battalions",
+   "category_army"
+  ],
+  "need": {
+   "support_equipment": 20,
+   "motorized_equipment": 10
+  },
+  "essential": [
+   "support_equipment",
+   "motorized_equipment"
+  ],
+  "needsTransport": false
+ },
+ "armored_signal": {
+  "id": "armored_signal",
+  "sourceFile": "signal.txt",
+  "abbreviation": "ASC",
+  "sprite": "armored_signal",
+  "map_icon_category": "armored",
+  "priority": 0,
+  "ai_priority": 0,
+  "active": false,
+  "group": "support",
+  "regimental": false,
+  "combat_width": 0,
+  "can_be_parachuted": false,
+  "affects_speed": false,
+  "max_strength": 1,
+  "max_organisation": 20,
+  "default_morale": 0.3,
+  "manpower": 500,
+  "training_time": 120,
+  "weight": 0.1,
+  "supply_consumption": 0.035,
+  "initiative": 0.12,
+  "same_support_type": "signal_company",
+  "types": [
+   "armor",
+   "support"
+  ],
+  "categories": [
+   "category_support_battalions",
+   "category_divisional_support_battalions",
+   "category_tanks",
+   "category_all_armor",
+   "category_army"
+  ],
+  "need": {
+   "support_equipment": 15,
+   "armored_support_vehicle": 20
+  },
+  "essential": [
+   "support_equipment",
+   "armored_support_vehicle"
+  ],
+  "battalionMult": [
+   {
+    "category": "category_all_armor",
+    "breakthrough": 0.05,
+    "add": false
+   }
+  ],
+  "needsTransport": false
+ },
+ "light_sp_anti_air_brigade": {
+  "id": "light_sp_anti_air_brigade",
+  "sourceFile": "sp_anti-air_brigade.txt",
+  "abbreviation": "LAA",
+  "sprite": "light_armor",
+  "map_icon_category": "armored",
+  "priority": 301,
+  "ai_priority": 100,
+  "active": true,
+  "group": "armor_combat_support",
+  "combat_width": 2,
+  "max_strength": 0.6,
+  "max_organisation": 0,
+  "default_morale": 0.1,
+  "manpower": 500,
+  "training_time": 180,
+  "weight": 1,
+  "supply_consumption": 0.1,
+  "air_attack": 0.15,
+  "breakthrough": -0.55,
+  "suppression": 0.75,
+  "types": [
+   "armor",
+   "anti_air"
+  ],
+  "categories": [
+   "category_all_armor",
+   "category_army",
+   "category_self_propelled_anti_air"
+  ],
+  "need": {
+   "light_tank_aa_chassis": 40
+  },
+  "terrain": {
+   "forest": {
+    "attack": -0.2,
+    "movement": -0.4
+   },
+   "mountain": {
+    "attack": -0.1
+   },
+   "urban": {
+    "attack": -0.4,
+    "defence": -0.1
+   },
+   "jungle": {
+    "attack": -0.3,
+    "movement": -0.4
+   },
+   "marsh": {
+    "attack": -0.1,
+    "movement": -0.1
+   },
+   "river": {
+    "attack": -0.2,
+    "movement": -0.2
+   },
+   "amphibious": {
+    "attack": -0.6
+   }
+  },
+  "needsTransport": false
+ },
+ "medium_sp_anti_air_brigade": {
+  "id": "medium_sp_anti_air_brigade",
+  "sourceFile": "sp_anti-air_brigade.txt",
+  "abbreviation": "MAA",
+  "sprite": "medium_armor",
+  "map_icon_category": "armored",
+  "priority": 301,
+  "ai_priority": 100,
+  "active": true,
+  "group": "armor_combat_support",
+  "combat_width": 2,
+  "max_strength": 0.6,
+  "max_organisation": 0,
+  "default_morale": 0.1,
+  "manpower": 500,
+  "training_time": 180,
+  "weight": 1.25,
+  "supply_consumption": 0.1,
+  "air_attack": 0.15,
+  "breakthrough": -0.53,
+  "suppression": 0.8,
+  "types": [
+   "armor",
+   "anti_air"
+  ],
+  "categories": [
+   "category_all_armor",
+   "category_army",
+   "category_self_propelled_anti_air"
+  ],
+  "need": {
+   "medium_tank_aa_chassis": 40
+  },
+  "terrain": {
+   "forest": {
+    "attack": -0.3,
+    "movement": -0.4
+   },
+   "hills": {
+    "attack": -0.1
+   },
+   "mountain": {
+    "attack": -0.2
+   },
+   "urban": {
+    "attack": -0.4,
+    "defence": -0.1
+   },
+   "jungle": {
+    "attack": -0.4,
+    "movement": -0.4
+   },
+   "marsh": {
+    "attack": -0.1,
+    "movement": -0.1
+   },
+   "river": {
+    "attack": -0.2,
+    "movement": -0.2
+   },
+   "amphibious": {
+    "attack": -0.7
+   }
+  },
+  "needsTransport": false
+ },
+ "heavy_sp_anti_air_brigade": {
+  "id": "heavy_sp_anti_air_brigade",
+  "sourceFile": "sp_anti-air_brigade.txt",
+  "abbreviation": "HAA",
+  "sprite": "heavy_armor",
+  "map_icon_category": "armored",
+  "priority": 301,
+  "ai_priority": 100,
+  "active": true,
+  "group": "armor_combat_support",
+  "combat_width": 2,
+  "max_strength": 0.6,
+  "max_organisation": 0,
+  "default_morale": 0.1,
+  "manpower": 500,
+  "training_time": 180,
+  "weight": 1.5,
+  "supply_consumption": 0.1,
+  "air_attack": 0.15,
+  "breakthrough": -0.35,
+  "suppression": 0.75,
+  "types": [
+   "armor",
+   "anti_air"
+  ],
+  "categories": [
+   "category_all_armor",
+   "category_army",
+   "category_self_propelled_anti_air"
+  ],
+  "need": {
+   "heavy_tank_aa_chassis": 40
+  },
+  "terrain": {
+   "forest": {
+    "attack": -0.4,
+    "movement": -0.4
+   },
+   "hills": {
+    "attack": -0.2
+   },
+   "mountain": {
+    "attack": -0.3
+   },
+   "urban": {
+    "attack": -0.5,
+    "defence": -0.2
+   },
+   "jungle": {
+    "attack": -0.6,
+    "movement": -0.4
+   },
+   "marsh": {
+    "attack": -0.4,
+    "movement": -0.2
+   },
+   "river": {
+    "attack": -0.4,
+    "movement": -0.4
+   },
+   "amphibious": {
+    "attack": -0.8
+   }
+  },
+  "needsTransport": false
+ },
+ "super_heavy_sp_anti_air_brigade": {
+  "id": "super_heavy_sp_anti_air_brigade",
+  "sourceFile": "sp_anti-air_brigade.txt",
+  "abbreviation": "SAA",
+  "sprite": "heavy_armor",
+  "map_icon_category": "armored",
+  "priority": 301,
+  "ai_priority": 100,
+  "active": true,
+  "group": "support",
+  "regimental": false,
+  "combat_width": 0,
+  "max_strength": 0.6,
+  "max_organisation": 0,
+  "default_morale": 0.1,
+  "manpower": 500,
+  "training_time": 180,
+  "weight": 1.75,
+  "supply_consumption": 0.1,
+  "air_attack": 0.15,
+  "breakthrough": -0.35,
+  "suppression": 0.75,
+  "types": [
+   "support",
+   "armor",
+   "anti_air"
+  ],
+  "categories": [
+   "category_all_armor",
+   "category_army",
+   "category_self_propelled_anti_air",
+   "category_divisional_support_battalions",
+   "category_support_battalions"
+  ],
+  "need": {
+   "super_heavy_tank_aa_chassis": 20
+  },
+  "terrain": {
+   "forest": {
+    "attack": -0.5,
+    "movement": -0.4
+   },
+   "hills": {
+    "attack": -0.3
+   },
+   "mountain": {
+    "attack": -0.4
+   },
+   "urban": {
+    "attack": -0.6,
+    "defence": -0.2
+   },
+   "jungle": {
+    "attack": -0.7,
+    "movement": -0.4
+   },
+   "marsh": {
+    "attack": -0.5,
+    "movement": -0.2
+   },
+   "river": {
+    "attack": -0.5,
+    "movement": -0.4
+   },
+   "amphibious": {
+    "attack": -1
+   }
+  },
+  "needsTransport": false
+ },
+ "modern_sp_anti_air_brigade": {
+  "id": "modern_sp_anti_air_brigade",
+  "sourceFile": "sp_anti-air_brigade.txt",
+  "abbreviation": "OAA",
+  "sprite": "medium_armor",
+  "map_icon_category": "armored",
+  "priority": 301,
+  "ai_priority": 100,
+  "active": true,
+  "group": "armor_combat_support",
+  "combat_width": 2,
+  "max_strength": 0.6,
+  "max_organisation": 0,
+  "default_morale": 0.1,
+  "manpower": 500,
+  "training_time": 180,
+  "weight": 1.5,
+  "supply_consumption": 0.1,
+  "air_attack": 0.15,
+  "breakthrough": -0.53,
+  "suppression": 2,
+  "types": [
+   "armor",
+   "anti_air"
+  ],
+  "categories": [
+   "category_all_armor",
+   "category_army",
+   "category_self_propelled_anti_air"
+  ],
+  "need": {
+   "modern_tank_aa_chassis": 40
+  },
+  "terrain": {
+   "forest": {
+    "attack": -0.3,
+    "movement": -0.4
+   },
+   "hills": {
+    "attack": -0.1
+   },
+   "mountain": {
+    "attack": -0.2
+   },
+   "urban": {
+    "attack": -0.4,
+    "defence": -0.1
+   },
+   "jungle": {
+    "attack": -0.4,
+    "movement": -0.4
+   },
+   "marsh": {
+    "attack": -0.1,
+    "movement": -0.1
+   },
+   "river": {
+    "attack": -0.2,
+    "movement": -0.2
+   },
+   "amphibious": {
+    "attack": -0.7
+   }
+  },
+  "needsTransport": false
+ },
+ "light_sp_anti_air_support": {
+  "id": "light_sp_anti_air_support",
+  "sourceFile": "sp_anti-air_brigade.txt",
+  "abbreviation": "LAA",
+  "sprite": "light_armor",
+  "map_icon_category": "armored",
+  "priority": 301,
+  "ai_priority": 100,
+  "active": true,
+  "group": "support",
+  "divisional": false,
+  "max_strength": 0.3,
+  "max_organisation": 0,
+  "default_morale": 0.1,
+  "manpower": 180,
+  "training_time": 120,
+  "weight": 0.3,
+  "supply_consumption": 0.05,
+  "own_equipment_fuel_consumption_mult": 0.4,
+  "soft_attack": -0.66,
+  "hard_attack": -0.66,
+  "air_attack": -0.25,
+  "defense": -0.5,
+  "breakthrough": -0.75,
+  "armor_value": -0.66,
+  "suppression": 0.5,
+  "types": [
+   "support",
+   "armor",
+   "anti_air"
+  ],
+  "categories": [
+   "category_all_armor",
+   "category_army",
+   "category_support_battalions",
+   "category_regimental_support_battalions",
+   "category_self_propelled_anti_air_regimental_support"
+  ],
+  "need": {
+   "light_tank_aa_chassis": 15
+  },
+  "allowedBattalionGroups": [
+   "armor",
+   "mobile_combat_support",
+   "armor_combat_support"
+  ],
+  "needsTransport": false
+ },
+ "medium_sp_anti_air_support": {
+  "id": "medium_sp_anti_air_support",
+  "sourceFile": "sp_anti-air_brigade.txt",
+  "abbreviation": "MAA",
+  "sprite": "medium_armor",
+  "map_icon_category": "armored",
+  "priority": 301,
+  "ai_priority": 100,
+  "active": true,
+  "group": "support",
+  "divisional": false,
+  "max_strength": 0.3,
+  "max_organisation": 0,
+  "default_morale": 0.1,
+  "manpower": 180,
+  "training_time": 120,
+  "weight": 0.4,
+  "supply_consumption": 0.06,
+  "own_equipment_fuel_consumption_mult": 0.4,
+  "soft_attack": -0.66,
+  "hard_attack": -0.66,
+  "air_attack": -0.25,
+  "defense": -0.5,
+  "breakthrough": -0.7,
+  "armor_value": -0.66,
+  "suppression": 0.6,
+  "types": [
+   "support",
+   "armor",
+   "anti_air"
+  ],
+  "categories": [
+   "category_all_armor",
+   "category_army",
+   "category_support_battalions",
+   "category_regimental_support_battalions",
+   "category_self_propelled_anti_air_regimental_support"
+  ],
+  "need": {
+   "medium_tank_aa_chassis": 15
+  },
+  "allowedBattalionGroups": [
+   "armor",
+   "mobile_combat_support",
+   "armor_combat_support"
+  ],
+  "needsTransport": false
+ },
+ "heavy_sp_anti_air_support": {
+  "id": "heavy_sp_anti_air_support",
+  "sourceFile": "sp_anti-air_brigade.txt",
+  "abbreviation": "HAA",
+  "sprite": "heavy_armor",
+  "map_icon_category": "armored",
+  "priority": 301,
+  "ai_priority": 100,
+  "active": true,
+  "group": "support",
+  "divisional": false,
+  "max_strength": 0.2,
+  "max_organisation": 0,
+  "default_morale": 0.1,
+  "manpower": 180,
+  "training_time": 120,
+  "weight": 0.5,
+  "supply_consumption": 0.07,
+  "own_equipment_fuel_consumption_mult": 0.4,
+  "soft_attack": -0.66,
+  "hard_attack": -0.66,
+  "air_attack": -0.25,
+  "defense": -0.5,
+  "breakthrough": -0.65,
+  "armor_value": -0.66,
+  "suppression": 0.5,
+  "types": [
+   "support",
+   "armor",
+   "anti_air"
+  ],
+  "categories": [
+   "category_all_armor",
+   "category_army",
+   "category_support_battalions",
+   "category_regimental_support_battalions",
+   "category_self_propelled_anti_air_regimental_support"
+  ],
+  "need": {
+   "heavy_tank_aa_chassis": 15
+  },
+  "allowedBattalionGroups": [
+   "armor",
+   "mobile_combat_support",
+   "armor_combat_support"
+  ],
+  "needsTransport": false
+ },
+ "modern_sp_anti_air_support": {
+  "id": "modern_sp_anti_air_support",
+  "sourceFile": "sp_anti-air_brigade.txt",
+  "abbreviation": "OAA",
+  "sprite": "medium_armor",
+  "map_icon_category": "armored",
+  "priority": 301,
+  "ai_priority": 100,
+  "active": true,
+  "group": "support",
+  "divisional": false,
+  "max_strength": 0.2,
+  "max_organisation": 0,
+  "default_morale": 0.1,
+  "manpower": 180,
+  "training_time": 120,
+  "weight": 0.5,
+  "supply_consumption": 0.06,
+  "own_equipment_fuel_consumption_mult": 0.4,
+  "soft_attack": -0.66,
+  "hard_attack": -0.66,
+  "air_attack": -0.25,
+  "defense": -0.5,
+  "breakthrough": -0.6,
+  "armor_value": -0.66,
+  "suppression": 0.5,
+  "types": [
+   "support",
+   "armor",
+   "anti_air"
+  ],
+  "categories": [
+   "category_all_armor",
+   "category_army",
+   "category_support_battalions",
+   "category_regimental_support_battalions",
+   "category_self_propelled_anti_air_regimental_support"
+  ],
+  "need": {
+   "modern_tank_aa_chassis": 15
+  },
+  "allowedBattalionGroups": [
+   "armor",
+   "mobile_combat_support",
+   "armor_combat_support"
+  ],
+  "needsTransport": false
+ },
+ "light_sp_artillery_brigade": {
+  "id": "light_sp_artillery_brigade",
+  "sourceFile": "sp_artillery_brigade.txt",
+  "abbreviation": "LAR",
+  "sprite": "light_armor",
+  "map_icon_category": "armored",
+  "priority": 1795,
+  "ai_priority": 100,
+  "active": true,
+  "group": "armor_combat_support",
+  "combat_width": 2,
+  "max_strength": 0.6,
+  "max_organisation": 0,
+  "default_morale": 0.1,
+  "manpower": 500,
+  "training_time": 180,
+  "weight": 1,
+  "supply_consumption": 0.42,
+  "soft_attack": 0.15,
+  "breakthrough": -0.42,
+  "suppression": 1.25,
+  "is_artillery_brigade": true,
+  "types": [
+   "armor",
+   "artillery"
+  ],
+  "categories": [
+   "category_all_armor",
+   "category_army",
+   "category_self_propelled_artillery"
+  ],
+  "need": {
+   "light_tank_artillery_chassis": 40
+  },
+  "terrain": {
+   "forest": {
+    "attack": -0.2,
+    "movement": -0.4
+   },
+   "mountain": {
+    "attack": -0.1
+   },
+   "urban": {
+    "attack": -0.4,
+    "defence": -0.1
+   },
+   "jungle": {
+    "attack": -0.3,
+    "movement": -0.4
+   },
+   "marsh": {
+    "attack": -0.1,
+    "movement": -0.1
+   },
+   "river": {
+    "attack": -0.2,
+    "movement": -0.2
+   },
+   "amphibious": {
+    "attack": -0.6
+   }
+  },
+  "needsTransport": false
+ },
+ "medium_sp_artillery_brigade": {
+  "id": "medium_sp_artillery_brigade",
+  "sourceFile": "sp_artillery_brigade.txt",
+  "abbreviation": "MAR",
+  "sprite": "medium_armor",
+  "map_icon_category": "armored",
+  "priority": 1796,
+  "ai_priority": 100,
+  "active": true,
+  "group": "armor_combat_support",
+  "combat_width": 2,
+  "max_strength": 0.6,
+  "max_organisation": 0,
+  "default_morale": 0.1,
+  "manpower": 500,
+  "training_time": 180,
+  "weight": 1.25,
+  "supply_consumption": 0.46,
+  "soft_attack": 0.15,
+  "breakthrough": -0.25,
+  "suppression": 1.5,
+  "is_artillery_brigade": true,
+  "types": [
+   "armor",
+   "artillery"
+  ],
+  "categories": [
+   "category_all_armor",
+   "category_army",
+   "category_self_propelled_artillery"
+  ],
+  "need": {
+   "medium_tank_artillery_chassis": 40
+  },
+  "terrain": {
+   "forest": {
+    "attack": -0.3,
+    "movement": -0.4
+   },
+   "hills": {
+    "attack": -0.1
+   },
+   "mountain": {
+    "attack": -0.2
+   },
+   "urban": {
+    "attack": -0.4,
+    "defence": -0.1
+   },
+   "jungle": {
+    "attack": -0.4,
+    "movement": -0.4
+   },
+   "marsh": {
+    "attack": -0.1,
+    "movement": -0.1
+   },
+   "river": {
+    "attack": -0.2,
+    "movement": -0.2
+   },
+   "amphibious": {
+    "attack": -0.7
+   }
+  },
+  "needsTransport": false
+ },
+ "heavy_sp_artillery_brigade": {
+  "id": "heavy_sp_artillery_brigade",
+  "sourceFile": "sp_artillery_brigade.txt",
+  "abbreviation": "HAR",
+  "sprite": "heavy_armor",
+  "map_icon_category": "armored",
+  "priority": 1797,
+  "ai_priority": 100,
+  "active": true,
+  "group": "armor_combat_support",
+  "combat_width": 2,
+  "max_strength": 0.6,
+  "max_organisation": 0,
+  "default_morale": 0.1,
+  "manpower": 500,
+  "training_time": 180,
+  "weight": 1.5,
+  "supply_consumption": 0.6,
+  "soft_attack": 0.15,
+  "breakthrough": -0.25,
+  "suppression": 1.5,
+  "is_artillery_brigade": true,
+  "types": [
+   "armor",
+   "artillery"
+  ],
+  "categories": [
+   "category_all_armor",
+   "category_army",
+   "category_self_propelled_artillery"
+  ],
+  "need": {
+   "heavy_tank_artillery_chassis": 40
+  },
+  "terrain": {
+   "forest": {
+    "attack": -0.4,
+    "movement": -0.4
+   },
+   "hills": {
+    "attack": -0.2
+   },
+   "mountain": {
+    "attack": -0.3
+   },
+   "urban": {
+    "attack": -0.5,
+    "defence": -0.2
+   },
+   "jungle": {
+    "attack": -0.6,
+    "movement": -0.4
+   },
+   "marsh": {
+    "attack": -0.4,
+    "movement": -0.2
+   },
+   "river": {
+    "attack": -0.4,
+    "movement": -0.4
+   },
+   "amphibious": {
+    "attack": -0.8
+   }
+  },
+  "needsTransport": false
+ },
+ "super_heavy_sp_artillery_brigade": {
+  "id": "super_heavy_sp_artillery_brigade",
+  "sourceFile": "sp_artillery_brigade.txt",
+  "abbreviation": "SAR",
+  "sprite": "heavy_armor",
+  "map_icon_category": "armored",
+  "priority": 1798,
+  "ai_priority": 100,
+  "active": true,
+  "group": "support",
+  "regimental": false,
+  "combat_width": 0,
+  "max_strength": 0.6,
+  "max_organisation": 0,
+  "default_morale": 0.1,
+  "manpower": 500,
+  "training_time": 180,
+  "weight": 1.75,
+  "supply_consumption": 0.8,
+  "soft_attack": 0.15,
+  "breakthrough": -0.25,
+  "suppression": 1.25,
+  "is_artillery_brigade": true,
+  "types": [
+   "support",
+   "armor",
+   "artillery"
+  ],
+  "categories": [
+   "category_all_armor",
+   "category_army",
+   "category_self_propelled_artillery",
+   "category_divisional_support_battalions",
+   "category_support_battalions"
+  ],
+  "need": {
+   "super_heavy_tank_artillery_chassis": 20
+  },
+  "terrain": {
+   "forest": {
+    "attack": -0.5,
+    "movement": -0.4
+   },
+   "hills": {
+    "attack": -0.3
+   },
+   "mountain": {
+    "attack": -0.4
+   },
+   "urban": {
+    "attack": -0.6,
+    "defence": -0.2
+   },
+   "jungle": {
+    "attack": -0.7,
+    "movement": -0.4
+   },
+   "marsh": {
+    "attack": -0.5,
+    "movement": -0.2
+   },
+   "river": {
+    "attack": -0.5,
+    "movement": -0.5
+   },
+   "amphibious": {
+    "attack": -1
+   }
+  },
+  "needsTransport": false
+ },
+ "modern_sp_artillery_brigade": {
+  "id": "modern_sp_artillery_brigade",
+  "sourceFile": "sp_artillery_brigade.txt",
+  "abbreviation": "OAR",
+  "sprite": "medium_armor",
+  "map_icon_category": "armored",
+  "priority": 1796,
+  "ai_priority": 100,
+  "active": true,
+  "group": "armor_combat_support",
+  "combat_width": 2,
+  "max_strength": 0.6,
+  "max_organisation": 0,
+  "default_morale": 0.1,
+  "manpower": 500,
+  "training_time": 180,
+  "weight": 1.5,
+  "supply_consumption": 0.5,
+  "soft_attack": 0.15,
+  "breakthrough": -0.25,
+  "suppression": 1.5,
+  "is_artillery_brigade": true,
+  "types": [
+   "armor",
+   "artillery"
+  ],
+  "categories": [
+   "category_all_armor",
+   "category_army",
+   "category_self_propelled_artillery"
+  ],
+  "need": {
+   "modern_tank_artillery_chassis": 40
+  },
+  "terrain": {
+   "forest": {
+    "attack": -0.3,
+    "movement": -0.4
+   },
+   "hills": {
+    "attack": -0.1
+   },
+   "mountain": {
+    "attack": -0.2
+   },
+   "urban": {
+    "attack": -0.4,
+    "defence": -0.1
+   },
+   "jungle": {
+    "attack": -0.4,
+    "movement": -0.4
+   },
+   "marsh": {
+    "attack": -0.1,
+    "movement": -0.1
+   },
+   "river": {
+    "attack": -0.2,
+    "movement": -0.2
+   },
+   "amphibious": {
+    "attack": -0.7
+   }
+  },
+  "needsTransport": false
+ },
+ "sturmtruppe_battalion": {
+  "id": "sturmtruppe_battalion",
+  "sourceFile": "sturmtruppe_battalion.txt",
+  "abbreviation": "STB",
+  "sprite": "infantry",
+  "map_icon_category": "infantry",
+  "priority": 0,
+  "ai_priority": 0,
+  "active": false,
+  "group": "support",
+  "regimental": false,
+  "combat_width": 0,
+  "can_be_parachuted": true,
+  "affects_speed": false,
+  "max_strength": 20,
+  "max_organisation": 70,
+  "default_morale": 0.4,
+  "manpower": 1000,
+  "training_time": 120,
+  "weight": 0.5,
+  "supply_consumption": 0.05,
+  "soft_attack": 0.1,
+  "suppression": 1,
+  "types": [
+   "infantry",
+   "support"
+  ],
+  "categories": [
+   "category_support_battalions",
+   "category_divisional_support_battalions",
+   "category_army"
+  ],
+  "need": {
+   "infantry_equipment": 150,
+   "support_equipment": 10
+  },
+  "battalionMult": [
+   {
+    "category": "category_all_infantry",
+    "breakthrough": 0.1,
+    "add": false
+   }
+  ],
+  "terrain": {
+   "urban": {
+    "attack": 0.1
+   },
+   "fort": {
+    "attack": 0.1
+   }
+  },
+  "needsTransport": false
+ },
+ "submarine": {
+  "id": "submarine",
+  "sourceFile": "submarine.txt",
+  "sprite": "submarine",
+  "map_icon_category": "ship",
+  "priority": 2,
+  "active": true,
+  "max_organisation": 30,
+  "supply_consumption": 0.04,
+  "types": [
+   "submarine"
+  ],
+  "categories": [],
+  "need": {
+   "ship_hull_submarine": 1
+  },
+  "needsTransport": false
+ },
+ "super_heavy_armor": {
+  "id": "super_heavy_armor",
+  "sourceFile": "super_heavy_armor.txt",
+  "abbreviation": "STK",
+  "sprite": "heavy_armor",
+  "map_icon_category": "armored",
+  "priority": 2520,
+  "ai_priority": 2520,
+  "active": true,
+  "group": "support",
+  "regimental": false,
+  "combat_width": 0,
+  "max_strength": 2,
+  "max_organisation": 10,
+  "default_morale": 0.3,
+  "manpower": 500,
+  "training_time": 180,
+  "weight": 1,
+  "supply_consumption": 0.4,
+  "suppression": 2.5,
+  "types": [
+   "support",
+   "armor"
+  ],
+  "categories": [
+   "category_tanks",
+   "category_support_battalions",
+   "category_divisional_support_battalions",
+   "category_front_line",
+   "category_all_armor",
+   "category_army"
+  ],
+  "need": {
+   "super_heavy_tank_chassis": 20
+  },
+  "terrain": {
+   "forest": {
+    "attack": -0.25,
+    "movement": -0.3
+   },
+   "hills": {
+    "attack": -0.15,
+    "defence": -0.15
+   },
+   "mountain": {
+    "attack": -0.2,
+    "defence": -0.2
+   },
+   "urban": {
+    "attack": -0.3,
+    "defence": -0.3
+   },
+   "jungle": {
+    "attack": -0.35,
+    "defence": -0.35,
+    "movement": -0.3
+   },
+   "marsh": {
+    "attack": -0.3,
+    "defence": -0.3,
+    "movement": -0.3
+   },
+   "fort": {
+    "attack": 0.1,
+    "defence": 0.05
+   },
+   "river": {
+    "attack": -0.25,
+    "defence": -0.25,
+    "movement": -0.3
+   },
+   "amphibious": {
+    "attack": -0.6
+   }
+  },
+  "needsTransport": false
+ },
+ "support_ship": {
+  "id": "support_ship",
+  "sourceFile": "support_ships.txt",
+  "sprite": "support_ship",
+  "map_icon_category": "ship",
+  "priority": 3,
+  "active": true,
+  "max_organisation": 40,
+  "supply_consumption": 0.04,
+  "types": [
+   "support_ship"
+  ],
+  "categories": [],
+  "need": {
+   "support_ship_1": 1
+  },
+  "needsTransport": false
+ },
+ "light_tank_destroyer_brigade": {
+  "id": "light_tank_destroyer_brigade",
+  "sourceFile": "tank_destroyer_brigade.txt",
+  "abbreviation": "LTD",
+  "sprite": "light_armor",
+  "map_icon_category": "armored",
+  "priority": 1795,
+  "ai_priority": 100,
+  "active": true,
+  "group": "armor_combat_support",
+  "combat_width": 2,
+  "max_strength": 0.6,
+  "max_organisation": 0,
+  "default_morale": 0.3,
+  "manpower": 500,
+  "training_time": 180,
+  "weight": 1,
+  "supply_consumption": 0.2,
+  "ap_attack": 0.15,
+  "breakthrough": -0.42,
+  "suppression": 1,
+  "types": [
+   "armor",
+   "anti_tank"
+  ],
+  "categories": [
+   "category_front_line",
+   "category_all_armor",
+   "category_army",
+   "category_tank_destroyers"
+  ],
+  "need": {
+   "light_tank_destroyer_chassis": 40
+  },
+  "terrain": {
+   "forest": {
+    "attack": -0.2,
+    "movement": -0.4
+   },
+   "mountain": {
+    "attack": -0.1
+   },
+   "urban": {
+    "attack": -0.4,
+    "defence": -0.1
+   },
+   "jungle": {
+    "attack": -0.3,
+    "movement": -0.4
+   },
+   "marsh": {
+    "attack": -0.1,
+    "movement": -0.1
+   },
+   "river": {
+    "attack": -0.2,
+    "movement": -0.2
+   },
+   "amphibious": {
+    "attack": -0.6
+   }
+  },
+  "needsTransport": false
+ },
+ "medium_tank_destroyer_brigade": {
+  "id": "medium_tank_destroyer_brigade",
+  "sourceFile": "tank_destroyer_brigade.txt",
+  "abbreviation": "MTD",
+  "sprite": "medium_armor",
+  "map_icon_category": "armored",
+  "priority": 1796,
+  "ai_priority": 100,
+  "active": true,
+  "group": "armor_combat_support",
+  "combat_width": 2,
+  "max_strength": 0.6,
+  "max_organisation": 0,
+  "default_morale": 0.3,
+  "manpower": 500,
+  "training_time": 180,
+  "weight": 1.25,
+  "supply_consumption": 0.22,
+  "ap_attack": 0.15,
+  "breakthrough": -0.25,
+  "suppression": 1.25,
+  "types": [
+   "armor",
+   "anti_tank"
+  ],
+  "categories": [
+   "category_front_line",
+   "category_all_armor",
+   "category_army",
+   "category_tank_destroyers"
+  ],
+  "need": {
+   "medium_tank_destroyer_chassis": 40
+  },
+  "terrain": {
+   "forest": {
+    "attack": -0.3,
+    "movement": -0.4
+   },
+   "hills": {
+    "attack": -0.1
+   },
+   "mountain": {
+    "attack": -0.2
+   },
+   "urban": {
+    "attack": -0.4,
+    "defence": -0.1
+   },
+   "jungle": {
+    "attack": -0.4,
+    "movement": -0.4
+   },
+   "marsh": {
+    "attack": -0.1,
+    "movement": -0.1
+   },
+   "river": {
+    "attack": -0.2,
+    "movement": -0.2
+   },
+   "amphibious": {
+    "attack": -0.7
+   }
+  },
+  "needsTransport": false
+ },
+ "heavy_tank_destroyer_brigade": {
+  "id": "heavy_tank_destroyer_brigade",
+  "sourceFile": "tank_destroyer_brigade.txt",
+  "abbreviation": "HTD",
+  "sprite": "heavy_armor",
+  "map_icon_category": "armored",
+  "priority": 1797,
+  "ai_priority": 100,
+  "active": true,
+  "group": "armor_combat_support",
+  "combat_width": 2,
+  "max_strength": 0.6,
+  "max_organisation": 0,
+  "default_morale": 0.3,
+  "manpower": 500,
+  "training_time": 180,
+  "weight": 1.5,
+  "supply_consumption": 0.3,
+  "ap_attack": 0.15,
+  "breakthrough": -0.25,
+  "suppression": 1.25,
+  "types": [
+   "armor",
+   "anti_tank"
+  ],
+  "categories": [
+   "category_front_line",
+   "category_all_armor",
+   "category_army",
+   "category_tank_destroyers"
+  ],
+  "need": {
+   "heavy_tank_destroyer_chassis": 40
+  },
+  "terrain": {
+   "forest": {
+    "attack": -0.4,
+    "movement": -0.4
+   },
+   "hills": {
+    "attack": -0.2
+   },
+   "mountain": {
+    "attack": -0.3
+   },
+   "urban": {
+    "attack": -0.5,
+    "defence": -0.2
+   },
+   "jungle": {
+    "attack": -0.6,
+    "movement": -0.4
+   },
+   "marsh": {
+    "attack": -0.4,
+    "movement": -0.2
+   },
+   "fort": {
+    "attack": 0.05
+   },
+   "river": {
+    "attack": -0.4,
+    "movement": -0.4
+   },
+   "amphibious": {
+    "attack": -0.8
+   }
+  },
+  "needsTransport": false
+ },
+ "super_heavy_tank_destroyer_brigade": {
+  "id": "super_heavy_tank_destroyer_brigade",
+  "sourceFile": "tank_destroyer_brigade.txt",
+  "abbreviation": "STD",
+  "sprite": "heavy_armor",
+  "map_icon_category": "armored",
+  "priority": 1798,
+  "ai_priority": 100,
+  "active": true,
+  "group": "support",
+  "regimental": false,
+  "combat_width": 0,
+  "max_strength": 0.6,
+  "max_organisation": 0,
+  "default_morale": 0.3,
+  "manpower": 500,
+  "training_time": 180,
+  "weight": 1.75,
+  "supply_consumption": 0.4,
+  "ap_attack": 0.15,
+  "breakthrough": -0.25,
+  "suppression": 1.25,
+  "types": [
+   "support",
+   "armor",
+   "anti_tank"
+  ],
+  "categories": [
+   "category_front_line",
+   "category_all_armor",
+   "category_army",
+   "category_tank_destroyers",
+   "category_support_battalions",
+   "category_divisional_support_battalions"
+  ],
+  "need": {
+   "super_heavy_tank_destroyer_chassis": 20
+  },
+  "terrain": {
+   "forest": {
+    "attack": -0.5,
+    "movement": -0.4
+   },
+   "hills": {
+    "attack": -0.3
+   },
+   "mountain": {
+    "attack": -0.4
+   },
+   "urban": {
+    "attack": -0.6,
+    "defence": -0.2
+   },
+   "jungle": {
+    "attack": -0.7,
+    "movement": -0.4
+   },
+   "marsh": {
+    "attack": -0.5,
+    "movement": -0.2
+   },
+   "fort": {
+    "attack": 0.3
+   },
+   "river": {
+    "attack": -0.5,
+    "movement": -0.5
+   },
+   "amphibious": {
+    "attack": -1
+   }
+  },
+  "needsTransport": false
+ },
+ "modern_tank_destroyer_brigade": {
+  "id": "modern_tank_destroyer_brigade",
+  "sourceFile": "tank_destroyer_brigade.txt",
+  "abbreviation": "OTD",
+  "sprite": "medium_armor",
+  "map_icon_category": "armored",
+  "priority": 1796,
+  "ai_priority": 100,
+  "active": true,
+  "group": "armor_combat_support",
+  "divisional": false,
+  "combat_width": 2,
+  "max_strength": 0.6,
+  "max_organisation": 0,
+  "default_morale": 0.3,
+  "manpower": 500,
+  "training_time": 180,
+  "weight": 1.5,
+  "supply_consumption": 0.25,
+  "ap_attack": 0.15,
+  "breakthrough": -0.25,
+  "suppression": 1.25,
+  "types": [
+   "armor",
+   "anti_tank"
+  ],
+  "categories": [
+   "category_front_line",
+   "category_all_armor",
+   "category_army",
+   "category_tank_destroyers"
+  ],
+  "need": {
+   "modern_tank_destroyer_chassis": 40
+  },
+  "terrain": {
+   "forest": {
+    "attack": -0.3,
+    "movement": -0.4
+   },
+   "hills": {
+    "attack": -0.1
+   },
+   "mountain": {
+    "attack": -0.2
+   },
+   "urban": {
+    "attack": -0.4,
+    "defence": -0.1
+   },
+   "jungle": {
+    "attack": -0.4,
+    "movement": -0.4
+   },
+   "marsh": {
+    "attack": -0.1,
+    "movement": -0.1
+   },
+   "river": {
+    "attack": -0.2,
+    "movement": -0.2
+   },
+   "amphibious": {
+    "attack": -0.7
+   }
+  },
+  "needsTransport": false
+ },
+ "light_tank_destroyer_support": {
+  "id": "light_tank_destroyer_support",
+  "sourceFile": "tank_destroyer_brigade.txt",
+  "abbreviation": "LTD",
+  "sprite": "light_armor",
+  "map_icon_category": "armored",
+  "priority": 1795,
+  "ai_priority": 100,
+  "active": true,
+  "group": "support",
+  "divisional": false,
+  "max_strength": 0.2,
+  "max_organisation": 0,
+  "default_morale": 0.1,
+  "manpower": 180,
+  "training_time": 120,
+  "weight": 0.3,
+  "supply_consumption": 0.06,
+  "own_equipment_fuel_consumption_mult": 0.4,
+  "soft_attack": -0.66,
+  "hard_attack": -0.5,
+  "defense": -0.5,
+  "breakthrough": -0.75,
+  "armor_value": -0.66,
+  "suppression": 0.25,
+  "types": [
+   "support",
+   "armor",
+   "anti_tank"
+  ],
+  "categories": [
+   "category_front_line",
+   "category_all_armor",
+   "category_army",
+   "category_support_battalions",
+   "category_regimental_support_battalions",
+   "category_tank_destroyer_regimental_support"
+  ],
+  "need": {
+   "light_tank_destroyer_chassis": 15
+  },
+  "allowedBattalionGroups": [
+   "armor",
+   "mobile_combat_support",
+   "armor_combat_support"
+  ],
+  "needsTransport": false
+ },
+ "medium_tank_destroyer_support": {
+  "id": "medium_tank_destroyer_support",
+  "sourceFile": "tank_destroyer_brigade.txt",
+  "abbreviation": "MTD",
+  "sprite": "medium_armor",
+  "map_icon_category": "armored",
+  "priority": 1796,
+  "ai_priority": 100,
+  "active": true,
+  "group": "support",
+  "divisional": false,
+  "max_strength": 0.2,
+  "max_organisation": 0,
+  "default_morale": 0.1,
+  "manpower": 180,
+  "training_time": 180,
+  "weight": 0.4,
+  "supply_consumption": 0.07,
+  "own_equipment_fuel_consumption_mult": 0.4,
+  "soft_attack": -0.66,
+  "hard_attack": -0.5,
+  "defense": -0.5,
+  "breakthrough": -0.7,
+  "armor_value": -0.66,
+  "suppression": 0.25,
+  "types": [
+   "support",
+   "armor",
+   "anti_tank"
+  ],
+  "categories": [
+   "category_front_line",
+   "category_all_armor",
+   "category_army",
+   "category_support_battalions",
+   "category_regimental_support_battalions",
+   "category_tank_destroyer_regimental_support"
+  ],
+  "need": {
+   "medium_tank_destroyer_chassis": 15
+  },
+  "allowedBattalionGroups": [
+   "armor",
+   "mobile_combat_support",
+   "armor_combat_support"
+  ],
+  "needsTransport": false
+ },
+ "heavy_tank_destroyer_support": {
+  "id": "heavy_tank_destroyer_support",
+  "sourceFile": "tank_destroyer_brigade.txt",
+  "abbreviation": "HTD",
+  "sprite": "heavy_armor",
+  "map_icon_category": "armored",
+  "priority": 1797,
+  "ai_priority": 100,
+  "active": true,
+  "group": "support",
+  "divisional": false,
+  "max_strength": 0.2,
+  "max_organisation": 0,
+  "default_morale": 0.1,
+  "manpower": 180,
+  "training_time": [
+   180,
+   120
+  ],
+  "weight": 0.5,
+  "supply_consumption": 0.09,
+  "own_equipment_fuel_consumption_mult": 0.4,
+  "soft_attack": -0.66,
+  "hard_attack": -0.5,
+  "defense": -0.5,
+  "breakthrough": -0.65,
+  "armor_value": -0.66,
+  "suppression": 0.25,
+  "types": [
+   "support",
+   "armor",
+   "anti_tank"
+  ],
+  "categories": [
+   "category_front_line",
+   "category_all_armor",
+   "category_army",
+   "category_support_battalions",
+   "category_regimental_support_battalions",
+   "category_tank_destroyer_regimental_support"
+  ],
+  "need": {
+   "heavy_tank_destroyer_chassis": 15
+  },
+  "allowedBattalionGroups": [
+   "armor",
+   "mobile_combat_support",
+   "armor_combat_support"
+  ],
+  "needsTransport": false
+ },
+ "modern_tank_destroyer_support": {
+  "id": "modern_tank_destroyer_support",
+  "sourceFile": "tank_destroyer_brigade.txt",
+  "abbreviation": "OTD",
+  "sprite": "medium_armor",
+  "map_icon_category": "armored",
+  "priority": 1796,
+  "ai_priority": 100,
+  "active": true,
+  "group": "support",
+  "divisional": false,
+  "max_strength": 0.2,
+  "max_organisation": 0,
+  "default_morale": 0.1,
+  "manpower": 180,
+  "training_time": 120,
+  "weight": 0.5,
+  "supply_consumption": 0.08,
+  "own_equipment_fuel_consumption_mult": 0.4,
+  "soft_attack": -0.66,
+  "hard_attack": -0.5,
+  "defense": -0.5,
+  "breakthrough": -0.6,
+  "armor_value": -0.66,
+  "suppression": 0.25,
+  "types": [
+   "support",
+   "armor",
+   "anti_tank"
+  ],
+  "categories": [
+   "category_front_line",
+   "category_all_armor",
+   "category_army",
+   "category_support_battalions",
+   "category_regimental_support_battalions",
+   "category_tank_destroyer_regimental_support"
+  ],
+  "need": {
+   "modern_tank_destroyer_chassis": 15
+  },
+  "allowedBattalionGroups": [
+   "armor",
+   "mobile_combat_support",
+   "armor_combat_support"
+  ],
+  "needsTransport": false
+ }
+}

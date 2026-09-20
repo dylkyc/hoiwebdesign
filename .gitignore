@@ -1,0 +1,18 @@
+# 依赖与构建产物（本项目零依赖，此文件用于防止误提交）
+node_modules/
+package-lock.json
+
+# 本地临时文件
+.npm-cache/
+.edge-profile/
+.smoke-*
+*.log
+
+# 系统文件
+Thumbs.db
+desktop.ini
+.DS_Store
+
+# 编辑器
+.vscode/
+.idea/
