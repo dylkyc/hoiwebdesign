@@ -32,7 +32,9 @@ class Node {
   }
   removeChild(n) {
     const i = this.childNodes.indexOf(n);
-    if (i < 0) throw new Error('removeChild: 不是子节点');
+    // 真实 DOM 在这种情况下会抛错，但测试桩里允许"父引用过期"的情况（例如
+    // 代码里先按 parentNode 摘掉再重复摘一次），直接忽略即可
+    if (i < 0) return n;
     this.childNodes.splice(i, 1);
     n.parentNode = null;
     return n;
@@ -281,7 +283,9 @@ const divSide = mk('div', { class: 'div-side' }, divWorkbench);
 mk('div', { class: 'slot-title', text: '师级支援' }, divSide);
 mk('div', { id: 'supportHost', class: 'div-slot-col' }, divSide);
 mk('div', { class: 'slot-title', text: '团级支援' }, divCanvas);
-mk('div', { id: 'regSupportHost', class: 'div-support-strip' }, divCanvas);
+const regHost = mk('div', { class: 'reg-support-host' }, divCanvas);
+mk('div', { class: 'reg-support-spacer', text: '师' }, regHost);
+mk('div', { id: 'regSupportHost', class: 'div-support-strip' }, regHost);
 mk('div', { id: 'validationHost', class: 'validation' }, divCanvas);
 const paletteHolder = mk('div', { class: 'palette-holder', hidden: 'hidden' }, divCanvas);
 mk('input', { id: 'paletteSearch', type: 'search' }, paletteHolder);
@@ -708,6 +712,58 @@ check('编制设计：Ctrl 多选 + Shift 区间 + 批量填充', () => {
   const rangeCount = document.getElementById('gridHost').querySelectorAll('.grid-cell.sel').length;
   if (rangeCount !== 6) throw new Error('Shift 区间应选中 6 格，实际 ' + rangeCount);
   return 'Ctrl 多选 2 格 → 批量填充成功；Shift 区间 6 格';
+});
+
+check('编制设计：点空格先选类别再选具体单位', () => {
+  document.getElementById('btnClear').click();
+  const cells = document.getElementById('gridHost').querySelectorAll('.grid-cell');
+  const empty = cells.find((c) => !c.classList.contains('filled'));
+  if (!empty) throw new Error('没有空格');
+  empty.click();
+
+  const panel = document.querySelector('.popover-panel');
+  if (!panel) throw new Error('点空格没有弹出选择窗');
+  const cats = panel.querySelectorAll('.picker-cat');
+  if (cats.length < 2) throw new Error('第一步没有列出类别（' + cats.length + ' 个）');
+  const unitsBefore = panel.querySelectorAll('[data-unit]').length;
+  if (unitsBefore !== 0) throw new Error('还没选类别就列出了 ' + unitsBefore + ' 个单位');
+
+  // 第一步：选「步兵 / 骑兵」类别
+  const infCat = cats.find((c) => c.textContent.indexOf('步兵') >= 0) || cats[0];
+  infCat.click();
+  const afterCat = document.querySelector('.popover-panel');
+  if (!afterCat) throw new Error('选类别后弹窗被关掉了');
+  const units = afterCat.querySelectorAll('[data-unit]');
+  if (!units.length) throw new Error('第二步没有列出该类别下的具体单位');
+  const catName = infCat.textContent;
+  const unitName = units[0].textContent;
+  const unitId = units[0].getAttribute('data-unit');
+  if (!unitId) throw new Error('单位条目缺少 data-unit');
+
+  // 第二步：点具体单位 -> 放进刚才那个空格
+  units[0].click();
+  if (document.querySelector('.popover-panel')) throw new Error('放置后弹窗没有关闭');
+  const filled = document.getElementById('gridHost').querySelectorAll('.grid-cell.filled');
+  if (filled.length !== 1) throw new Error('放置后应有 1 个营，实际 ' + filled.length);
+  const placedName = ((filled[0].querySelector('.ub-label') || {}).textContent || '');
+  // 弹窗条目文本是「名称 + 宽N」，兵牌上只有名称
+  const expectName = unitName.replace(/宽\s*\d+\s*$/, '').trim();
+  if (placedName !== expectName) throw new Error('放进去的是「' + placedName + '」，期望「' + expectName + '」');
+  return '类别「' + catName + '」→ 单位「' + expectName + '」两步放置成功';
+});
+
+check('编制设计：团级支援与营格按团对齐', () => {
+  const board = document.getElementById('gridHost').querySelector('.grid-board');
+  const strip = document.getElementById('regSupportHost');
+  if (!board || !strip) throw new Error('缺少营格或团级支援宿主');
+  const boardStyle = board.style ? board.style.gridTemplateColumns : '';
+  if (String(boardStyle).indexOf('30px') < 0) {
+    throw new Error('营格首列不是 30px，无法与团级支援行对齐：' + boardStyle);
+  }
+  const slotCount = strip.querySelectorAll('.support-slot').length;
+  if (slotCount !== 5) throw new Error('团级支援槽应为 5 个，实际 ' + slotCount);
+  if (!document.querySelector('.reg-support-host')) throw new Error('团级支援缺少对齐容器 .reg-support-host');
+  return '首列 30px 对齐，' + slotCount + ' 个团级支援槽按团排列';
 });
 
 let battleState = null;

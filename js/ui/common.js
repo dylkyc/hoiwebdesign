@@ -142,9 +142,9 @@
     const anchor = cfg.anchor;
     const doc = anchor.ownerDocument || document;
 
-    // 关掉已有的
-    for (const old of Array.prototype.slice.call(doc.querySelectorAll('.popover-panel'))) {
-      if (old.parentNode) old.parentNode.removeChild(old.parentNode);
+    // 关掉已有的弹窗（连同遮罩一起摘掉）
+    for (const old of Array.prototype.slice.call(doc.querySelectorAll('.popover-layer'))) {
+      if (old.parentNode) old.parentNode.removeChild(old);
     }
 
     const overlay = el('div', { class: 'popover-layer' });

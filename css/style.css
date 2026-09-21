@@ -232,6 +232,14 @@ main { padding: 12px; height: calc(100vh - 46px); height: calc(100dvh - 46px); o
 .popover-item .cw { font-family: var(--mono); font-size: 10px; color: var(--text-faint); }
 .popover-note { font-size: 11px; color: var(--text-faint); margin: 6px 0 2px; }
 
+/* 兵种选择窗：第一步选类别 */
+.picker-cats { display: flex; flex-wrap: wrap; gap: 4px; margin: 6px 0 8px; }
+.picker-cat { border-radius: 10px; }
+.picker-cat.on { border-color: var(--accent); background: rgba(200,160,74,.16); color: var(--accent-2); }
+.picker-units { min-height: 60px; }
+.picker-sel { display: flex; align-items: center; gap: 6px; margin: 4px 0 2px; }
+.picker-sel .v { font-family: var(--mono); font-size: 11px; color: var(--accent-2); }
+
 /* ---------- 游戏化布局：坦克设计 ---------- */
 .tank-layout {
   display: grid;
@@ -388,6 +396,31 @@ main { padding: 12px; height: calc(100vh - 46px); height: calc(100dvh - 46px); o
 .div-layout .grid-board { grid-template-columns: 22px repeat(5, minmax(74px, 1fr)); gap: 3px; }
 .div-layout .grid-cell { min-height: 42px; }
 .div-layout .support-slot { width: 82px; min-height: 40px; }
+/* 团级支援和营格共用同一套列模板：每个团的支援连正好落在该团那一列下面 */
+.div-layout .grid-board,
+.div-layout .div-support-strip {
+  grid-template-columns: 22px repeat(5, minmax(74px, 1fr));
+  column-gap: 3px;
+}
+.reg-support-host {
+  display: grid;
+  grid-template-columns: 30px 1fr;
+  align-items: start;
+  margin-top: 3px;
+}
+.reg-support-spacer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 10px;
+  color: var(--text-faint);
+  padding-top: 6px;
+}
+.div-layout .div-support-strip {
+  display: grid;
+  justify-items: center;
+}
+.div-layout .div-support-strip .support-slot { width: 100%; }
 .div-slot-col { display: flex; flex-direction: column; gap: 3px; }
 .div-support-strip { display: flex; gap: 3px; flex-wrap: wrap; }
 .slot-title {
@@ -414,12 +447,17 @@ main { padding: 12px; height: calc(100vh - 46px); height: calc(100dvh - 46px); o
   gap: 1px;
   width: 100%;
   height: 100%;
+  min-height: 30px;
+  border-radius: 2px;
+  background: linear-gradient(180deg, #2c333d, #232930);
+  border: 1px solid var(--border-2);
   overflow: hidden;
 }
 .ub-abbr {
-  font-size: 13px;
+  font-size: 15px;
   font-weight: 700;
   line-height: 1;
+  letter-spacing: 1px;
   color: var(--text);
 }
 .ub-label {
@@ -440,21 +478,23 @@ main { padding: 12px; height: calc(100vh - 46px); height: calc(100dvh - 46px); o
   text-overflow: ellipsis;
   white-space: nowrap;
 }
-/* 兵种配色：用左侧色条 + 缩写颜色区分 */
-.grid-cell .ub-card { border-left: 3px solid var(--border-2); }
-.grid-cell.infantry .ub-card { border-left-color: #5f7a4a; }
+/* 兵种配色：左侧色条 + 缩写颜色区分 */
+.grid-cell .ub-card { border-left: 4px solid var(--border-2); }
+.grid-cell.infantry .ub-card { border-left-color: #5f7a4a; background: linear-gradient(180deg, #2b3327, #222a20); }
 .grid-cell.infantry .ub-abbr { color: #9ab97a; }
-.grid-cell.armor .ub-card { border-left-color: #8a7448; }
+.grid-cell.armor .ub-card { border-left-color: #8a7448; background: linear-gradient(180deg, #332d22, #29251d); }
 .grid-cell.armor .ub-abbr { color: #d8b25f; }
-.grid-cell.artillery .ub-card { border-left-color: #8a6a5a; }
+.grid-cell.artillery .ub-card { border-left-color: #8a6a5a; background: linear-gradient(180deg, #332824, #2a211e); }
 .grid-cell.artillery .ub-abbr { color: #cf9a86; }
-.grid-cell.mobile .ub-card { border-left-color: #5a7a8a; }
+.grid-cell.mobile .ub-card { border-left-color: #5a7a8a; background: linear-gradient(180deg, #222c33, #1d252b); }
 .grid-cell.mobile .ub-abbr { color: #86bcd4; }
-.support-slot.filled .ub-card { border-left: 3px solid #4a5f7a; }
+.support-slot.filled .ub-card { border-left: 4px solid #4a5f7a; background: linear-gradient(180deg, #232b36, #1d232c); }
 .support-slot.filled .ub-abbr { color: #8fb4dc; }
 /* 支援槽窄，徽标小一号 */
-.support-slot .ub-abbr { font-size: 12px; }
+.support-slot .ub-abbr { font-size: 13px; }
 .support-slot .ub-sub { display: none; }
+/* 悬停时兵牌高亮 */
+.grid-cell:hover .ub-card, .support-slot:hover .ub-card { border-color: var(--accent); }
 
 /* ---------- 通用控件 ---------- */
 button.btn, select, input[type=text], input[type=search], input[type=number] {

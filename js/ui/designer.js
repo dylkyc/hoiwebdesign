@@ -36,6 +36,8 @@
   let hoverCell = null;
   /** 折叠的待选分组（不持久化） */
   const collapsedGroups = [];
+  /** 兵种选择窗里当前选中的类别（记住上一次的选择） */
+  let activeCategory = null;
 
   const cellKey = (kind, a, b) => kind + ':' + a + ':' + b;
   const sameCell = (x, p) => !!x && !!p && x.kind === p.kind && x.a === p.a && x.b === p.b;
@@ -410,50 +412,134 @@
   }
 
   /**
-   * 就地弹出兵种选择窗（原版点空格弹出的 catalog 窗）。
-   * 条目按兵种分组、按该列过滤，点条目即放置。
+   * 点空格的兵种选择窗（照原版的两步操作）：
+   *   第一步 选类别（步兵 / 装甲 / 炮兵 / 师级支援 / 团级支援）
+   *   第二步 选该类别里的具体单位 —— 点条目即放置
+   *
+   * 类别按该列的兵种过滤：列里已经有装甲时只列装甲类；空列或混编列列全部。
+   * 选中的类别会记住，下次点其它空格直接停在上一次的类别上。
    */
-  function openPicker(anchor, cell) {
+  function openCategoryPicker(anchor, cell) {
     const focus = cell || activeCell;
     const prof = focus ? columnProfile(focus) : null;
     const groups = paletteGroups();
+    const visible = (prof && prof.filterable)
+      ? groups.filter((g) => prof.classes.indexOf(g.cls) >= 0)
+      : groups;
 
-    UI.openPopover({
+    const noteBox = el('div', { class: 'popover-note', text: filterNoteText(prof, focus) });
+
+    // 多选状态提示（和工具栏右侧一致）
+    const selBox = el('div', { class: 'picker-sel' });
+    function drawSel() {
+      clear(selBox);
+      if (!selectedCells.length) return;
+      selBox.appendChild(el('span', { class: 'v', text: '已选 ' + selectedCells.length + ' 个槽位' }));
+      selBox.appendChild(el('button', {
+        class: 'btn small', text: '取消选择',
+        onclick: (e) => {
+          if (e && e.stopPropagation) e.stopPropagation();
+          selectedCells = [];
+          renderAll();
+          close();
+        },
+      }));
+    }
+
+    // 第一步：类别
+    const catRow = el('div', { class: 'picker-cats' });
+    const unitHost = el('div', { class: 'picker-units' });
+
+    function drawUnits(g) {
+      clear(unitHost);
+      if (!g) {
+        unitHost.appendChild(el('div', {
+          class: 'hint',
+          text: '↑ 先选一个类别，再挑具体的营 / 支援连'
+            + (prof && prof.filterable ? '（这一列只能放' + prof.labels.join('、') + '）' : ''),
+        }));
+        return;
+      }
+      const f = filter;
+      let list = g.list;
+      if (f) list = list.filter((u) => (u.name + ' ' + u.id).toLowerCase().indexOf(f) >= 0);
+      unitHost.appendChild(el('div', { class: 'popover-group', text: g.title + '（' + list.length + '）' }));
+      if (!list.length) {
+        unitHost.appendChild(el('div', { class: 'empty-note', text: '这个类别里没有匹配的单位。' }));
+        return;
+      }
+      const grid = el('div', { class: 'popover-grid' });
+      for (const u of list) {
+        const node = unitEntry(u, 'popover', g.cls);
+        node.addEventListener('click', () => { close(); });
+        grid.appendChild(node);
+      }
+      unitHost.appendChild(grid);
+    }
+
+    function selectCat(g) {
+      activeCategory = g.cls;
+      for (const b of catRow.childNodes) {
+        b.classList.toggle('on', b.dataset && b.dataset.cat === g.cls);
+      }
+      drawUnits(g);
+    }
+
+    const box = el('div', {}, [noteBox, selBox, catRow, unitHost]);
+    const pop = UI.openPopover({
       anchor: anchor,
       title: '选择兵种' + (focus ? '　·　' + cellLabel(focus) : ''),
       width: 400,
-      emptyText: prof && prof.filterable
-        ? '这一列用到的兵种（' + prof.labels.join('、') + '）里没有可选项。'
-        : '没有匹配的单位。',
-      groups: groups.map((g) => ({
-        key: g.cls,
-        title: g.title,
-        // 只列该列允许的兵种分组；搜索词已在 renderUnits 里生效
-        list: (prof && prof.filterable && prof.classes.indexOf(g.cls) < 0) ? [] : g.list,
-        render: (u, close) => {
-          const node = unitEntry(u, 'popover', g.cls);
-          node.addEventListener('click', () => { close(); });
-          return node;
-        },
-      })),
+      emptyText: '没有可选的兵种。',
+      groups: [{ key: 'custom', list: [box], render: (node) => node }],
     });
+    const close = pop.close;
 
-    // 弹窗顶部补一行过滤说明
-    const panel = document.querySelector('.popover-panel');
-    const body = panel && panel.querySelector('.popover-body');
-    if (body && body.insertBefore) {
-      body.insertBefore(el('div', { class: 'popover-note', text: filterNoteText(prof, focus) }), body.firstChild);
+    for (const g of visible) {
+      catRow.appendChild(el('button', {
+        class: 'btn small picker-cat' + (g.cls === activeCategory ? ' on' : ''),
+        text: g.title + '（' + g.list.length + '）',
+        'data-cat': g.cls,
+        onclick: () => selectCat(g),
+      }));
     }
+    if (!visible.length) {
+      unitHost.appendChild(el('div', { class: 'empty-note', text: '这一列没有可放的单位。' }));
+    } else {
+      drawUnits(visible.filter((g) => g.cls === activeCategory)[0] || null);
+    }
+    drawSel();
+    return pop;
   }
 
-  /** 点击待选单位：有选中槽位就批量填入，否则选中该单位 */
+  /**
+   * 点击待选单位：
+   *   1. 有 Ctrl/Shift 选中的槽位 -> 一次填入这些槽位
+   *   2. 刚点过一个空格（activeCell 还空着）-> 直接放进那个格子
+   *   3. 都没有 -> 只记住这个单位，等用户点格子
+   */
   function pickUnit(unitId) {
     if (selectedCells.length) {
       batchFill(unitId, selectedCells.slice());
       return;
     }
+    if (activeCell && isSlotEmpty(activeCell)) {
+      placeUnit(activeCell.kind, activeCell.a, activeCell.b, unitId);
+      return;
+    }
     selectedUnitId = (selectedUnitId === unitId) ? null : unitId;
     renderPalette();
+  }
+
+  /** 该槽位当前是否为空 */
+  function isSlotEmpty(cell) {
+    if (!cell) return false;
+    if (cell.kind === 'grid') {
+      const row = template.grid[cell.a];
+      return !(row && row[cell.b]);
+    }
+    const arr = cell.kind === 'support' ? template.supports : template.regSupports;
+    return !arr[cell.a];
   }
 
   /* ------------------------------------------------------------------ */
@@ -467,8 +553,10 @@
 
     const board = el('div', {
       class: 'grid-board',
+      // 列模板与团级支援行保持一致（首列 30px 对齐行号），这样每个团的支援连
+      // 正好落在该团那一列下方
       style: {
-        gridTemplateColumns: '26px repeat(' + DIV.GRID_W + ', minmax(78px, 1fr))',
+        gridTemplateColumns: '30px repeat(' + DIV.GRID_W + ', minmax(74px, 1fr))',
       },
     });
 
@@ -599,6 +687,8 @@
    *   普通  -> 已有营：装备弹窗；有选中单位：放置；空格：就地弹出兵种选择窗
    */
   function handleCellClick(e, kind, a, b, unit) {
+    // 点格子不要冒泡到弹出窗遮罩上，否则刚打开的窗会被遮罩的"点外部关闭"关掉
+    if (e && e.stopPropagation) e.stopPropagation();
     const ctrl = !!(e && (e.ctrlKey || e.metaKey));
     const shift = !!(e && e.shiftKey);
     const cell = { kind, a, b };
@@ -629,10 +719,10 @@
       placeUnit(kind, a, b, selectedUnitId);
       return;
     }
-    // 空槽位：就地在格子旁边弹出兵种选择窗
+    // 空槽位：就地在格子旁边弹出兵种选择窗（先选类别，再选具体单位）
     refreshSelectionUI();
     const anchor = q('[data-cell="' + cellKey(kind, a, b) + '"]');
-    if (anchor) openPicker(anchor, cell);
+    if (anchor) openCategoryPicker(anchor, cell);
   }
 
   /** Shift 区间选择：按网格矩形（或支援槽位下标区间）选中范围内的槽位 */
