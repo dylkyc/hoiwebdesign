@@ -125,7 +125,8 @@ main { padding: 12px; height: calc(100vh - 46px); height: calc(100dvh - 46px); o
 /* ---------- 布局 ---------- */
 .designer-layout,
 .battle-layout,
-.leader-layout {
+.leader-layout,
+.tank-layout {
   display: grid;
   gap: 10px;
   height: 100%;
@@ -134,6 +135,44 @@ main { padding: 12px; height: calc(100vh - 46px); height: calc(100dvh - 46px); o
 .designer-layout { grid-template-columns: 268px minmax(520px, 1fr) 330px; }
 .battle-layout   { grid-template-columns: 320px minmax(420px, 1fr) 380px; }
 .leader-layout   { grid-template-columns: 340px minmax(380px, 1fr) 320px; }
+.tank-layout     { grid-template-columns: 300px minmax(420px, 1fr) 380px; }
+
+/* ---------- 坦克设计 ---------- */
+.tank-list { display: flex; flex-direction: column; gap: 4px; }
+.tank-item {
+  border: 1px solid var(--border);
+  border-radius: 3px;
+  padding: 5px 7px;
+  cursor: pointer;
+  font-size: 12px;
+}
+.tank-item:hover { border-color: var(--accent); }
+.tank-item.on { border-color: var(--accent); background: rgba(200,160,74,.12); }
+.tank-item.locked { opacity: .45; cursor: not-allowed; }
+.tank-item .tname { display: flex; justify-content: space-between; gap: 6px; color: var(--text); }
+.tank-item .tyear { font-size: 10px; color: var(--text-faint); font-family: var(--mono); }
+.tank-item .tmods { font-size: 10px; color: var(--text-faint); font-family: var(--mono); }
+
+.slot-row {
+  border: 1px solid var(--border);
+  border-radius: 3px;
+  padding: 6px 8px;
+  margin-bottom: 6px;
+  background: var(--bg-2);
+}
+.slot-row.required { border-left: 2px solid var(--accent); }
+.slot-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 4px;
+}
+.slot-head .slot-name { font-size: 12px; color: var(--accent-2); }
+.slot-head .slot-cats { font-size: 10px; color: var(--text-faint); }
+.slot-row select { width: 100%; }
+.slot-mods { font-size: 10px; color: var(--text-dim); font-family: var(--mono); margin-top: 4px; }
+.tank-saved { display: flex; flex-direction: column; gap: 4px; }
 
 /* ---------- 通用控件 ---------- */
 button.btn, select, input[type=text], input[type=search], input[type=number] {

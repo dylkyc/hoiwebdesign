@@ -92,11 +92,22 @@ class Element extends Node {
       const opts = this.querySelectorAll('option');
       const sel = opts.find((o) => o.selected);
       if (sel) return sel.value;
+      // 真实浏览器里 select.value 在没显式 selected 时等于第一个选项
       return opts.length ? opts[0].value : this._value;
     }
     return this._value;
   }
-  set value(v) { this._value = v === null || v === undefined ? '' : String(v); }
+  set value(v) {
+    const s = v === null || v === undefined ? '' : String(v);
+    this._value = s;
+    // 真实浏览器的 select.value 赋值会同步改 option.selected，测试必须等价
+    if (this.tagName === 'SELECT') {
+      for (const o of this.querySelectorAll('option')) {
+        o.selected = (o.value === s);
+        o._attrs.selected = (o.value === s) ? 'true' : undefined;
+      }
+    }
+  }
   get innerHTML() { return this._innerHTML || this.textContent; }
   set innerHTML(v) { this._innerHTML = String(v); this.childNodes.length = 0; }
   setAttribute(k, v) {
@@ -211,14 +222,20 @@ function mk(tag, attrs, parent) {
 
 const mainEl = mk('main', {}, document.body);
 const tabs = mk('nav', { id: 'tabs' });
-for (const [view, label] of [['designer', '编制设计'], ['battle', '战斗模拟'], ['leader', '将领与技能'], ['data', '数据浏览'], ['about', '说明']]) {
-  const b = mk('button', { class: 'tab' + (view === 'designer' ? ' active' : '') }, tabs);
+const TAB_VIEWS = ['tank', 'designer', 'battle', 'leader', 'data', 'about'];
+const TAB_LABELS = {
+  tank: '坦克设计', designer: '编制设计', battle: '战斗模拟',
+  leader: '将领与技能', data: '数据浏览', about: '说明',
+};
+for (const view of TAB_VIEWS) {
+  const b = mk('button', { class: 'tab' + (view === 'tank' ? ' active' : '') }, tabs);
   b.dataset.view = view;
-  b.textContent = label;
+  b.textContent = TAB_LABELS[view];
 }
 mk('div', { id: 'gameMeta' });
 
 const views = {
+  tank: ['tankChassis', 'tankSlots', 'tankStats'],
   designer: ['paletteSearch', 'paletteBody', 'btnPreset', 'btnClear', 'btnSave', 'btnLoad', 'btnExport', 'btnImport',
     'templateName', 'gridHost', 'supportHost', 'regSupportHost', 'validationHost', 'statsBody'],
   battle: ['battleConditions', 'battleResult', 'terrainCompare'],
@@ -228,7 +245,7 @@ const views = {
 };
 
 for (const view of Object.keys(views)) {
-  const sec = mk('section', { class: 'view' + (view === 'designer' ? ' active' : ''), id: 'view-' + view }, mainEl);
+  const sec = mk('section', { class: 'view' + (view === 'tank' ? ' active' : ''), id: 'view-' + view }, mainEl);
   for (const id of views[view]) {
     if (id === 'dataTabs') {
       const nav = mk('nav', { class: 'subtabs', id: 'dataTabs' }, sec);
@@ -278,16 +295,19 @@ console.error = function (...a) { errors.push(a.map(String).join(' ')); origErro
 
 const path = require('path');
 const fs = require('fs');
+const cwt = require(path.join(__dirname, 'cwt.js'));
 const BASE = path.resolve(__dirname, '..');
 const SCRIPTS = [
   'data/bundle.js',
   'js/engine/data.js',
   'js/engine/division.js',
   'js/engine/combat.js',
+  'js/engine/tank.js',
   'js/ui/common.js',
   'js/ui/designer.js',
   'js/ui/battle.js',
   'js/ui/leader.js',
+  'js/ui/tankdesign.js',
   'js/ui/dataview.js',
   'js/ui/about.js',
 ];
@@ -331,13 +351,180 @@ function loadApp() { require(path.join(BASE, 'js/app.js')); }
 
 check('加载 app.js 并自动 boot', () => { loadApp(); return 'booted'; });
 
+check('坦克引擎：底盘槽位来自 archetype，默认设计无校验错误', () => {
+  const T = global.HOI_TANK;
+  const chassis = T.listChassis();
+  if (chassis.length < 50) throw new Error('可选底盘太少：' + chassis.length);
+  const fams = {};
+  for (const c of chassis) fams[c.familyName] = 1;
+  if (Object.keys(fams).length < 6) throw new Error('底盘家族不足 6 个：' + Object.keys(fams).join(','));
+  const variants = {};
+  for (const c of chassis) variants[c.variantName] = 1;
+  if (Object.keys(variants).length < 4) throw new Error('变体类型太少：' + Object.keys(variants).join(','));
+
+  const slots = T.slotsOf('medium_tank_chassis_2');
+  if (slots.length !== 9) throw new Error('中型底盘应有 9 个槽位（5 必选 + 4 特殊），实际 ' + slots.length);
+  if (slots.filter((s) => s.required).length !== 5) throw new Error('必选槽应为 5 个');
+
+  const d = T.defaultDesign('medium_tank_chassis_2');
+  const r = T.computeDesign(d);
+  if (r.validity.errors.length) throw new Error('默认设计不应有错误：' + r.validity.errors.join('；'));
+  if (!(r.stats.soft_attack > 0)) throw new Error('默认设计软攻为 0');
+  return chassis.length + ' 个底盘 / ' + Object.keys(fams).length + ' 家族 / ' + slots.length + ' 槽位';
+});
+
+check('坦克引擎：模块叠加与数量限制校验', () => {
+  const T = global.HOI_TANK;
+  const base = T.defaultDesign('medium_tank_chassis_2');
+  const r1 = T.computeDesign(base);
+  const d2 = T.cloneDesign(base);
+  d2.modules.armor_type_slot = 'tank_welded_armor';   // +防御/突破、装甲 ×1.3
+  const r2 = T.computeDesign(d2);
+  if (!(r2.stats.armor_value > r1.stats.armor_value)) throw new Error('焊接装甲没有提高装甲值');
+  if (!(r2.stats.defense > r1.stats.defense)) throw new Error('焊接装甲没有提高防御');
+
+  const d3 = T.cloneDesign(base);
+  d3.modules.special_type_slot_1 = 'sloped_armor';
+  d3.modules.special_type_slot_2 = 'sloped_armor';
+  d3.modules.special_type_slot_3 = 'sloped_armor';
+  const errs = T.computeDesign(d3).validity.errors;
+  if (!errs.some((e) => e.indexOf('倾斜装甲') >= 0)) throw new Error('没有检出倾斜装甲数量超限：' + errs.join('；'));
+  return '装甲 ' + r1.stats.armor_value.toFixed(1) + ' → ' + r2.stats.armor_value.toFixed(1)
+    + '，数量限制已检出';
+});
+
+check('坦克设计：导出脚本可被游戏脚本解析器读回', () => {
+  const T = global.HOI_TANK;
+  const design = T.defaultDesign('medium_tank_chassis_2');
+  const saved = { id: 'medium_tank_chassis_2_test', name: '测试中坦', chassisId: 'medium_tank_chassis_2', modules: design.modules };
+  const ex = T.exportDefinition(saved, { id: saved.id });
+  if (!ex) throw new Error('导出失败');
+  if (ex.script.indexOf('equipments = {') < 0) throw new Error('缺少 equipments 块');
+  if (ex.script.indexOf('archetype = medium_tank_chassis_2') < 0) throw new Error('缺少 archetype');
+  if (ex.script.indexOf('default_modules = {') < 0) throw new Error('缺少 default_modules');
+  const baked = /soft_attack = ([\d.]+)/.exec(ex.script);
+  if (!baked) throw new Error('没有写出软攻');
+  if (Number(baked[1]) !== Number(T.computeDesign(design).stats.soft_attack)) {
+    throw new Error('导出的软攻与计算值不一致：' + baked[1]);
+  }
+  // 用项目自带的 Clausewitz 解析器回读，确保是合法脚本
+  const parsed = cwt.parse(ex.script, 'export');
+  const back = parsed.equipments && parsed.equipments[saved.id];
+  if (!back) throw new Error('解析回读失败');
+  if (String(back.archetype) !== 'medium_tank_chassis_2') throw new Error('回读 archetype 不对');
+  if (!back.module_slots || !back.module_slots.engine_type_slot) throw new Error('回读缺少 module_slots');
+  if (!back.default_modules || !back.default_modules.main_armament_slot) throw new Error('回读缺少 default_modules');
+  if (ex.loc.indexOf(saved.id + ':0') < 0) throw new Error('本地化 key 不对');
+  return '软攻 ' + baked[1] + '，槽位 ' + Object.keys(back.module_slots).length + ' 个，已回读验证';
+});
+
+check('坦克设计：注册的设计能被坦克营的装备下拉选中', () => {
+  const T = global.HOI_TANK;
+  const design = T.defaultDesign('medium_tank_chassis_2');
+  const r = T.computeDesign(design);
+  const rec = {
+    id: 'medium_tank_chassis_2_uitest',
+    name: 'UI 测试中坦',
+    chassisId: 'medium_tank_chassis_2',
+    modules: design.modules,
+    stats: r.stats,
+    resources: r.resources,
+    registered: true,
+  };
+  const keep = global.HOI.customDesigns();
+  global.HOI.saveCustomDesigns(keep.concat([rec]));
+
+  const models = global.HOI.equipmentModelsFor('medium_tank_chassis');
+  const mine = models.filter((m) => m.id === rec.id)[0];
+  if (!mine) throw new Error('装备下拉里没有自定义设计（共 ' + models.length + ' 项：'
+    + models.slice(0, 12).map((m) => m.id).join(', ') + '）');
+  if (!mine.isCustom) throw new Error('自定义设计缺少 isCustom 标记');
+  if (models[0].id !== rec.id) throw new Error('自定义设计没有排在最前');
+
+  // 坦克营应直接采纳设计好的数值，不再二次叠加模块
+  const bat = global.HOI_DIVISION.computeBattalion({ unitId: 'medium_armor', models: { medium_tank_chassis: rec.id } });
+  if (Math.abs(bat.stats.soft_attack - r.stats.soft_attack) > 0.01) {
+    throw new Error('坦克营软攻 ' + bat.stats.soft_attack + ' 与设计值 ' + r.stats.soft_attack + ' 不一致');
+  }
+  global.HOI.saveCustomDesigns(keep);
+  return '下拉首位可选中，营软攻 ' + bat.stats.soft_attack + ' 与设计一致';
+});
+
 function viewDom(view) {
   return document.getElementById('view-' + view);
 }
 
-check('编制设计：调色板有内容', () => {
-  const n = document.getElementById('paletteBody');
-  const chips = n.querySelectorAll('.chip');
+/** 切到某个标签页（首个标签是坦克设计，编制页需要显式点一下才会初始化） */
+function openTab(view) {
+  const t = document.getElementById('tabs').querySelectorAll('.tab').find((x) => x.dataset.view === view);
+  if (!t) throw new Error('找不到标签页 ' + view);
+  t.click();
+  return t;
+}
+
+check('坦克设计：切换到 tank 并渲染', () => {
+  openTab('tank');
+  const left = document.getElementById('tankChassis');
+  const mid = document.getElementById('tankSlots');
+  const right = document.getElementById('tankStats');
+  if (!left.textContent.trim()) throw new Error('底盘列表为空');
+  if (!mid.textContent.trim()) throw new Error('槽位面板为空');
+  if (!right.textContent.trim()) throw new Error('属性面板为空');
+  const items = left.querySelectorAll('.tank-item');
+  if (!items.length) throw new Error('没有列出任何底盘');
+  return '底盘 ' + items.length + ' 项，槽位与属性已渲染';
+});
+
+check('坦克设计：默认设计有效且能算出属性', () => {
+  const TD = global.HOI_TANK;
+  const nodes = global.HOI_UI_TANK.getDesigns();
+  const view = document.getElementById('tankStats');
+  const txt = view.textContent;
+  if (txt.indexOf('装备属性') < 0) throw new Error('缺少属性表');
+  if (txt.indexOf('软攻') < 0) throw new Error('属性表里没有软攻');
+  // 换一个底盘：改选轻坦后应重算
+  const left = document.getElementById('tankChassis');
+  const armor = left.querySelectorAll('.tank-item').find((n) => n.textContent.indexOf('轻型') >= 0 || n.textContent.indexOf('中型') >= 0);
+  if (!armor) throw new Error('找不到坦克底盘');
+  armor.click();
+  const after = document.getElementById('tankStats').textContent;
+  if (after.indexOf('装备属性') < 0) throw new Error('切换底盘后属性表消失');
+  return '属性表可用，当前设计 ' + (nodes.length) + ' 个已保存';
+});
+
+check('坦克设计：切换模块会改变属性与校验结果', () => {
+  const rows = document.getElementById('tankSlots').querySelectorAll('.slot-row');
+  const mainRow = rows.find((r) => r.textContent.indexOf('主炮') >= 0);
+  if (!mainRow) throw new Error('找不到主炮槽位');
+  const mainSel = mainRow.querySelector('select');
+  if (!mainSel) throw new Error('主炮槽位没有下拉框');
+  const before = document.getElementById('tankStats').textContent;
+  let changed = false;
+  for (const opt of mainSel.querySelectorAll('option')) {
+    if (!opt.value) continue;
+    mainSel.value = opt.value;
+    mainSel.dispatchEvent({ type: 'change' });
+    const now = document.getElementById('tankStats').textContent;
+    if (now !== before) { changed = true; break; }
+  }
+  if (!changed) throw new Error('换主炮后属性表没有变化');
+  return '换主炮会实时重算属性';
+});
+
+check('编制设计：切换到 designer 并渲染', () => {
+  openTab('designer');
+  const chips = document.getElementById('paletteBody').querySelectorAll('.chip');
+  if (chips.length < 50) throw new Error('待选单位为 ' + chips.length);
+  const cells = document.getElementById('gridHost').querySelectorAll('.grid-cell');
+  if (cells.length !== 25) throw new Error('网格数量异常: ' + cells.length);
+  const statRows = document.getElementById('statsBody').querySelectorAll('.stat-row');
+  if (statRows.length < 15) throw new Error('属性行太少: ' + statRows.length);
+  return chips.length + ' 个单位，网格与属性已渲染';
+});
+
+hr('编制设计');
+check('编制设计：待选区有单位', () => {
+  const chips = document.getElementById('paletteBody').querySelectorAll('.chip');
   if (!chips.length) throw new Error('调色板为空');
   return chips.length + ' 个单位按钮';
 });

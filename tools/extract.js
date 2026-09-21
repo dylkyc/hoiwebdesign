@@ -212,6 +212,7 @@ function extractUnits() {
 
 const EQUIP_STAT_KEYS = [
   'year', 'is_archetype', 'is_buildable', 'is_convertable', 'archetype', 'parent',
+  'archtype', 'family', 'variant_name', 'is_convertable', 'can_convert_from',
   'priority', 'visual_level', 'active', 'type', 'group_by', 'interface_category',
   'reliability', 'maximum_speed', 'defense', 'breakthrough', 'hardness', 'armor_value',
   'soft_attack', 'hard_attack', 'ap_attack', 'air_attack', 'lend_lease_cost',
@@ -221,10 +222,43 @@ const EQUIP_STAT_KEYS = [
   'default_modules', 'essential', 'need', 'picture', 'tags', 'naval_equipment_type',
 ];
 
-function pickEquipment(id, def, file) {
-  const out = { id, sourceFile: file };
+/**
+ * 把 module_count_limit 块规整成 [{module, op, value}]。
+ * cwt 对 `count < 2` 这种没有 = 的写法会解析成 __list，
+ * 形如 { module: 'sloped_armor', __list: ['count', '<', 2] }。
+ */
+function moduleLimitsOf(raw) {
+  const out = [];
+  const handle = (item) => {
+    if (!item || typeof item !== 'object' || Array.isArray(item)) return;
+    const mod = item.module || item.module_category;
+    if (typeof mod !== 'string') return;
+    const list = item.__list;
+    if (Array.isArray(list) && list.length >= 3) {
+      const v = cwt.num(list[list.length - 1]);
+      out.push({ module: mod, op: String(list[list.length - 2]), value: Number.isFinite(v) ? v : 0 });
+      return;
+    }
+    for (const k of Object.keys(item)) {
+      if (k === 'module' || k === 'module_category' || k.startsWith('__')) continue;
+      out.push({ module: mod, op: k, value: cwt.num(item[k]) });
+      return;
+    }
+    out.push({ module: mod, op: null, value: 0 });
+  };
+  if (Array.isArray(raw)) raw.forEach(handle);
+  else handle(raw);
+  return out;
+}
+
+function pickEquipment(id, def, file) {  const out = { id, sourceFile: file };
   for (const k of EQUIP_STAT_KEYS) {
     if (def[k] !== undefined) out[k] = def[k];
+  }
+  // 底盘的 module_count_limit 用 EQUIP_STAT_KEYS 收不到（cwt 会解析成 __list），单独规整
+  if (def.module_count_limit !== undefined) {
+    const lim = moduleLimitsOf(def.module_count_limit);
+    if (lim.length) out.limits = lim;
   }
   if (def.type !== undefined) out.types = cwt.asArray(def.type).map(String);
   if (def.resources && typeof def.resources === 'object') {
@@ -240,6 +274,21 @@ function pickEquipment(id, def, file) {
 function extractEquipment() {
   const dir = path.join(GAME, 'common', 'units', 'equipment');
   const raw = {};
+  // duplicate_archetypes（歼击车 / 自行火炮 / 自行防空 / 两栖…）也声明了 archetype 指向，
+  // 必须先收进来，否则派生装备解析继承链时会断在这里、拿不到模块槽位。
+  let dupCount = 0;
+  for (const f of listTxt(dir)) {
+    const doc = parseFile(f);
+    const dups = collectTables(doc, 'duplicate_archetypes');
+    if (dups && typeof dups === 'object') {
+      cwt.eachEntry(dups, (id, def) => {
+        if (!def || typeof def !== 'object' || Array.isArray(def)) return;
+        if (raw[id]) return;
+        raw[id] = pickEquipment(id, def, path.basename(f));
+        dupCount++;
+      });
+    }
+  }
   for (const f of listTxt(dir)) {
     const doc = parseFile(f);
     const eqs = collectTables(doc, 'equipments');
@@ -249,6 +298,7 @@ function extractEquipment() {
       raw[id] = pickEquipment(id, def, path.basename(f));
     });
   }
+  log(`装备：${Object.keys(raw).length} 个原始条目（含 ${dupCount} 个 duplicate_archetypes 派生原型）`);
 
   // 解析 archetype / parent 继承链
   const resolved = {};
@@ -287,7 +337,42 @@ function extractEquipment() {
   }
 
   for (const id of Object.keys(raw)) resolve(id);
-  log(`装备：${Object.keys(resolved).length} 个（已解析继承）`);
+
+  /* --- 把 module_slots = inherit 解开成真实槽位定义 ---
+     可研究的底盘（如 light_tank_chassis_1）只写 module_slots = inherit，
+     真正的槽位定义在 archetype（light_tank_chassis）上；duplicate_archetypes
+     派生出来的变体（歼击车 / 自行火炮 / 自行防空…）则完全不写 slot，
+     同样按引擎规则继承自它们的 archetype。浏览器端没有文件系统，所以在这里解析。 */
+  const archetypeOf = (id) => {
+    const chain = [];
+    const seen = new Set();
+    let cur = id;
+    while (cur && !seen.has(cur)) {
+      seen.add(cur);
+      chain.push(cur);
+      const rec = resolved[cur];
+      if (!rec) break;
+      cur = rec.inherits && rec.inherits.archetype;
+    }
+    return chain;
+  };
+  const slotOwnerOf = (id) => {
+    for (const node of archetypeOf(id)) {
+      const s = resolved[node] && resolved[node].module_slots;
+      if (s && s !== 'inherit') return node;
+    }
+    return null;
+  };
+  let inheritedSlots = 0;
+  for (const id of Object.keys(resolved)) {
+    const rec = resolved[id];
+    if (!rec) continue;
+    if (rec.module_slots === 'inherit') delete rec.module_slots;
+    if (rec.module_slots) continue;
+    const owner = slotOwnerOf(id);
+    if (owner && owner !== id) { rec.module_slots = resolved[owner].module_slots; inheritedSlots++; }
+  }
+  log(`装备：${Object.keys(resolved).length} 个（已解析继承，其中 ${inheritedSlots} 个继承了 archetype 的模块槽位）`);
   return resolved;
 }
 
@@ -334,6 +419,11 @@ function extractModules() {
         }
         o.multiplyStats = s;
       }
+      /* module_count_limit：允许同一模块安装的数量上限
+         （如 sloped_armor 最多 2 个）。cwt 会把它解析成
+         { module: 'x', 'count < 2': true } 或数组形式。 */
+      const limits = moduleLimitsOf(def.module_count_limit);
+      if (limits.length) o.limits = limits;
       modules[id] = o;
     });
   }

@@ -7,6 +7,7 @@
   const UI = global.UI;
 
   const VIEW_INIT = {
+    tank: () => global.HOI_UI_TANK.init(),
     designer: () => global.HOI_UI_DESIGNER.init(),
     battle: () => global.HOI_UI_BATTLE.init(),
     leader: () => global.HOI_UI_LEADER.init(),
@@ -17,6 +18,7 @@
   const VIEW_REFRESH = {
     battle: () => global.HOI_UI_BATTLE.render(),
     leader: () => global.HOI_UI_LEADER.render(),
+    tank: () => global.HOI_UI_TANK.render(),
   };
 
   const inited = {};
@@ -61,7 +63,7 @@
       t.addEventListener('click', () => switchView(t.dataset.view));
     }
 
-    let start = 'designer';
+    let start = 'tank';
     try {
       const saved = localStorage.getItem('hoi4-designer.view');
       if (saved && VIEW_INIT[saved]) start = saved;

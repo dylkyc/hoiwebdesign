@@ -66,6 +66,13 @@
   const loc = RAW.loc || {};
   const modifierNames = RAW.modifierNames || {};
 
+  /**
+   * 装备表引用。
+   * 这里必须先声明，因为下面的自定义装备模块会往表里注册设计；
+   * 真正的原始数据在「营（sub_unit）」一节统一取。
+   */
+  const equipment = RAW.equipment;
+
   /** 取中文文本，找不到则回退 */
   function locOf(key, fallback) {
     if (!key) return fallback || '';
@@ -85,11 +92,85 @@
   }
 
   /* ---------------------------------------------------------------- */
+  /* 自定义装备（坦克设计器导出的设计）                                  */
+  /* ---------------------------------------------------------------- */
+
+  const CUSTOM_KEY = 'hoi4-designer.customEquipment.v1';
+  let customCache = {};
+  let customLoaded = false;
+  /** 已生成的自定义装备记录（id -> 装备），避免每次重建 */
+  const customRecCache = {};
+
+  function loadCustom() {
+    if (customLoaded) return customCache;
+    customLoaded = true;
+    try {
+      const raw = (typeof localStorage !== 'undefined' && localStorage.getItem(CUSTOM_KEY)) || '[]';
+      const list = JSON.parse(raw);
+      customCache = {};
+      if (Array.isArray(list)) {
+        for (const rec of list) {
+          if (!rec || !rec.id || !rec.chassisId) continue;
+          customCache[rec.id] = rec;
+        }
+      }
+    } catch (e) { customCache = {}; }
+    return customCache;
+  }
+
+  function saveCustom(list) {
+    try { localStorage.setItem(CUSTOM_KEY, JSON.stringify(list)); } catch (e) { /* ignore */ }
+    customLoaded = false;
+    // 自定义装备会改变型号列表与解析结果，必须让各缓存失效
+    for (const k of Object.keys(modelCache)) delete modelCache[k];
+    for (const k of Object.keys(resolvedCache)) delete resolvedCache[k];
+    // 被删掉的设计要从装备表里摘掉，否则还会留在装备下拉里
+    for (const k of Object.keys(customRecCache)) delete equipment[k];
+    for (const k of Object.keys(customRecCache)) delete customRecCache[k];
+    loadCustom();
+    return Object.keys(customCache).length;
+  }
+
+  function customDesigns() { return Object.keys(loadCustom()).map((id) => customCache[id]); }
+
+  function customDesign(id) { return loadCustom()[id] || null; }
+
+  /** 自定义装备转成装备记录（属性已在坦克设计器里算好，不再带 default_modules） */
+  function customEquipmentRecord(rec) {
+    if (!rec || !rec.id) return null;
+    if (customRecCache[rec.id]) return customRecCache[rec.id];
+    const eq = recordFromDesign(rec);
+    customRecCache[rec.id] = eq;
+    equipment[rec.id] = eq;
+    return eq;
+  }
+
+  function recordFromDesign(rec) {
+    const e = equipment[rec.chassisId] || {};
+    const stats = rec.stats || {};
+    const out = {
+      id: rec.id,
+      isCustom: true,
+      customDesignId: rec.id,
+      sourceFile: 'custom',
+      year: e.year || 0,
+      types: e.types || [],
+      _design: { chassisId: rec.chassisId, modules: rec.modules || {} },
+      resources: rec.resources || {},
+    };
+    for (const k of ['reliability', 'maximum_speed', 'build_cost_ic', 'fuel_consumption',
+      'soft_attack', 'hard_attack', 'air_attack', 'ap_attack', 'defense', 'breakthrough',
+      'armor_value', 'hardness', 'entrenchment', 'fuel_capacity']) {
+      if (typeof stats[k] === 'number') out[k] = stats[k];
+    }
+    return out;
+  }
+
+  /* ---------------------------------------------------------------- */
   /* 营（sub_unit）                                                    */
   /* ---------------------------------------------------------------- */
 
   const units = RAW.units;
-  const equipment = RAW.equipment;
   const modules = RAW.modules || {};
   const terrain = RAW.terrain;
   const defines = RAW.defines;
@@ -177,9 +258,33 @@
    * `x_tank_chassis.txt` 里用 duplicate_archetypes 生成的衍生变体
    * （如 light_tank_equipment_* 是轻坦防空/炮兵/歼击车底盘，不属于主战坦克营）。
    */
+  /**
+   * 自定义设计是否属于某个 need 键（营的装备需求键，通常是底盘 archetype）。
+   * 设计是挂在具体型号上的（如 medium_tank_chassis_2），所以要顺着继承链比对，
+   * 与内置型号的匹配规则保持一致。
+   */
+  function customMatchesKey(rec, needKey) {
+    if (!rec || !rec.chassisId) return false;
+    if (rec.chassisId === needKey) return true;
+    const e = equipment[rec.chassisId];
+    if (!e) return false;
+    const arch = (e.inherits && e.inherits.archetype) || e.archetype;
+    if (arch === needKey) return true;
+    // 再往上一层（例如派生底盘的 archetype 又指向基础底盘）
+    const a = arch ? equipment[arch] : null;
+    const arch2 = a && ((a.inherits && a.inherits.archetype) || a.archetype);
+    return arch2 === needKey;
+  }
+
   function equipmentModelsFor(needKey) {
     if (modelCache[needKey]) return modelCache[needKey];
     const all = [];
+    // 自定义设计排最前，方便在装备下拉里一眼找到
+    for (const rec of customDesigns()) {
+      if (!customMatchesKey(rec, needKey)) continue;
+      const recEq = customEquipmentRecord(rec);
+      if (recEq) all.push(recEq);
+    }
     for (const id of Object.keys(equipment)) {
       const e = equipment[id];
       if (id === needKey) { all.push(e); continue; }
@@ -187,9 +292,12 @@
       if (arch === needKey) { all.push(e); continue; }
       if (e.archetype === needKey && e.is_archetype !== true) { all.push(e); continue; }
     }
-    const direct = all.filter((e) => String(e.id).indexOf(needKey + '_') === 0);
-    const out = direct.length ? direct : all;
+    const direct = all.filter((e) => e.isCustom || String(e.id).indexOf(needKey + '_') === 0);
+    const directOut = direct.length ? direct : all;
+    const out = directOut.slice();
     out.sort((a, b) => (a.year || 0) - (b.year || 0) || String(a.id).localeCompare(String(b.id)));
+    // 自定义设计排最前，方便在装备下拉里一眼找到
+    out.sort((a, b) => (b.isCustom ? 1 : 0) - (a.isCustom ? 1 : 0));
     modelCache[needKey] = out;
     return out;
   }
@@ -232,6 +340,8 @@
     if (resolvedCache[id]) return resolvedCache[id];
     const eq = equipment[id];
     if (!eq) return null;
+    // 自定义设计：属性在坦克设计器里已经算好（含模块），不能再叠一次模块
+    if (eq.isCustom) { resolvedCache[id] = eq; return eq; }
     if (!eq.default_modules || typeof eq.default_modules !== 'object') {
       resolvedCache[id] = eq;
       return eq;
@@ -392,6 +502,9 @@
     modulesForChassis,
     defaultModelFor,
     isBuildable,
+    customDesigns,
+    customDesign,
+    saveCustomDesigns: saveCustom,
 
     terrain: terrain.categories,
     terrainList,

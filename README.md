@@ -1,8 +1,9 @@
 # HOI4 陆军编制设计器
 
-一个纯静态的网页工具，用于在浏览器中复现《Hearts of Iron IV》的**陆军师编制设计器**与
-**战斗计算器**：编辑师的营与支援连、实时查看属性变化，并计算地形、要塞、河流、
-进攻方向数、将领与特质对部队的影响。
+一个纯静态的网页工具，用于在浏览器中复现《Hearts of Iron IV》的**坦克设计器**、
+**陆军师编制设计器**与**战斗计算器**：配置坦克底盘与模块并能导出成游戏可直接加载的
+脚本、编辑师的营与支援连、实时查看属性变化，并计算地形、要塞、河流、进攻方向数、
+将领与特质对部队的影响。
 
 所有基础数据都直接来自本机游戏安装目录 `../game/` 的脚本文件，**随游戏版本自动更新**。
 
@@ -42,7 +43,50 @@ python -m http.server 8080
 
 ## 功能
 
-### 1. 编制设计
+### 1. 坦克设计（装备解锁与模块配置）
+
+这一页对应游戏里的「坦克设计器」，并且**能把设计导出成游戏可直接加载的脚本**。
+
+* 左侧选底盘：6 大基础家族（轻 / 中 / 重 / 现代 / 超重 / 两栖）× 变体
+  （基础型 / 歼击车 / 自行火炮 / 自行防空 / 两栖 / 喷火），共 83 个可选底盘
+* **科技解锁选择**：拖动年份滑块，只显示该年及以前解锁的型号，未解锁的置灰
+* 中间配模块：每个底盘的 9 个槽位（5 个必选 + 4 个可选特殊槽）全部来自游戏源文件
+  的 `module_slots`，可选模块按 `allowed_module_categories` 过滤
+* 右侧实时算属性：底盘固有值 → 逐个模块叠加（绝对值相加、乘数累乘），
+  并给出资源需求、模块明细与校验（必选槽、模块类别、`module_count_limit` 数量上限、
+  `forbid_equipment_type` 变体限制）
+* 保存后的设计会注册到「编制设计」页，坦克营的装备下拉里直接可选，属性就是算好的值
+
+#### 导出到游戏
+
+点「保存并注册到编制页」再点「导出游戏脚本 (.txt)」，会得到一个 `equipments = { ... }` 块：
+
+```clausewitz
+equipments = {
+	medium_tank_chassis_2_我的中坦 = {
+		year = 1940
+		archetype = medium_tank_chassis_2     # 决定槽位、界面归类、营的 need 键
+		type = { armor }
+		module_slots = { ... }                # 槽位定义（从底盘带出来）
+		default_modules = { ... }             # 你选的模块
+		soft_attack = 20                      # 已算好的最终属性
+		...
+	}
+}
+```
+
+安装步骤：
+
+1. `<你的mod>/common/units/equipment/zz_custom_tanks.txt` ← 装备脚本
+2. `<你的mod>/localisation/simp_chinese/zz_custom_tanks_l_zh.yml` ← 「导出本地化 (.yml)」的结果
+   （已是 UTF-8 with BOM，游戏只认这个编码）
+3. 进游戏后在坦克设计器里就能看到这个型号；因为 `module_slots` 一并写死，
+   游戏内还可以继续改模块
+
+`tools/uismoke.js` 里有一条回归用例：导出后用项目自带的 Clausewitz 解析器**回读**并比对属性，
+保证格式始终是游戏能解析的。设计也能导出 / 导入 JSON 备份。
+
+### 2. 编制设计
 
 * 5 列 × 5 行的编制网格 + 5 个师级支援连槽位 + 5 个团级支援槽位
 * 点击左侧单位 → 点击网格空位放置；点击已有单位可更换**装备型号**或移除
@@ -56,7 +100,7 @@ python -m http.server 8080
 * 自动校验：支援连类型重复、团级支援的营数要求、空编制提示
 * 内置 5 个预设编制；支持保存到浏览器本地、导出 / 导入 JSON
 
-### 2. 战斗模拟
+### 3. 战斗模拟
 
 * 设定地形（8 种）、进攻方向数（1–5）、要塞等级、河流（小河 / 大河）、进攻方式（常规 / 两栖 / 空降）
 * 环境：夜战、制空权、近距离空中支援
@@ -67,7 +111,7 @@ python -m http.server 8080
 * 攻守双方各自有独立的「将领特质」面板：点「选择特质…」在带搜索的模态框里勾选，
   可逐条移除或一键清空，双方特质互不影响，都会进入修正明细
 
-### 3. 将领与技能
+### 4. 将领与技能
 
 * 4 项陆军技能（进攻 / 防御 / 计划 / 后勤）逐级效果
 * 军团长 / 陆军元帅切换，元帅加成按 50% 折算
@@ -106,7 +150,7 @@ python -m http.server 8080
 * 其余 62 个（忠于不列颠、患病、职业军官…）的 modifier 里没有战斗数值，
   勾选后对战斗计算没有任何影响，默认不显示
 
-### 4. 数据浏览
+### 5. 数据浏览
 
 营、支援连、团级支援、装备（已展开 archetype/parent 继承链）、地形、将领特质、
 战斗常数（defines）共 7 张表，全部来自游戏源文件。
@@ -122,11 +166,13 @@ webdesign/
 ├── css/style.css           样式
 ├── js/
 │   ├── engine/
-│   │   ├── data.js         数据访问层（封装 HOI_DATA）
+│   │   ├── data.js         数据访问层（封装 HOI_DATA，含自定义装备注册表）
 │   │   ├── division.js     师编制与属性聚合引擎
-│   │   └── combat.js       战斗修正与推演引擎
+│   │   ├── combat.js       战斗修正与推演引擎
+│   │   └── tank.js         坦克模块化设计引擎与游戏脚本导出
 │   ├── ui/
 │   │   ├── common.js       DOM / 格式化工具
+│   │   ├── tankdesign.js   坦克设计视图（底盘 / 科技解锁 / 模块 / 导出）
 │   │   ├── designer.js     编制设计视图
 │   │   ├── battle.js       战斗模拟视图
 │   │   ├── leader.js       将领与技能视图
@@ -141,6 +187,7 @@ webdesign/
     ├── extract.js          从 ../game 提取全部数据
     ├── selftest.js         编制引擎自检
     ├── combattest.js       战斗引擎自检
+    ├── tanktest.js         坦克设计引擎与导出脚本自检
     └── uismoke.js          无浏览器环境下的界面渲染自检
 ```
 
@@ -159,7 +206,7 @@ node tools/extract.js
 | 输出 | 来源 |
 | --- | --- |
 | `units.json` | `game/common/units/*.txt` |
-| `equipment.json` | `game/common/units/equipment/*.txt`（已解析 archetype / parent 继承） |
+| `equipment.json` | `game/common/units/equipment/*.txt`（已解析 archetype / parent 继承，含 `duplicate_archetypes` 派生原型与继承来的 `module_slots`） |
 | `modules.json` | `game/common/units/equipment/modules/*.txt` |
 | `terrain.json` | `game/common/terrain/00_terrain.txt` |
 | `defines.json` | `game/common/defines/00_defines.lua` |
@@ -174,6 +221,7 @@ node tools/extract.js
 ```powershell
 node tools/selftest.js    # 编制属性聚合
 node tools/combattest.js  # 战斗修正与推演
+node tools/tanktest.js    # 坦克设计引擎与游戏脚本导出（含导出后回读比对）
 node tools/uismoke.js     # 界面渲染与交互（Node 端最小 DOM，无需浏览器）
 ```
 
@@ -232,7 +280,8 @@ node tools/uismoke.js     # 界面渲染与交互（Node 端最小 DOM，无需�
 
 * 学说（Doctrine）里程碑的逐级加成（数据已提取，未自动接入）
 * 战斗战术（Combat Tactics）的随机选取、天气、将领受伤
-* 模块化装备（坦克 / 飞机）的模块设计器
+* 飞机与军舰的模块设计器（数据已提取，界面目前只做了坦克）
+* 坦克设计器未模拟「同一模块组合的衍生变体」与 `can_convert_from` 改造链
 * 增援机制与战斗中的装备损失分摊
 * 多方向进攻对要塞效果的削减（游戏内说明存在，但公式未公开）
 
