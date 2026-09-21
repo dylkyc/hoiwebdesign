@@ -185,8 +185,78 @@
   }
 
   /* ------------------------------------------------------------------ */
-  /* 中栏：蓝图区（槽位钉在蓝图上，点一下弹模块选择窗）                    */
+  /* 中栏：模块配置（照 game/interface/tank_designer_view.gui 排）         */
   /* ------------------------------------------------------------------ */
+
+  /**
+   * 槽位在界面上的位置抄游戏的 equipment_modules 容器：
+   *   上排 6 个（炮塔 / 主炮 / 特殊槽 1-4）
+   *   中间是蓝图（游戏里 508x248，装了模块会画出对应的 GFX_TM_* 覆盖图）
+   *   下排 3 个（悬挂 / 装甲 / 引擎），右边挂引擎与装甲两个等级步进器
+   * 游戏用 pos_custom_module_slot_window_0..8 把 9 个 76x47 的按钮钉在这三条带子上；
+   * 这里顺序一致，只是把贴图换成了 CSS 剪影 + 文字（本工程不依赖任何图片资源）。
+   */
+  const TOP_STRIP = [
+    'turret_type_slot', 'main_armament_slot',
+    'special_type_slot_1', 'special_type_slot_2', 'special_type_slot_3', 'special_type_slot_4',
+  ];
+  const BOTTOM_STRIP = ['suspension_type_slot', 'armor_type_slot', 'engine_type_slot'];
+
+  /** 游戏里带 – N + 等级步进器的两个槽位（equipment_upgrade_0 / _1） */
+  const UPGRADE_SLOTS = [
+    { id: 'engine_type_slot', label: '引擎' },
+    { id: 'armor_type_slot', label: '装甲' },
+  ];
+
+  /** 蓝图上的模块标签，位置大致对应零件在车上的位置 */
+  const TAG_POSITIONS = [
+    { slot: 'turret_type_slot', cls: 't-turret' },
+    { slot: 'main_armament_slot', cls: 't-gun' },
+    { slot: 'armor_type_slot', cls: 't-armor' },
+    { slot: 'suspension_type_slot', cls: 't-susp' },
+    { slot: 'engine_type_slot', cls: 't-engine' },
+  ];
+
+  /** 槽位图标：必选槽按槽位定，特殊槽按装上去那件模块的类别定 */
+  const SLOT_ICON = {
+    turret_type_slot: 'turret',
+    main_armament_slot: 'gun',
+    suspension_type_slot: 'suspension',
+    armor_type_slot: 'armor',
+    engine_type_slot: 'engine',
+  };
+  const CAT_ICON = {
+    tank_radio_module: 'radio',
+    tank_secondary_turret: 'turret2',
+    tank_special_module: 'special',
+  };
+
+  /** 炮塔外形尺寸（px）：换炮塔时蓝图上那块会跟着变大变小 */
+  const TURRET_SHAPES = [
+    { re: /fixed_superstructure|casemate/, w: 108, h: 28, casemate: true },
+    { re: /super_heavy/, w: 96, h: 40 },
+    { re: /modern/, w: 88, h: 36 },
+    { re: /heavy/, w: 82, h: 34 },
+    { re: /medium/, w: 74, h: 31 },
+    { re: /light/, w: 64, h: 28 },
+  ];
+  const DEFAULT_TURRET = { w: 74, h: 31 };
+
+  /** 炮管长度（px）：主炮越大越长；主炮槽空着就没有炮管 */
+  const GUN_LENGTHS = [
+    { re: /flamethrower|flame/, len: 46 },
+    { re: /rocket|howitzer/, len: 74 },
+    { re: /super_heavy/, len: 120 },
+    { re: /heavy/, len: 106 },
+    { re: /medium/, len: 88 },
+    { re: /small|light/, len: 78 },
+  ];
+
+  /** 履带负重轮个数：按家族给一个符合直觉的数字 */
+  const WHEELS = {
+    light_tank: 4, medium_tank: 5, heavy_tank: 6,
+    modern_tank: 6, super_heavy_tank: 7, amphibious_tank: 5,
+  };
 
   function renderSlots() {
     const host = UI.$('#tankSlots');
@@ -201,68 +271,192 @@
 
     const bp = el('div', { class: 'tank-blueprint' });
 
-    // 标题：左中文名，右底盘 id 与年份
-    bp.appendChild(el('div', { class: 'bp-title' }, [
+    // 标题条：左中文名，右底盘 id / 年份 / 槽位数
+    bp.appendChild(el('div', { class: 'bp-head' }, [
       el('span', { class: 'bp-name', text: chassis.name || HOI.locOf(state.chassisId, state.chassisId) }),
-      el('span', { class: 'bp-hull', text: state.chassisId + '　' + (chassis.year || 0) + ' 年' }),
+      el('span', { class: 'bp-hull', text: state.chassisId + '　' + (chassis.year || 0) + ' 年　' + slots.length + ' 槽' }),
     ]));
 
-    // 车体示意：纯 CSS/文字，不用图片
-    const turretName = moduleName(computed, 'turret_type_slot');
-    const gunName = moduleName(computed, 'main_armament_slot');
-    bp.appendChild(el('div', { class: 'bp-hull-shape' }, [
-      el('span', { text: '炮塔／主炮：' + turretName }),
-      el('span', { class: 'gun', text: gunName }),
-    ]));
-
-    // 第一行：可选特殊槽（游戏里在蓝图上排）
-    const optional = SPECIAL_SLOT_ORDER.map((id) => byId[id]).filter(Boolean);
-    bp.appendChild(el('div', { class: 'bp-slot-row' }, optional.map((s) => slotTile(s, computed))));
-
-    // 第二行：5 个必选槽（炮塔 / 主炮 / 悬挂 / 装甲 / 引擎）
-    const required = REQUIRED_SLOT_ORDER.map((id) => byId[id]).filter(Boolean);
-    bp.appendChild(el('div', { class: 'bp-slot-row' }, required.map((s) => slotTile(s, computed))));
+    bp.appendChild(slotStrip('top', pick(byId, TOP_STRIP), computed, chassis, false));
+    bp.appendChild(blueprintCanvas(byId));
+    bp.appendChild(slotStrip('bottom', pick(byId, BOTTOM_STRIP), computed, chassis, true));
 
     // 兜底：万一底盘有不在已知顺序里的槽位，也要能改
     const known = {};
-    for (const id of REQUIRED_SLOT_ORDER.concat(SPECIAL_SLOT_ORDER)) known[id] = true;
+    for (const id of TOP_STRIP.concat(BOTTOM_STRIP)) known[id] = true;
     const rest = slots.filter((s) => !known[s.id]);
-    if (rest.length) bp.appendChild(el('div', { class: 'bp-slot-row' }, rest.map((s) => slotTile(s, computed))));
+    if (rest.length) bp.appendChild(slotStrip('extra', rest, computed, chassis, false));
 
     host.appendChild(bp);
 
+    const required = slots.filter((s) => s.required);
     const missing = required.filter((s) => !state.design.modules[s.id]).length;
     host.appendChild(el('div', {
       class: 'hint',
       text: '共 ' + slots.length + ' 个槽位（' + required.length + ' 个必选）'
         + (missing ? '，还有 ' + missing + ' 个必选槽没配' : '，必选槽已配齐')
-        + '；点击蓝图上的槽位即可更换模块。',
+        + '；点槽位换模块，引擎 / 装甲可以直接用 – + 升降级。',
     }));
   }
 
-  /** 已装模块的中文名（没装则给空槽文案） */
-  function moduleName(computed, slotId) {
-    const it = computed.items.filter((x) => x.slotId === slotId)[0];
-    return it ? it.name : '（空）';
+  /** 按给定顺序从槽位表里取（缺失的跳过） */
+  function pick(byId, ids) {
+    const out = [];
+    for (const id of ids) if (byId[id]) out.push(byId[id]);
+    return out;
+  }
+
+  /** 一条槽位带子：游戏里的上排 / 下排 */
+  function slotStrip(position, list, computed, chassis, withUpgrades) {
+    const strip = el('div', { class: 'bp-slot-strip ' + position });
+    for (const slot of list) strip.appendChild(slotTile(slot, computed, chassis));
+    if (withUpgrades) {
+      for (const conf of UPGRADE_SLOTS) {
+        if (!T.modulesForSlot(state.chassisId, conf.id).length) continue;
+        strip.appendChild(upgradeStepper(conf));
+      }
+    }
+    return strip;
+  }
+
+  /** 槽位当前状态：装了什么、有没有配置问题（用来点角标和红线） */
+  function slotState(slot, computed, chassis) {
+    const current = state.design.modules[slot.id] || '';
+    const issues = [];
+    if (slot.required && !current) issues.push(slot.label + ' 是必选槽位，还没配模块');
+    const m = current ? HOI.modules[current] : null;
+    if (m) {
+      const bad = [].concat(m.forbid_equipment_type || [])
+        .filter((t) => (chassis.types || []).indexOf(t) >= 0);
+      if (bad.length) issues.push('该模块不能用于 ' + bad.map((t) => HOI.locOf(t, t)).join('/') + ' 变体');
+      for (const lim of (chassis.limits || [])) {
+        if (lim.module !== current) continue;
+        const n = computed.items.filter((it) => it.moduleId === current).length;
+        if (lim.op === '<' && n >= lim.value) {
+          issues.push('「' + HOI.locOf(current, current) + '」最多 ' + Math.max(0, lim.value - 1)
+            + ' 个（已装 ' + n + ' 个）');
+        }
+      }
+    }
+    return { current: current, filled: !!current, issues: issues };
+  }
+
+  /** 槽位图标 class：特殊槽看装的是什么模块 */
+  function slotIconClass(slot, moduleId) {
+    const base = SLOT_ICON[slot.id];
+    if (base) return 'ico-' + base;
+    const m = moduleId ? HOI.modules[moduleId] : null;
+    return 'ico-' + (CAT_ICON[m && m.category] || 'special');
+  }
+
+  function shortModuleName(id) {
+    return HOI.locOf(id, id) || id;
   }
 
   /**
-   * 蓝图上的一个槽位方块。
+   * 中间那张蓝图：按当前模块画出车体、炮塔、炮管和负重轮，
+   * 四周是模块标签。游戏里这一块是 508x248 的贴图 + 每槽一张 GFX_TM_* 覆盖图，
+   * 这里用 CSS 画，换来的是"换炮塔 / 换主炮车就变形"的效果。
+   */
+  function blueprintCanvas(byId) {
+    const turretId = state.design.modules.turret_type_slot || '';
+    const gunId = state.design.modules.main_armament_slot || '';
+    const shape = turretShape(turretId);
+    const nWheels = WHEELS[T.familyOf(state.chassisId) || ''] || 5;
+
+    const stage = el('div', { class: 'bp-tank' + (shape.casemate ? ' casemate' : '') }, [
+      el('div', { class: 'bp-track' }, wheelNodes(nWheels)),
+      el('div', { class: 'bp-hull' }),
+      el('div', { class: 'bp-turret-group' }, [
+        el('div', { class: 'bp-cupola' }),
+        el('div', { class: 'bp-turret', style: { width: shape.w + 'px', height: shape.h + 'px' } }),
+        el('div', { class: 'bp-barrel', style: { width: gunLength(gunId) + 'px' } }),
+      ]),
+    ]);
+
+    const plate = el('div', { class: 'bp-plate' }, [stage]);
+    for (const t of TAG_POSITIONS) {
+      const slot = byId[t.slot];
+      if (!slot) continue;
+      const cur = state.design.modules[t.slot];
+      plate.appendChild(el('div', { class: 'bp-tag ' + t.cls, title: slot.label }, [
+        el('span', { class: 't-k', text: slot.label }),
+        el('span', { class: 't-v', text: cur ? shortModuleName(cur) : '—' }),
+      ]));
+    }
+
+    return el('div', { class: 'bp-canvas' }, [plate]);
+  }
+
+  function wheelNodes(n) {
+    const out = [];
+    for (let i = 0; i < n; i++) {
+      out.push(el('span', { class: 'bp-wheel', style: { left: (((i + 0.5) / n) * 100).toFixed(2) + '%' } }));
+    }
+    return out;
+  }
+
+  function turretShape(id) {
+    for (const s of TURRET_SHAPES) if (s.re.test(String(id))) return s;
+    return DEFAULT_TURRET;
+  }
+
+  function gunLength(id) {
+    if (!id) return 0;
+    for (const g of GUN_LENGTHS) if (g.re.test(String(id))) return g.len;
+    return 88;
+  }
+
+  /** 游戏里的引擎 / 装甲等级步进器：上行是名字，下行是 – 等级 + （照 equipment_upgrade_0 / _1） */
+  function upgradeStepper(conf) {
+    const options = T.modulesForSlot(state.chassisId, conf.id);
+    const current = state.design.modules[conf.id] || '';
+    let idx = -1;
+    for (let i = 0; i < options.length; i++) if (options[i].id === current) { idx = i; break; }
+
+    const box = el('div', {
+      class: 'bp-upgrade',
+      title: conf.label + '：' + (current ? shortModuleName(current) : '未装')
+        + '\n用 – / + 在 ' + options.length + ' 个可用模块之间切换',
+    });
+    box.appendChild(el('span', { class: 'u-name', text: conf.label }));
+    const row = el('div', { class: 'u-row' });
+    row.appendChild(el('button', {
+      class: 'u-btn', text: '–', title: '降一级',
+      onclick: () => stepSlot(conf.id, -1, options, idx),
+    }));
+    row.appendChild(el('span', { class: 'u-lv', text: String(idx >= 0 ? idx + 1 : 0) }));
+    row.appendChild(el('button', {
+      class: 'u-btn', text: '+', title: '升一级',
+      onclick: () => stepSlot(conf.id, 1, options, idx),
+    }));
+    box.appendChild(row);
+    return box;
+  }
+
+  function stepSlot(slotId, dir, options, idx) {
+    if (!options.length) { UI.toast('该槽位没有可用模块'); return; }
+    const next = idx < 0
+      ? (dir > 0 ? 0 : options.length - 1)
+      : Math.min(options.length - 1, Math.max(0, idx + dir));
+    if (next === idx) { UI.toast(dir > 0 ? '已经是最高一级' : '已经是最低一级'); return; }
+    setSlotModule(slotId, options[next].id);
+  }
+
+  /**
+   * 一个槽位按钮，对应游戏里的 equipment_designer_module_slot_entry（76x47）：
+   * 外框 + 模块图标 + 槽位名 + 装了什么的短名。
+   * 左上角角标是"必 / 选"（对应游戏槽位的 icn_requirements），
+   * 右上角在配置有问题时亮一个 !（对应 icn_warning）。
    *
-   * 结构固定为 .bp-slot-label / .bp-slot-value / .bp-slot-delta，并额外挂
-   * required / optional / filled / empty 四个状态 class。
    * 里面同时保留一个下拉框（视觉上隐藏、指针也不接收事件）：这是「槽位行 + select」
    * 的既有交互契约，键盘/脚本都能直接换模块，方便回归测试。
    */
-  function slotTile(slot, computed) {
-    const current = state.design.modules[slot.id] || '';
-    const filled = !!current;
-    const onChange = (value) => {
-      state.design.modules[slot.id] = value || null;
-      render();
-    };
+  function slotTile(slot, computed, chassis) {
+    const st = slotState(slot, computed, chassis);
+    const delta = slotDelta(slot, computed);
 
-    const sel = slotSelect(slot, current, onChange);
+    const sel = slotSelect(slot, st.current, (value) => setSlotModule(slot.id, value || null));
     sel.style.opacity = '0';
     sel.style.height = '1px';
     sel.style.padding = '0';
@@ -272,14 +466,23 @@
     const tile = el('div', {
       class: 'slot-row bp-slot'
         + (slot.required ? ' required' : ' optional')
-        + (filled ? ' filled' : ' empty'),
-      title: slot.label + '（点击选择模块）',
+        + (st.filled ? ' filled' : ' empty')
+        + (st.issues.length ? ' invalid' : ''),
+      title: slot.label + '：' + (st.filled ? shortModuleName(st.current) : (slot.required ? '必选，未配置' : '空'))
+        + (delta ? '（' + delta + '）' : '')
+        + (st.issues.length ? '\n⚠ ' + st.issues.join('\n⚠ ') : '')
+        + '\n点击选择模块',
       onclick: () => openSlotPicker(slot, tile),
     }, [
       sel,
+      el('span', { class: 'bp-slot-marker' + (slot.required ? ' req' : ' opt'), text: slot.required ? '必' : '选' }),
+      st.issues.length ? el('span', { class: 'bp-slot-warn', text: '!' }) : null,
+      el('span', { class: 'bp-ico ' + slotIconClass(slot, st.current) }),
       el('div', { class: 'bp-slot-label', text: slot.label }),
-      el('div', { class: 'bp-slot-value', text: filled ? HOI.locOf(current, current) : (slot.required ? '（未选择）' : '（空）') }),
-      el('div', { class: 'bp-slot-delta', text: slotDelta(slot, computed) }),
+      el('div', {
+        class: 'bp-slot-value',
+        text: st.filled ? shortModuleName(st.current) : (slot.required ? '未配置' : '空'),
+      }),
     ]);
     return tile;
   }
@@ -326,52 +529,72 @@
     return out.join('　');
   }
 
-  /** 点击槽位：在槽位旁弹出模块选择窗 */
+  /**
+   * 点击槽位：弹出模块选择窗。
+   *
+   * 排布抄游戏的 module_selector_window：两列卡片（slotsize 247x69），
+   * 每张卡是「模块图标 + 名称 + 年份 + 属性增减」，并且按模块类别分组
+   * （游戏里也是先列类别条目，再列该类别下的模块）。
+   */
   function openSlotPicker(slot, anchor) {
     const options = T.modulesForSlot(state.chassisId, slot.id);
     const current = state.design.modules[slot.id] || '';
     const chassisName = (HOI.equipment[state.chassisId] || {}).name || HOI.locOf(state.chassisId, state.chassisId);
-    const list = options.map((m) => ({ id: m.id, name: m.name, year: m.year, mod: m }));
+
+    // 按类别分组，保持 modulesForSlot 的年份排序
+    const cats = [];
+    for (const m of options) {
+      let g = null;
+      for (const x of cats) if (x.cat === m.category) { g = x; break; }
+      if (!g) { g = { cat: m.category, list: [] }; cats.push(g); }
+      g.list.push(m);
+    }
 
     const groups = [];
     if (current) {
       groups.push({
         key: 'clear',
-        title: '卸下',
-        list: [{ id: '', name: slot.required ? '（未选择）' : '（空）' }],
-        render: (item, close) => el('div', {
-          class: 'popover-item',
-          text: item.name,
-          onclick: () => { close(); setSlotModule(slot.id, null); },
-        }),
+        title: '卸下当前模块',
+        gridClass: 'popover-grid mod-grid',
+        list: [{ id: '', name: slot.required ? '（未选择）' : '（空）', year: 0, mod: null }],
+        render: (item, close) => modCard(slot, item, current, close),
       });
     }
-    groups.push({
-      key: 'modules',
-      title: '可选模块',
-      list: list,
-      render: (m, close) => {
-        const bits = moduleBits(m.mod.addStats, m.mod.multiplyStats, 3);
-        const node = el('div', {
-          class: 'popover-item' + (m.id === current ? ' on' : ''),
-          onclick: () => { close(); setSlotModule(slot.id, m.id); },
-        }, [
-          el('div', { text: m.name + (m.year ? '（' + m.year + '）' : '') }),
-          el('span', { class: 'cw', text: bits || '无属性影响' }),
-        ]);
-        // 测试与键盘脚本按 data-module 找条目；刻意用 setAttribute 写法
-        node.setAttribute('data-module', m.id);
-        return node;
-      },
-    });
+    for (const g of cats) {
+      groups.push({
+        key: g.cat,
+        title: SLOT_CAT_SHORT[g.cat] || g.cat,
+        gridClass: 'popover-grid mod-grid',
+        list: g.list,
+        render: (m, close) => modCard(slot, { id: m.id, name: m.name, year: m.year, mod: m }, current, close),
+      });
+    }
 
     UI.openPopover({
       anchor: anchor,
-      title: slot.label + ' · ' + chassisName,
-      width: 380,
+      title: slot.label + ' · 可选模块 · ' + chassisName,
+      width: 520,
       groups: groups,
       emptyText: '该槽位没有可用模块',
     });
+  }
+
+  /** 模块选择窗里的一张卡片 */
+  function modCard(slot, item, current, close) {
+    const bits = item.mod ? moduleBits(item.mod.addStats, item.mod.multiplyStats, 3) : '';
+    const card = el('div', {
+      class: 'popover-item mod-card' + (item.id === current ? ' on' : '') + (item.mod ? '' : ' mod-clear'),
+      onclick: () => { close(); setSlotModule(slot.id, item.id || null); },
+    }, [
+      el('span', { class: 'mod-ico ' + (item.mod ? slotIconClass(slot, item.id) : 'ico-clear') }),
+      el('span', { class: 'mod-text' }, [
+        el('span', { class: 'mod-name', text: item.name + (item.year ? '（' + item.year + '）' : '') }),
+        el('span', { class: 'mod-stats', text: bits || '无属性影响' }),
+      ]),
+    ]);
+    // 测试与键盘脚本按 data-module 找条目；刻意用 setAttribute 写法
+    card.setAttribute('data-module', item.id || '');
+    return card;
   }
 
   /** 统一改模块入口：写进设计后重新渲染 */
@@ -398,15 +621,6 @@
     tank_engine_type: '引擎', tank_special_module: '特殊模块',
     tank_radio_module: '电台', tank_secondary_turret: '副炮塔',
   };
-
-  /** 槽位显示顺序：蓝图下排 5 个必选槽 / 上排 4 个可选特殊槽 */
-  const REQUIRED_SLOT_ORDER = [
-    'turret_type_slot', 'main_armament_slot', 'suspension_type_slot',
-    'armor_type_slot', 'engine_type_slot',
-  ];
-  const SPECIAL_SLOT_ORDER = [
-    'special_type_slot_1', 'special_type_slot_2', 'special_type_slot_3', 'special_type_slot_4',
-  ];
 
   /** 槽位 / 选择窗里优先展示的属性键 */
   const STAT_PRIORITY = [

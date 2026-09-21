@@ -544,6 +544,102 @@ check('坦克设计：切换模块会改变属性与校验结果', () => {
   return '换主炮会实时重算属性';
 });
 
+check('坦克设计：模块配置照游戏排布（上排 6 槽 → 蓝图 → 下排 3 槽）', () => {
+  const slots = document.getElementById('tankSlots');
+  const top = slots.querySelectorAll('.bp-slot-strip.top .bp-slot');
+  const bottom = slots.querySelectorAll('.bp-slot-strip.bottom .bp-slot');
+  if (top.length !== 6) throw new Error('上排槽位应为 6 个，实际 ' + top.length);
+  if (bottom.length !== 3) throw new Error('下排槽位应为 3 个，实际 ' + bottom.length);
+  // 顺序：游戏里上排是 炮塔/主炮/特殊1-4，下排是 悬挂/装甲/引擎
+  const topLabels = top.map((s) => s.querySelector('.bp-slot-label').textContent);
+  if (topLabels[0] !== '炮塔' || topLabels[1] !== '主炮') throw new Error('上排前两个应是炮塔/主炮：' + topLabels.join('/'));
+  const bottomLabels = bottom.map((s) => s.querySelector('.bp-slot-label').textContent);
+  if (bottomLabels.join('/') !== '悬挂/装甲/引擎') throw new Error('下排顺序不对：' + bottomLabels.join('/'));
+
+  // 每个槽位都要有图标和"必/选"角标，且必须带隐藏下拉框（可编程换模块入口）
+  for (const s of top.concat(bottom)) {
+    if (!s.querySelector('.bp-ico')) throw new Error('槽位没有图标：' + s.querySelector('.bp-slot-label').textContent);
+    if (!s.querySelector('.bp-slot-marker')) throw new Error('槽位没有必/选角标');
+    if (!s.querySelector('select.slot-hidden-select')) throw new Error('槽位缺少隐藏下拉框');
+  }
+
+  // 蓝图：车体 + 炮塔 + 炮管 + 负重轮 + 模块标签
+  const canvas = slots.querySelector('.bp-canvas');
+  if (!canvas) throw new Error('缺少蓝图区');
+  if (!canvas.querySelector('.bp-tank')) throw new Error('蓝图上没有车体');
+  if (!canvas.querySelector('.bp-turret')) throw new Error('蓝图上没有炮塔');
+  if (!canvas.querySelector('.bp-barrel')) throw new Error('蓝图上没有炮管');
+  const wheels = canvas.querySelectorAll('.bp-wheel');
+  if (wheels.length < 4) throw new Error('负重轮过少：' + wheels.length);
+  const tags = canvas.querySelectorAll('.bp-tag');
+  if (tags.length < 5) throw new Error('蓝图标签过少：' + tags.length);
+
+  // 引擎 / 装甲两个等级步进器（对应游戏的 equipment_upgrade_0 / _1）
+  const ups = slots.querySelectorAll('.bp-upgrade');
+  if (ups.length !== 2) throw new Error('升降级步进器应为 2 个，实际 ' + ups.length);
+  for (const u of ups) {
+    if (u.querySelectorAll('.u-btn').length !== 2) throw new Error('步进器缺少 – / + 按钮');
+    if (!u.querySelector('.u-lv')) throw new Error('步进器没有等级数字');
+  }
+  return top.length + ' + ' + bottom.length + ' 槽位，' + wheels.length + ' 个负重轮，'
+    + tags.length + ' 个蓝图标签，' + ups.length + ' 个步进器';
+});
+
+check('坦克设计：点槽位弹出两列模块卡片，换装会同时反映到蓝图', () => {
+  const slots = document.getElementById('tankSlots');
+  const turretTile = slots.querySelectorAll('.bp-slot').find(
+    (s) => s.querySelector('.bp-slot-label').textContent === '炮塔');
+  if (!turretTile) throw new Error('找不到炮塔槽位');
+  turretTile.click();
+
+  const layer = document.body.querySelectorAll('.popover-layer')[0];
+  if (!layer) throw new Error('点槽位没有弹出模块选择窗');
+  if (!layer.querySelector('.popover-grid.mod-grid')) throw new Error('模块卡片不是两列网格');
+  const cards = layer.querySelectorAll('.mod-card');
+  if (cards.length < 2) throw new Error('模块卡片过少：' + cards.length);
+  if (!cards[0].querySelector('.mod-ico')) throw new Error('模块卡片没有图标');
+  if (!cards[0].querySelector('.mod-name')) throw new Error('模块卡片没有名称');
+  if (!cards[0].querySelector('.mod-stats')) throw new Error('模块卡片没有属性行');
+
+  // 换一个不是当前装着的炮塔
+  const current = (slots.querySelector('.slot-row.required .bp-slot-value') || {}).textContent || '';
+  const target = cards.find((c) => c.getAttribute('data-module') && c.querySelector('.mod-name').textContent.indexOf(current) < 0);
+  if (!target) throw new Error('没有可换的炮塔模块');
+  const pickName = target.querySelector('.mod-name').textContent;
+  target.click();
+
+  if (document.body.querySelectorAll('.popover-layer').length) throw new Error('选完模块后弹窗没有关闭');
+  const after = document.getElementById('tankSlots');
+  const tag = after.querySelector('.bp-tag.t-turret .t-v');
+  if (!tag) throw new Error('蓝图上的炮塔标签丢了');
+  if (pickName.indexOf(tag.textContent) < 0) {
+    throw new Error('蓝图上还是旧炮塔：标签 ' + tag.textContent + '，选了 ' + pickName);
+  }
+  return '两列 ' + cards.length + ' 张卡片，换成「' + tag.textContent + '」后蓝图同步';
+});
+
+check('坦克设计：引擎等级步进器能升降级', () => {
+  const upBox = () => document.getElementById('tankSlots').querySelectorAll('.bp-upgrade')
+    .find((u) => u.querySelector('.u-name').textContent === '引擎');
+  const engineTile = () => document.getElementById('tankSlots')
+    .querySelectorAll('.bp-slot-strip.bottom .bp-slot')[2];
+  const state = () => upBox().querySelector('.u-lv').textContent + ' / '
+    + engineTile().querySelector('.bp-slot-value').textContent;
+
+  if (!upBox()) throw new Error('找不到引擎步进器');
+  const before = state();
+
+  // 先按 + 升一级，已经到顶就改按 –
+  for (const dir of ['+', '–']) {
+    const btn = upBox().querySelectorAll('.u-btn').find((b) => b.textContent === dir);
+    if (!btn) throw new Error('步进器缺少「' + dir + '」按钮');
+    btn.click();
+    const now = state();
+    if (now !== before) return '「' + dir + '」后 ' + before + ' → ' + now;
+  }
+  throw new Error('按 + / – 都没有改变引擎：' + before);
+});
+
 check('编制设计：切换到 designer 并渲染', () => {
   openTab('designer');
   const chips = document.getElementById('paletteBody').querySelectorAll('.chip');

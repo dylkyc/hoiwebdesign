@@ -137,6 +137,8 @@
    *   onPick     (item, group) => void
    *   emptyText  没有可选项时的提示
    *   width      面板宽度（px）
+   *   groups[].gridClass  覆盖该组的容器 class（默认 popover-grid，
+   *                       坦克模块窗用它改成两列卡片）
    */
   function openPopover(cfg) {
     const anchor = cfg.anchor;
@@ -169,7 +171,7 @@
       if (g.title) {
         body.appendChild(el('div', { class: 'popover-group', text: g.title + '（' + g.list.length + '）' }));
       }
-      const grid = el('div', { class: 'popover-grid' });
+      const grid = el('div', { class: g.gridClass || 'popover-grid' });
       for (const item of g.list) {
         if (g.render) { grid.appendChild(g.render(item, close)); continue; }
         grid.appendChild(el('div', { class: 'popover-item', text: String(item) }));

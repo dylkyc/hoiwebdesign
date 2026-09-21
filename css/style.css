@@ -243,7 +243,7 @@ main { padding: 12px; height: calc(100vh - 46px); height: calc(100dvh - 46px); o
 /* ---------- 游戏化布局：坦克设计 ---------- */
 .tank-layout {
   display: grid;
-  grid-template-columns: 250px minmax(460px, 1fr) 330px;
+  grid-template-columns: 250px minmax(480px, 1fr) 330px;
   gap: 10px;
   height: 100%;
   min-height: 0;
@@ -251,65 +251,322 @@ main { padding: 12px; height: calc(100vh - 46px); height: calc(100dvh - 46px); o
 .tank-family-row { display: flex; flex-wrap: wrap; gap: 3px; margin-bottom: 8px; }
 .tank-family-row .chip-filter { padding: 2px 7px; }
 
-/* 蓝图区：中间那张"图纸"，槽位图标钉在上面 */
+/* --------------------------------------------------------------------------
+   模块配置：照 game/interface/tank_designer_view.gui 的 equipment_modules 排。
+   上排 6 个槽位 → 蓝图 → 下排 3 个槽位 + 引擎/装甲等级步进器。
+   游戏把 9 个 76x47 的槽位按钮钉在这三条带子上（pos_custom_module_slot_window_0..8），
+   这里顺序一致，但贴图换成了 CSS 剪影。
+   -------------------------------------------------------------------------- */
 .tank-blueprint {
   border: 1px solid var(--border-2);
   border-radius: 4px;
-  background:
-    repeating-linear-gradient(0deg, rgba(255,255,255,.025) 0 1px, transparent 1px 22px),
-    repeating-linear-gradient(90deg, rgba(255,255,255,.025) 0 1px, transparent 1px 22px),
-    linear-gradient(180deg, #1d222a, #171b21);
-  padding: 10px;
+  background: linear-gradient(180deg, #1d222a, #171b21);
+  padding: 8px;
   margin-bottom: 10px;
 }
-.bp-title {
+.bp-head {
   display: flex;
   align-items: baseline;
   justify-content: space-between;
   gap: 10px;
-  margin-bottom: 8px;
+  margin-bottom: 6px;
 }
-.bp-title .bp-name { color: var(--accent-2); font-size: 14px; letter-spacing: .5px; }
-.bp-title .bp-hull { font-size: 11px; color: var(--text-faint); font-family: var(--mono); }
-.bp-slot-row { display: flex; flex-wrap: wrap; gap: 6px; }
-.bp-slot-row + .bp-slot-row { margin-top: 6px; }
+.bp-head .bp-name { color: var(--accent-2); font-size: 14px; letter-spacing: .5px; }
+.bp-head .bp-hull { font-size: 11px; color: var(--text-faint); font-family: var(--mono); }
+
+/* 上下两条槽位带子：等宽分列，面板变窄时按钮自己收窄，不会换行错位 */
+.bp-slot-strip { display: grid; gap: 3px; align-items: end; }
+.bp-slot-strip.top { grid-template-columns: repeat(6, minmax(0, 1fr)); }
+.bp-slot-strip.bottom {
+  grid-template-columns: repeat(3, minmax(0, 1fr)) minmax(104px, 1.5fr) minmax(104px, 1.5fr);
+}
+.bp-slot-strip.extra { grid-template-columns: repeat(auto-fit, minmax(78px, 1fr)); margin-top: 3px; }
+
+/* 一个槽位按钮 = 游戏里的 equipment_designer_module_slot_entry（76x47） */
 .bp-slot {
-  width: 104px;
-  min-height: 54px;
-  background: var(--bg-3);
-  border: 1px solid var(--border);
-  border-radius: 3px;
-  padding: 4px 6px;
-  cursor: pointer;
+  position: relative;
+  min-height: 52px;
+  aspect-ratio: 76 / 54;
+  padding: 3px 4px 2px;
   display: flex;
   flex-direction: column;
+  align-items: center;
+  justify-content: center;
   gap: 2px;
-  position: relative;
+  overflow: hidden;
+  cursor: pointer;
+  border: 1px solid var(--border);
+  border-radius: 2px;
+  background:
+    linear-gradient(180deg, rgba(255,255,255,.055), rgba(255,255,255,0) 46%),
+    var(--bg-3);
+  box-shadow: inset 0 0 0 1px rgba(0,0,0,.45), inset 0 1px 0 rgba(255,255,255,.04);
 }
-.bp-slot:hover { border-color: var(--accent); }
-.bp-slot.filled { border-color: var(--border-2); background: #262d36; }
+.bp-slot:hover { border-color: var(--accent); background: #2b323d; }
+.bp-slot.filled { border-color: var(--border-2); }
 .bp-slot.optional { border-style: dashed; }
-.bp-slot.required { border-left: 2px solid var(--accent); }
-.bp-slot .bp-slot-label { font-size: 10px; color: var(--text-faint); text-transform: uppercase; letter-spacing: .5px; }
-.bp-slot .bp-slot-value { font-size: 11px; color: var(--text); line-height: 1.25; }
-.bp-slot .bp-slot-delta { font-size: 10px; font-family: var(--mono); color: var(--text-dim); }
+.bp-slot.required { border-top: 2px solid var(--accent); }
+.bp-slot.invalid { border-color: var(--bad); }
+.bp-slot .bp-slot-label { font-size: 9px; line-height: 1.1; color: var(--text-dim); letter-spacing: .3px; }
+.bp-slot .bp-slot-value {
+  max-width: 100%;
+  font-size: 9px;
+  line-height: 1.15;
+  text-align: center;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
 .bp-slot.empty .bp-slot-value { color: var(--text-faint); }
+.bp-slot.filled .bp-slot-value { color: var(--text); }
+/* 左上角"必/选"角标、右上角告警 —— 对应游戏的 icn_requirements / icn_warning */
+.bp-slot-marker {
+  position: absolute;
+  left: 2px;
+  top: 1px;
+  font-size: 8px;
+  line-height: 1;
+  color: var(--text-faint);
+}
+.bp-slot-marker.req { color: var(--accent); }
+.bp-slot-warn {
+  position: absolute;
+  right: 3px;
+  top: 1px;
+  font-size: 10px;
+  line-height: 1;
+  color: var(--bad);
+}
 /* 槽位里保留的下拉框只作为可编程换模块入口，视觉上不占位 */
 .bp-slot .slot-hidden-select { width: 100%; opacity: 0; height: 1px; padding: 0; border: 0; pointer-events: none; }
-.bp-hull-shape {
-  height: 46px;
-  margin: 4px 0 10px;
-  border: 1px solid var(--border-2);
-  border-radius: 6px 14px 6px 6px;
-  background: linear-gradient(180deg, rgba(200,160,74,.10), rgba(200,160,74,.02));
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 0 12px;
-  font-size: 11px;
-  color: var(--text-dim);
+
+/* 槽位图标：纯 CSS 剪影，替掉游戏里的模块贴图 */
+.bp-ico, .mod-ico {
+  --ico: linear-gradient(170deg, #d3dce8, #798396);
+  display: block;
+  flex: none;
+  width: 26px;
+  height: 16px;
+  background: var(--ico);
+  clip-path: polygon(12% 0, 88% 0, 100% 100%, 0 100%);
+  opacity: .9;
 }
-.bp-hull-shape .gun { font-family: var(--mono); color: var(--accent-2); }
+.ico-turret { clip-path: polygon(24% 0, 76% 0, 94% 100%, 6% 100%); }
+.ico-gun { clip-path: polygon(0 34%, 68% 34%, 68% 6%, 100% 50%, 68% 94%, 68% 66%, 0 66%); }
+.ico-suspension {
+  clip-path: none;
+  border-radius: 7px;
+  background: repeating-linear-gradient(90deg, #9aa5b6 0 3px, rgba(0,0,0,0) 3px 10px), var(--ico);
+}
+.ico-armor { clip-path: polygon(4% 6%, 96% 26%, 96% 94%, 4% 74%); }
+.ico-engine {
+  clip-path: polygon(2% 18%, 98% 18%, 98% 82%, 2% 82%);
+  background: repeating-linear-gradient(180deg, #9aa5b6 0 2px, rgba(0,0,0,0) 2px 6px), var(--ico);
+}
+.ico-special { clip-path: polygon(50% 0, 100% 50%, 50% 100%, 0 50%); }
+.ico-radio { clip-path: polygon(50% 0, 63% 32%, 88% 100%, 12% 100%, 37% 32%); }
+.ico-turret2 { clip-path: polygon(30% 34%, 70% 34%, 86% 100%, 14% 100%); }
+.ico-clear { clip-path: polygon(8% 40%, 92% 40%, 92% 60%, 8% 60%); }
+
+/* 中间的蓝图 */
+.bp-canvas {
+  position: relative;
+  margin: 5px 0;
+  min-height: 214px;
+  border: 1px solid var(--border);
+  border-radius: 3px;
+  overflow: hidden;
+  background:
+    radial-gradient(120% 88% at 50% 42%, rgba(200,160,74,.07), rgba(0,0,0,0) 72%),
+    repeating-linear-gradient(0deg, rgba(255,255,255,.032) 0 1px, rgba(0,0,0,0) 1px 20px),
+    repeating-linear-gradient(90deg, rgba(255,255,255,.032) 0 1px, rgba(0,0,0,0) 1px 20px),
+    #12161b;
+}
+.bp-plate { position: absolute; inset: 0; }
+/* 图纸四角的定位角标 */
+.bp-plate::before, .bp-plate::after {
+  content: '';
+  position: absolute;
+  width: 15px;
+  height: 15px;
+  border: 1px solid rgba(200,160,74,.32);
+}
+.bp-plate::before { left: 6px; top: 6px; border-right: 0; border-bottom: 0; }
+.bp-plate::after { right: 6px; bottom: 6px; border-left: 0; border-top: 0; }
+
+/* 车：车体 / 炮塔 / 炮管 / 负重轮都是 CSS 画的 */
+.bp-tank {
+  position: absolute;
+  left: 50%;
+  bottom: 40px;
+  width: 300px;
+  height: 120px;
+  margin-left: -150px;
+}
+.bp-track {
+  position: absolute;
+  left: 2px;
+  right: 2px;
+  bottom: 0;
+  height: 32px;
+  border-radius: 16px;
+  border: 1px solid var(--border);
+  background: linear-gradient(180deg, #2d343f, #14181e 62%, #232932);
+  box-shadow: inset 0 0 0 3px rgba(0,0,0,.35);
+}
+.bp-wheel {
+  position: absolute;
+  top: 50%;
+  width: 19px;
+  height: 19px;
+  margin: -9.5px 0 0 -9.5px;
+  border-radius: 50%;
+  border: 1px solid #101419;
+  background: radial-gradient(circle at 34% 30%, #aab5c5, #4b535e 72%);
+}
+.bp-hull {
+  position: absolute;
+  left: 16px;
+  right: 6px;
+  bottom: 24px;
+  height: 46px;
+  clip-path: polygon(11% 0, 100% 0, 100% 56%, 93% 100%, 0 100%, 0 28%);
+  background: linear-gradient(165deg, #5d6880, #353d4b 58%, #262c36);
+}
+.bp-turret-group {
+  position: absolute;
+  left: 34%;
+  bottom: 68px;
+  display: flex;
+  align-items: flex-start;
+}
+.bp-turret {
+  flex: none;
+  clip-path: polygon(15% 0, 85% 0, 100% 100%, 0 100%);
+  background: linear-gradient(165deg, #6e7a95, #3b4353 62%, #2a303a);
+}
+.bp-barrel {
+  flex: none;
+  position: relative;
+  height: 7px;
+  margin-top: 9px;
+  border-radius: 0 3px 3px 0;
+  background: linear-gradient(180deg, #bcc6d4, #5c6673);
+}
+.bp-barrel::after {
+  content: '';
+  position: absolute;
+  right: 0;
+  top: -2px;
+  width: 4px;
+  height: 11px;
+  background: #cfd8e4;
+}
+.bp-cupola {
+  position: absolute;
+  left: 6px;
+  top: -7px;
+  width: 20px;
+  height: 8px;
+  border-radius: 4px 4px 0 0;
+  background: linear-gradient(180deg, #7e8aa2, #414a5a);
+}
+/* 固定战斗室（歼击车那类）：炮塔换成一整块斜置战斗室 */
+.bp-tank.casemate .bp-turret { clip-path: polygon(18% 26%, 100% 0, 100% 100%, 0 100%); }
+.bp-tank.casemate .bp-barrel { margin-top: 14px; }
+.bp-tank.casemate .bp-turret-group { bottom: 64px; left: 22%; }
+
+/* 蓝图上的模块标签 */
+.bp-tag {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  max-width: 42%;
+  padding: 2px 5px;
+  border-left: 2px solid var(--accent);
+  border-radius: 2px;
+  background: rgba(16,20,25,.8);
+}
+.bp-tag .t-k { font-size: 9px; letter-spacing: .4px; color: var(--text-faint); }
+.bp-tag .t-v {
+  font-family: var(--mono);
+  font-size: 10px;
+  color: var(--text);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.bp-tag.t-turret { left: 27%; top: 4%; }
+.bp-tag.t-gun { right: 3%; top: 4%; border-left-color: var(--info); }
+.bp-tag.t-engine { left: 3%; bottom: 30%; border-left-color: var(--warn); }
+.bp-tag.t-armor { right: 3%; bottom: 30%; border-left-color: #8a95a5; }
+.bp-tag.t-susp { left: 3%; bottom: 3%; border-left-color: var(--army); }
+
+/* 引擎 / 装甲等级步进器（游戏里的 equipment_upgrade_0 / _1）：
+   上行名字、下行 – 等级 +，和原版一样是"点按钮升降级" */
+.bp-upgrade {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 3px;
+  min-height: 44px;
+  padding: 4px 6px;
+  border: 1px solid var(--border);
+  border-radius: 2px;
+  background: linear-gradient(180deg, #262b34, #1d222a);
+}
+.bp-upgrade .u-name { font-size: 10px; color: var(--text-dim); letter-spacing: .3px; }
+.bp-upgrade .u-row { display: flex; align-items: center; gap: 5px; }
+.bp-upgrade .u-lv {
+  min-width: 16px;
+  font-family: var(--mono);
+  font-size: 13px;
+  line-height: 1;
+  text-align: center;
+  color: var(--accent-2);
+}
+.bp-upgrade .u-btn {
+  width: 20px;
+  height: 20px;
+  padding: 0;
+  line-height: 1;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  color: var(--text);
+  background: var(--bg-3);
+  border: 1px solid var(--border-2);
+  border-radius: 2px;
+}
+.bp-upgrade .u-btn:hover { border-color: var(--accent); color: var(--accent-2); }
+
+/* 模块选择窗：两列卡片（游戏 module_selector_window 的 slotsize 247x69） */
+.popover-grid.mod-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 4px; }
+.mod-card {
+  min-height: 44px;
+  padding: 4px 7px;
+  gap: 7px;
+  background: linear-gradient(180deg, #262b34, #1d222a);
+}
+.mod-card .mod-ico { width: 24px; height: 15px; }
+.mod-card .mod-text { display: flex; flex-direction: column; min-width: 0; }
+.mod-card .mod-name {
+  font-size: 11px;
+  color: var(--text);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.mod-card .mod-stats {
+  font-family: var(--mono);
+  font-size: 9px;
+  color: var(--text-faint);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
 
 /* 三组属性栏：base / combat / misc */
 .stat-cols { display: grid; grid-template-columns: 1fr; gap: 8px; }
