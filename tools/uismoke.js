@@ -640,6 +640,34 @@ check('坦克设计：引擎等级步进器能升降级', () => {
   throw new Error('按 + / – 都没有改变引擎：' + before);
 });
 
+check('坦克设计：蓝图零件类名没有外泄（否则会飘出面板）', () => {
+  const slots = document.getElementById('tankSlots');
+  // 这些类的样式带 position:absolute + clip-path，只允许出现在蓝图内部。
+  // 一旦被蓝图外面的元素复用（曾经底盘 id/年份的 span 就叫 bp-hull），
+  // 那个元素就会脱离面板、变成一坨灰色多边形贴在页面底部。
+  const PARTS = ['bp-tank', 'bp-plate', 'bp-track', 'bp-wheel', 'bp-hull',
+    'bp-turret-group', 'bp-turret', 'bp-barrel', 'bp-cupola', 'bp-tag'];
+  const stray = [];
+  for (const cls of PARTS) {
+    for (const node of slots.querySelectorAll('.' + cls)) {
+      let p = node.parentNode, inside = false;
+      while (p && p !== slots) {
+        if (p.classList && p.classList.contains('bp-canvas')) { inside = true; break; }
+        p = p.parentNode;
+      }
+      if (!inside) stray.push(cls);
+    }
+  }
+  if (stray.length) throw new Error('这些零件类跑到了蓝图外面：' + stray.join(', '));
+
+  const head = slots.querySelector('.bp-head');
+  if (!head) throw new Error('缺少蓝图标题条');
+  const meta = head.querySelector('.bp-meta');
+  if (!meta) throw new Error('标题条里没有底盘 id / 年份');
+  if (!meta.textContent.trim()) throw new Error('底盘信息是空的');
+  return '零件类都在蓝图内，标题条：' + meta.textContent.trim();
+});
+
 check('编制设计：切换到 designer 并渲染', () => {
   openTab('designer');
   const chips = document.getElementById('paletteBody').querySelectorAll('.chip');

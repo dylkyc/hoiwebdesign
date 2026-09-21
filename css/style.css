@@ -149,25 +149,11 @@ main { padding: 12px; height: calc(100vh - 46px); height: calc(100dvh - 46px); o
 .tank-item .tyear { font-size: 10px; color: var(--text-faint); font-family: var(--mono); }
 .tank-item .tmods { font-size: 10px; color: var(--text-faint); font-family: var(--mono); }
 
-.slot-row {
-  border: 1px solid var(--border);
-  border-radius: 3px;
-  padding: 6px 8px;
-  margin-bottom: 6px;
-  background: var(--bg-2);
-}
-.slot-row.required { border-left: 2px solid var(--accent); }
-.slot-head {
-  display: flex;
-  align-items: baseline;
-  justify-content: space-between;
-  gap: 8px;
-  margin-bottom: 4px;
-}
-.slot-head .slot-name { font-size: 12px; color: var(--accent-2); }
-.slot-head .slot-cats { font-size: 10px; color: var(--text-faint); }
-.slot-row select { width: 100%; }
-.slot-mods { font-size: 10px; color: var(--text-dim); font-family: var(--mono); margin-top: 4px; }
+/*
+ * 说明：槽位按钮现在用 .bp-slot（见下面的"模块配置"一节）。
+ * 旧的 .slot-row / .slot-head / .slot-mods 规则已经删掉——蓝色的小方块也复用
+ * .slot-row 当交互/自检用的钩子，留着旧规则会给它带上多余的 6px 下边距和金色左边框。
+ */
 .tank-saved { display: flex; flex-direction: column; gap: 4px; }
 
 /* ---------- 就地弹出选择窗（模拟游戏 catalog 窗） ---------- */
@@ -272,7 +258,10 @@ main { padding: 12px; height: calc(100vh - 46px); height: calc(100dvh - 46px); o
   margin-bottom: 6px;
 }
 .bp-head .bp-name { color: var(--accent-2); font-size: 14px; letter-spacing: .5px; }
-.bp-head .bp-hull { font-size: 11px; color: var(--text-faint); font-family: var(--mono); }
+/* 注意：蓝图标题条上的底盘信息用 .bp-meta，不要用 .bp-* 的零件名
+   （曾经这里叫 .bp-hull，和车体零件撞名，那块 span 就带上了 position:absolute
+   和 clip-path，变成一坨灰色多边形飘到页面底部） */
+.bp-head .bp-meta { font-size: 11px; color: var(--text-faint); font-family: var(--mono); }
 
 /* 上下两条槽位带子：等宽分列，面板变窄时按钮自己收窄，不会换行错位 */
 .bp-slot-strip { display: grid; gap: 3px; align-items: end; }
@@ -394,7 +383,8 @@ main { padding: 12px; height: calc(100vh - 46px); height: calc(100dvh - 46px); o
 .bp-plate::before { left: 6px; top: 6px; border-right: 0; border-bottom: 0; }
 .bp-plate::after { right: 6px; bottom: 6px; border-left: 0; border-top: 0; }
 
-/* 车：车体 / 炮塔 / 炮管 / 负重轮都是 CSS 画的 */
+/* 车：车体 / 炮塔 / 炮管 / 负重轮都是 CSS 画的
+   （.bp-* 这些零件类只给蓝图内部用，蓝图外面别复用，否则零件样式会漏出去） */
 .bp-tank {
   position: absolute;
   left: 50%;

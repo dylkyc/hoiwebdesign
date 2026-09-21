@@ -274,7 +274,7 @@
     // 标题条：左中文名，右底盘 id / 年份 / 槽位数
     bp.appendChild(el('div', { class: 'bp-head' }, [
       el('span', { class: 'bp-name', text: chassis.name || HOI.locOf(state.chassisId, state.chassisId) }),
-      el('span', { class: 'bp-hull', text: state.chassisId + '　' + (chassis.year || 0) + ' 年　' + slots.length + ' 槽' }),
+      el('span', { class: 'bp-meta', text: state.chassisId + '　' + (chassis.year || 0) + ' 年　' + slots.length + ' 槽' }),
     ]));
 
     bp.appendChild(slotStrip('top', pick(byId, TOP_STRIP), computed, chassis, false));
