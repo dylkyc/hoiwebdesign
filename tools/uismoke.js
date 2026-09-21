@@ -260,6 +260,35 @@ for (const view of Object.keys(views)) {
     mk(tag, { id });
   }
 }
+delete views.designer;
+
+/* 编制设计：按 index.html 的真实层级搭骨架（布局是静态的，不再由 JS 重排） */
+const designerSec = mk('section', { class: 'view', id: 'view-designer' }, mainEl);
+const divLayout = mk('div', { class: 'div-layout' }, designerSec);
+const divCanvas = mk('div', { class: 'panel div-canvas' }, divLayout);
+const divTopbar = mk('div', { class: 'div-topbar' }, divCanvas);
+mk('div', { class: 'div-emblem', text: '师' }, divTopbar);
+mk('input', { id: 'templateName', type: 'text', value: '新编制', class: 'div-style-name' }, divTopbar);
+const topbarTools = mk('div', { class: 'toolbar' }, divTopbar);
+for (const id of ['btnPreset', 'btnClear', 'btnSave', 'btnLoad', 'btnExport', 'btnImport']) {
+  mk('button', { id: id, class: 'btn small', text: id }, topbarTools);
+}
+mk('div', { class: 'div-topbar-right', id: 'selectionStatus' }, divTopbar);
+const divWorkbench = mk('div', { class: 'div-workbench' }, divCanvas);
+const divMain = mk('div', { class: 'div-main' }, divWorkbench);
+mk('div', { id: 'gridHost' }, divMain);
+const divSide = mk('div', { class: 'div-side' }, divWorkbench);
+mk('div', { class: 'slot-title', text: '师级支援' }, divSide);
+mk('div', { id: 'supportHost', class: 'div-slot-col' }, divSide);
+mk('div', { class: 'slot-title', text: '团级支援' }, divCanvas);
+mk('div', { id: 'regSupportHost', class: 'div-support-strip' }, divCanvas);
+mk('div', { id: 'validationHost', class: 'validation' }, divCanvas);
+const paletteHolder = mk('div', { class: 'palette-holder', hidden: 'hidden' }, divCanvas);
+mk('input', { id: 'paletteSearch', type: 'search' }, paletteHolder);
+mk('div', { id: 'paletteBody' }, paletteHolder);
+const divInfo = mk('aside', { class: 'panel' }, divLayout);
+mk('div', { class: 'panel-head' }, divInfo);
+mk('div', { class: 'panel-body', id: 'statsBody' }, divInfo);
 mk('div', { id: 'toast' });
 
 /* ------------------------------------------------------------------ */
@@ -522,7 +551,41 @@ check('编制设计：切换到 designer 并渲染', () => {
   return chips.length + ' 个单位，网格与属性已渲染';
 });
 
+check('编制设计：营位用兵牌呈现（缩写 + 名称 + 副信息）', () => {
+  const cells = document.getElementById('gridHost').querySelectorAll('.grid-cell.filled');
+  if (!cells.length) throw new Error('网格里没有已填充的营');
+  const cards = document.getElementById('gridHost').querySelectorAll('.ub-card');
+  if (cards.length < cells.length) {
+    throw new Error('兵牌数量 ' + cards.length + ' 少于已填充营位 ' + cells.length);
+  }
+  const abbrs = cells.map((c) => (c.querySelector('.ub-abbr') || {}).textContent || '');
+  if (abbrs.some((a) => !a.trim())) throw new Error('有营位没有兵种缩写');
+  if (abbrs.slice(0, 3).some((a) => a.length > 2)) throw new Error('缩写过长：' + abbrs.slice(0, 3).join('/'));
+  const labels = cells.map((c) => (c.querySelector('.ub-label') || {}).textContent || '');
+  if (labels.some((l) => !l.trim())) throw new Error('有营位没有单位名');
+  // 支援槽也应该有兵牌
+  const supFilled = document.getElementById('supportHost').querySelectorAll('.support-slot.filled');
+  if (supFilled.length) {
+    const supAbbr = supFilled[0].querySelector('.ub-abbr');
+    if (!supAbbr || !supAbbr.textContent.trim()) throw new Error('支援槽没有兵牌缩写');
+  }
+  return cells.length + ' 个营位兵牌，示例：' + abbrs[0] + ' / ' + abbrs[1] + ' / ' + labels[0];
+});
+
 hr('编制设计');
+check('编制设计：属性面板按游戏式分组', () => {
+  const cols = document.getElementById('statsBody').querySelectorAll('.stat-col');
+  const titles = cols.map((c) => {
+    const h = c.querySelector('h3');
+    return h ? h.textContent : '(无标题)';
+  });
+  if (cols.length < 4) throw new Error('属性栏过少：' + cols.length + '：' + titles.join(' / '));
+  for (const t of ['基础', '战斗', '装备', '编制']) {
+    if (!titles.some((x) => x.indexOf(t) >= 0)) throw new Error('缺少「' + t + '」属性栏：' + titles.join(' / '));
+  }
+  if (titles.some((x) => x === '(无标题)')) throw new Error('有属性栏没有标题');
+  return cols.length + ' 组：' + titles.join(' / ');
+});
 check('编制设计：待选区有单位', () => {
   const chips = document.getElementById('paletteBody').querySelectorAll('.chip');
   if (!chips.length) throw new Error('调色板为空');
@@ -792,7 +855,7 @@ check('布局：视图是滚动容器，矮窗口下内容不会被裁掉', () =
     problems.push('.panel 同时是 overflow:hidden 又非 flex 容器，内部滚动会失效');
   }
 
-  for (const sel of ['.designer-layout', '.battle-layout', '.leader-layout']) {
+  for (const sel of ['.div-layout', '.tank-layout', '.battle-layout', '.leader-layout']) {
     const r = css.get(sel) || {};
     if (!/grid/.test(r.display || '')) problems.push(sel + ' 应该是 grid 布局');
     if ((r.height || '') !== '100%') problems.push(sel + ' 的 height 应为 100%');
@@ -810,7 +873,7 @@ check('布局：各视图的滚动结构完整', () => {
   // Node 端的 DOM 桩只还原每个视图里各 panel 的宿主节点（真实结构见 index.html），
   // 因此这里检查的是「每个视图都有可滚动的宿主」而不是真实层级。
   const expect = {
-    designer: 'designer-layout', battle: 'battle-layout', leader: 'leader-layout',
+    designer: 'div-layout', battle: 'battle-layout', leader: 'leader-layout',
     data: 'panel', about: 'panel',
   };
   const hosts = {

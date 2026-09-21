@@ -1,5 +1,11 @@
 /**
  * designer.js — 编制设计器界面
+ *
+ * 界面结构仿 HOI4 原版 divisiondesignerview：
+ *   顶部师徽 + 师名 + 工具栏
+ *   中间 5×5 营格（regiments_grid），师级支援竖排在网格右侧，
+ *   团级支援横排在网格下方，右侧 info 面板分四组属性栏。
+ * 兵种目录不再是常驻侧栏，而是「点空格就地弹出」的选择窗。
  */
 (function (global) {
   'use strict';
@@ -11,19 +17,22 @@
 
   const STORAGE_KEY = 'hoi4-designer.saved.v1';
 
+  /** 在指定根节点（默认 document）里查一个元素 */
+  const q = (sel, root) => (root || document).querySelector(sel);
+
   let template = null;
   let selectedUnitId = null;
   let lastResult = null;
   let filter = '';
 
   /* ---------------- 编辑焦点与多选 ---------------- */
-  /** 当前获得焦点的槽位 {kind,a,b}：左侧待选区按它的列 / 行来过滤 */
+  /** 当前获得焦点的槽位 {kind,a,b}：待选区按它的列 / 行来过滤 */
   let activeCell = null;
   /** 多选集合（Ctrl 点选、Shift 区间选择） */
   let selectedCells = [];
   /** Shift 区间选择的锚点 */
   let anchorCell = null;
-  /** 悬停到某个槽位时，用它的列来过滤左侧（优先于 activeCell） */
+  /** 悬停到某个槽位时，用它的列来过滤待选区（优先于 activeCell） */
   let hoverCell = null;
   /** 折叠的待选分组（不持久化） */
   const collapsedGroups = [];
@@ -119,6 +128,7 @@
         onclick: () => {
           template = p.build();
           selectedUnitId = null;
+          clearSelection();
           persist();
           renderAll();
           UI.toast('已载入：' + p.name);
@@ -155,6 +165,8 @@
           class: 'tname', text: n,
           onclick: () => {
             template = sanitize(all[n]);
+            selectedUnitId = null;
+            clearSelection();
             persist(); renderAll();
             const ov = document.querySelector('.modal-overlay');
             if (ov) ov.parentNode.removeChild(ov);
@@ -191,6 +203,8 @@
         onClick: () => {
           try {
             template = sanitize(JSON.parse(area.value));
+            selectedUnitId = null;
+            clearSelection();
             persist(); renderAll(); UI.toast('导入成功');
           } catch (e) { UI.toast('解析失败：' + e.message); return false; }
         },
@@ -200,70 +214,8 @@
   }
 
   /* ------------------------------------------------------------------ */
-  /* 调色板                                                             */
+  /* 待选目录（隐藏宿主 + 就地弹出选择窗）                                */
   /* ------------------------------------------------------------------ */
-
-  function renderPalette() {
-    const host = UI.$('#paletteBody');
-    clear(host);
-
-    const groups = paletteGroups();
-    const focus = focusCell();
-    const prof = focus ? columnProfile(focus) : null;
-
-    // 顶部提示：当前按哪一列过滤 / 多选状态
-    host.appendChild(paletteStatus(prof));
-
-    let shownTotal = 0;
-    for (const g of groups) {
-      if (prof && prof.filterable && prof.classes.indexOf(g.cls) < 0) continue;
-      let list = g.list;
-      if (filter) list = list.filter((u) => (u.name + ' ' + u.id).toLowerCase().indexOf(filter) >= 0);
-      if (!list.length) continue;
-      shownTotal += list.length;
-
-      const expanded = filter ? true : collapsedGroups.indexOf(g.cls) < 0;
-      const box = el('div', { class: 'palette-group' }, [
-        el('h3', {
-          title: '点击折叠 / 展开',
-          onclick: () => {
-            const i = collapsedGroups.indexOf(g.cls);
-            if (i >= 0) collapsedGroups.splice(i, 1); else collapsedGroups.push(g.cls);
-            renderPalette();
-          },
-        }, [
-          el('span', { class: 'caret', text: expanded ? '▾' : '▸' }),
-          el('span', { text: g.title + '（' + list.length + '）' }),
-        ]),
-      ]);
-      if (!expanded) { host.appendChild(box); continue; }
-
-      const chips = el('div', { class: 'unit-chips' });
-      for (const u of list) {
-        const selectedOn = u.id === selectedUnitId;
-        const chip = el('div', {
-          class: 'chip ' + UI.unitColorClass(u) + (selectedOn ? ' on' : ''),
-          style: selectedOn ? { borderColor: 'var(--accent)', background: 'rgba(200,160,74,.15)' } : null,
-          title: u.id + (selectedCells.length ? '\n点击：填入选中的 ' + selectedCells.length + ' 个槽位' : '\n点击选中，再点网格空位放置'),
-          onclick: () => pickUnit(u.id),
-        }, [
-          el('span', { text: u.name }),
-          el('span', { class: 'cw', text: '宽' + fmt(u.combat_width, 0) }),
-        ]);
-        chips.appendChild(chip);
-      }
-      box.appendChild(chips);
-      host.appendChild(box);
-    }
-    if (!shownTotal) {
-      host.appendChild(el('div', {
-        class: 'empty-note',
-        text: prof && prof.filterable
-          ? '这一列用到的兵种（' + prof.labels.join('、') + '）里没有匹配的单位。点其它列或改搜索词。'
-          : '没有匹配的单位。',
-      }));
-    }
-  }
 
   /** 待选区分组（按兵种大类，与网格每列的过滤一致） */
   function paletteGroups() {
@@ -281,7 +233,7 @@
   /**
    * 某一列（槽位）当前用到的兵种类别。
    * 编制网格按「团」分列，同一列通常放同一兵种，所以这里按列聚合：
-   * 结果只有一类时，左侧就只列这一类；空列或混编时不做限制。
+   * 结果只有一类时，弹窗里只列这一类；空列或混编时不做限制。
    */
   function columnProfile(cell) {
     const out = { classes: [], labels: [], filterable: false, mixed: false, empty: true };
@@ -315,30 +267,186 @@
     return out;
   }
 
-  /** 待选面板顶部的状态条：列过滤 + 多选操作 */
-  function paletteStatus(prof) {
-    const box = el('div', { class: 'palette-status' });
-    if (prof && prof.filterable) {
-      box.appendChild(el('div', { class: 'hint', text: '按列过滤：' + prof.labels[0] + '（' + (prof.mixed ? '混编' : '该列现有兵种') + '）' }));
-    } else if (prof && prof.mixed) {
-      box.appendChild(el('div', { class: 'hint', text: '这一列混编了 ' + prof.labels.join(' / ') + '，暂不过滤。' }));
-    } else if (prof && prof.empty) {
-      box.appendChild(el('div', { class: 'hint', text: '空列：显示全部兵种。' }));
-    } else {
-      box.appendChild(el('div', { class: 'hint', text: '把鼠标移到网格上，左侧会按那一列的兵种过滤。' }));
-    }
+  /** 槽位在界面上的称呼，例如「第 3 团」/「师级支援槽」 */
+  function cellLabel(cell) {
+    if (!cell) return '';
+    if (cell.kind === 'grid') return '第 ' + (cell.b + 1) + ' 团';
+    return cell.kind === 'support' ? '师级支援' : '团级支援';
+  }
 
+  /** 列过滤提示文案（弹窗顶部） */
+  function filterNoteText(prof, cell) {
+    if (!prof || !cell) return '把鼠标移到网格上，或点一个空格：这里会按那一列的兵种过滤。';
+    if (prof.filterable) return '按' + cellLabel(cell) + '过滤：' + prof.labels[0];
+    if (prof.mixed) return '这一列混编了 ' + prof.labels.join(' / ') + '，暂不过滤。';
+    if (prof.empty) return '空列：显示全部兵种。';
+    return '点一个空格即可选择兵种。';
+  }
+
+  /** 隐藏宿主 #paletteBody 顶部状态行的文案 */
+  function paletteStatusText(prof, cell) {
+    if (!prof || !cell) return '把鼠标移到网格上，或点一个空格：这里会按那一列的兵种过滤。';
+    if (prof.filterable) return '按列过滤：' + prof.labels[0] + '（' + cellLabel(cell) + '）';
+    if (prof.mixed) return '这一列混编了 ' + prof.labels.join(' / ') + '，暂不过滤。';
+    if (prof.empty) return '空列：显示全部兵种。';
+    return '点一个空格即可选择兵种。';
+  }
+
+  /** 隐藏宿主 #paletteBody 里的状态行 + 常驻 chip 列表 */
+  function renderPalette() {
+    const host = UI.$('#paletteBody');
+    if (!host) return;
+    clear(host);
+
+    const groups = paletteGroups();
+    const focus = focusCell();
+    const prof = focus ? columnProfile(focus) : null;
+
+    host.appendChild(paletteStatus(prof, focus));
+
+    const shown = renderUnits(host, groups, prof, 'chip');
+    if (!shown) {
+      host.appendChild(el('div', {
+        class: 'empty-note',
+        text: prof && prof.filterable
+          ? '这一列用到的兵种（' + prof.labels.join('、') + '）里没有匹配的单位。点其它列或改搜索词。'
+          : '没有匹配的单位。',
+      }));
+    }
+    syncSelectionStatus();
+  }
+
+  /**
+   * 把过滤 / 搜索后的单位渲染到 host 里。
+   * mode = 'chip'（隐藏宿主）| 'popover'（就地弹窗条目）
+   * 返回渲染出来的单位个数。
+   */
+  function renderUnits(host, groups, prof, mode) {
+    let shownTotal = 0;
+    for (const g of groups) {
+      if (prof && prof.filterable && prof.classes.indexOf(g.cls) < 0) continue;
+      let list = g.list;
+      if (filter) list = list.filter((u) => (u.name + ' ' + u.id).toLowerCase().indexOf(filter) >= 0);
+      if (!list.length) continue;
+      shownTotal += list.length;
+
+      const expanded = filter ? true : collapsedGroups.indexOf(g.cls) < 0;
+      const box = el('div', { class: mode === 'chip' ? 'palette-group' : 'popover-plain' });
+      if (mode === 'chip') {
+        box.appendChild(el('h3', {
+          title: '点击折叠 / 展开',
+          onclick: () => {
+            const i = collapsedGroups.indexOf(g.cls);
+            if (i >= 0) collapsedGroups.splice(i, 1); else collapsedGroups.push(g.cls);
+            renderPalette();
+          },
+        }, [
+          el('span', { class: 'caret', text: expanded ? '▾' : '▸' }),
+          el('span', { text: g.title + '（' + list.length + '）' }),
+        ]));
+        if (!expanded) { host.appendChild(box); continue; }
+      } else {
+        box.appendChild(el('div', { class: 'popover-group', text: g.title + '（' + list.length + '）' }));
+      }
+
+      const chips = el('div', { class: mode === 'chip' ? 'unit-chips' : 'popover-grid' });
+      for (const u of list) chips.appendChild(unitEntry(u, mode, g.cls));
+      box.appendChild(chips);
+      host.appendChild(box);
+    }
+    return shownTotal;
+  }
+
+  /** 单个单位条目（chip / 弹窗条目共用），点击即放置 */
+  function unitEntry(u, mode, cls) {
+    const selectedOn = u.id === selectedUnitId;
+    const node = el('div', {
+      class: (mode === 'chip' ? 'chip ' : 'popover-item ')
+        + (cls ? cls + ' ' : '') + UI.unitColorClass(u) + (selectedOn ? ' on' : ''),
+      style: selectedOn ? { borderColor: 'var(--accent)', background: 'rgba(200,160,74,.15)' } : null,
+      title: u.id + (selectedCells.length ? '\n点击：填入选中的 ' + selectedCells.length + ' 个槽位' : '\n点击放置到槽位'),
+      onclick: (e) => {
+        if (e && e.stopPropagation) e.stopPropagation();
+        pickUnit(u.id);
+      },
+    }, [
+      el('span', { text: u.name }),
+      el('span', { class: 'cw', text: '宽' + fmt(u.combat_width, 0) }),
+    ]);
+    // 测试要按属性点条目，必须用 setAttribute 写法（dataset 对象在 Node 桩里不落地）
+    node.setAttribute('data-unit', u.id);
+    return node;
+  }
+
+  /** 隐藏宿主里的状态行：列过滤提示 + 多选数量 + 取消选择 */
+  function paletteStatus(prof, cell) {
+    const box = el('div', { class: 'palette-status' });
+    box.appendChild(el('div', { class: 'hint', text: paletteStatusText(prof, cell) }));
     if (selectedCells.length) {
       box.appendChild(el('div', { class: 'palette-status-actions' }, [
         el('span', { class: 'v', text: '已选 ' + selectedCells.length + ' 个槽位' }),
         el('button', { class: 'btn small', text: '取消选择', onclick: () => { selectedCells = []; renderAll(); } }),
       ]));
-      box.appendChild(el('div', { class: 'hint', text: '点左侧任意单位 = 一次填入这 ' + selectedCells.length + ' 个槽位；Ctrl 点选，Shift 选连续区间。' }));
+      box.appendChild(el('div', { class: 'hint', text: '点任意单位 = 一次填入这 ' + selectedCells.length + ' 个槽位；Ctrl 点选，Shift 选连续区间。' }));
     }
     return box;
   }
 
-  /** 点击待选单位：有选中槽位就批量填入，否则仅选中该单位 */
+  /** 工具栏右侧的多选状态（原版里画布顶部的选中提示） */
+  function selectionStatusNode() {
+    if (!selectedCells.length) return el('span', { class: 'hint', text: '点空格选择兵种 · Ctrl 多选 · Shift 连选' });
+    return el('span', { class: 'div-sel-status' }, [
+      el('span', { class: 'v', text: '已选 ' + selectedCells.length + ' 个槽位　' }),
+      el('button', { class: 'btn small', text: '取消选择', onclick: () => { selectedCells = []; renderAll(); } }),
+    ]);
+  }
+
+  /** 只刷新顶部多选提示，避免整页重绘 */
+  function syncSelectionStatus() {
+    const host = UI.$('#selectionStatus');
+    if (!host) return;
+    clear(host);
+    host.appendChild(selectionStatusNode());
+  }
+
+  /**
+   * 就地弹出兵种选择窗（原版点空格弹出的 catalog 窗）。
+   * 条目按兵种分组、按该列过滤，点条目即放置。
+   */
+  function openPicker(anchor, cell) {
+    const focus = cell || activeCell;
+    const prof = focus ? columnProfile(focus) : null;
+    const groups = paletteGroups();
+
+    UI.openPopover({
+      anchor: anchor,
+      title: '选择兵种' + (focus ? '　·　' + cellLabel(focus) : ''),
+      width: 400,
+      emptyText: prof && prof.filterable
+        ? '这一列用到的兵种（' + prof.labels.join('、') + '）里没有可选项。'
+        : '没有匹配的单位。',
+      groups: groups.map((g) => ({
+        key: g.cls,
+        title: g.title,
+        // 只列该列允许的兵种分组；搜索词已在 renderUnits 里生效
+        list: (prof && prof.filterable && prof.classes.indexOf(g.cls) < 0) ? [] : g.list,
+        render: (u, close) => {
+          const node = unitEntry(u, 'popover', g.cls);
+          node.addEventListener('click', () => { close(); });
+          return node;
+        },
+      })),
+    });
+
+    // 弹窗顶部补一行过滤说明
+    const panel = document.querySelector('.popover-panel');
+    const body = panel && panel.querySelector('.popover-body');
+    if (body && body.insertBefore) {
+      body.insertBefore(el('div', { class: 'popover-note', text: filterNoteText(prof, focus) }), body.firstChild);
+    }
+  }
+
+  /** 点击待选单位：有选中槽位就批量填入，否则选中该单位 */
   function pickUnit(unitId) {
     if (selectedCells.length) {
       batchFill(unitId, selectedCells.slice());
@@ -348,23 +456,13 @@
     renderPalette();
   }
 
-  function isCat(u, cats) {
-    const t = u.types || [];
-    if (cats.indexOf('infantry') >= 0 && (t.indexOf('infantry') >= 0) && !isCat(u, ['artillery'])) return true;
-    if (cats.indexOf('cavalry') >= 0 && (t.indexOf('cavalry') >= 0)) return true;
-    if (cats.indexOf('artillery') >= 0 && t.indexOf('artillery') >= 0) return true;
-    if (cats.indexOf('armor') >= 0 && t.indexOf('armor') >= 0) return true;
-    if (cats.indexOf('motorized') >= 0 && t.indexOf('motorized') >= 0) return true;
-    if (cats.indexOf('mechanized') >= 0 && t.indexOf('mechanized') >= 0) return true;
-    return false;
-  }
-
   /* ------------------------------------------------------------------ */
   /* 网格                                                               */
   /* ------------------------------------------------------------------ */
 
   function renderGrid() {
     const host = UI.$('#gridHost');
+    if (!host) return;
     clear(host);
 
     const board = el('div', {
@@ -388,21 +486,19 @@
     }
     host.appendChild(board);
 
-    // 师级支援连
-    const supBox = el('div', { class: 'slot-section' }, [el('h3', { text: '师级支援连（最多 ' + DIV.SUPPORT_H + ' 个）' })]);
-    const supRow = el('div', { class: 'support-row' });
-    for (let i = 0; i < DIV.SUPPORT_H; i++) supRow.appendChild(cellNode('support', i, 0));
-    supBox.appendChild(supRow);
+    // 师级支援连：竖排在网格右侧（class 由 index.html 提供）
     const sh = UI.$('#supportHost');
-    clear(sh); sh.appendChild(supBox);
+    if (sh) {
+      clear(sh);
+      for (let i = 0; i < DIV.SUPPORT_H; i++) sh.appendChild(cellNode('support', i, 0));
+    }
 
-    // 团级支援
-    const regBox = el('div', { class: 'slot-section' }, [el('h3', { text: '团级支援（每个团需至少 3 个营）' })]);
-    const regRow = el('div', { class: 'support-row' });
-    for (let i = 0; i < DIV.REG_SUPPORT_W; i++) regRow.appendChild(cellNode('regimental_support', i, 0));
-    regBox.appendChild(regRow);
+    // 团级支援：横排在网格下方
     const rh = UI.$('#regSupportHost');
-    clear(rh); rh.appendChild(regBox);
+    if (rh) {
+      clear(rh);
+      for (let i = 0; i < DIV.REG_SUPPORT_W; i++) rh.appendChild(cellNode('regimental_support', i, 0));
+    }
   }
 
   function cellNode(kind, a, b) {
@@ -416,7 +512,7 @@
     const node = el('div', {
       class: cls + (unit ? ' filled ' + UI.unitColorClass(unit) : '') + (sel ? ' sel' : ''),
       'data-cell': cellKey(kind, a, b),
-      title: (unit ? unit.name + '（' + unit.id + '）\n点击配置装备；点 × 移除' : '点击放置当前选中的单位')
+      title: (unit ? unit.name + '（' + unit.id + '）\n点击配置装备；点 × 移除' : '点击选择兵种，或先用 Ctrl / Shift 多选再批量填充')
         + '\nCtrl 点击：加入多选　Shift 点击：选中连续区间',
       onmouseenter: () => {
         if (hoverCell && sameCell(hoverCell, { kind, a, b })) return;
@@ -435,8 +531,12 @@
     });
 
     if (unit) {
-      node.appendChild(el('div', { class: 'cell-label', text: unit.name }));
-      node.appendChild(el('div', { class: 'cell-sub', text: modelSummary(slot, unit) }));
+      // 兵牌：缩写 + 单位名 + 副信息（装备型号），与原版营位图标一致
+      node.appendChild(el('div', { class: 'ub-card' }, [
+        el('span', { class: 'ub-abbr', text: unitAbbr(unit) }),
+        el('span', { class: 'ub-label', text: unit.name }),
+        el('span', { class: 'ub-sub', text: modelSummary(slot, unit) }),
+      ]));
       node.appendChild(el('span', {
         class: 'cell-remove', text: '×', title: '移除',
         onclick: (e) => {
@@ -453,36 +553,73 @@
     return node;
   }
 
+  /**
+   * 兵种缩写（2 个汉字），用于兵牌上的大字。
+   * 先按关键词表拼：「摩托化」+「步兵」→ 摩步，「轻型」+「坦克」→ 轻坦；
+   * 两字关键词（火炮 / 防空 / 反坦…）直接使用，实在匹配不到就取名称前两字。
+   */
+  const ABBR_RULES = [
+    ['海军陆战', '陆战'], ['野战医院', '医院'], ['超重型', '超重'], ['骑兵', '骑'],
+    ['山地', '山'], ['伞兵', '伞'], ['摩托化', '摩'], ['机械化', '机'],
+    ['两栖', '两'], ['轻型', '轻'], ['中型', '中'], ['重型', '重'], ['自行', '自'],
+    ['缴获', '缴'], ['步兵', '步'], ['坦克', '坦'], ['装甲车', '装车'], ['装甲', '装'],
+    ['炮兵', '炮'], ['火炮', '火炮'], ['火箭', '火箭'], ['防空', '防空'],
+    ['反坦克', '反坦'], ['反步兵', '反步'], ['炊事', '炊'], ['骑兵侦察', '侦'],
+    ['侦察', '侦'], ['宪兵', '宪'], ['医疗', '医'], ['维修', '修'],
+    ['后勤', '后'], ['通信', '通'], ['工兵', '工'], ['支援', '援'],
+  ];
+
+  function unitAbbr(unit) {
+    const name = String((unit && unit.name) || (unit && unit.id) || '');
+    for (const [kw, ab] of ABBR_RULES) {
+      if (name.indexOf(kw) < 0) continue;
+      // 两字关键词（火炮 / 防空 / 火箭…）本身就是完整缩写
+      if (ab.length >= 2) return ab.slice(0, 2);
+      // 一字类别：再拼一个主体字，例如 摩托化 + 步兵 → 摩步
+      const rest = name.replace(kw, '');
+      return (ab + (ABBR_TAIL.find((t) => rest.indexOf(t) >= 0) || '兵')).slice(0, 2);
+    }
+    const han = name.replace(/[^\u4e00-\u9fa5]/g, '');
+    if (han.length >= 2) return han.slice(0, 2);
+    if (han.length === 1) return han + han;
+    return name.slice(0, 2).toUpperCase();
+  }
+
+  /** 一字类别后面要拼的主体字（顺序即优先级） */
+  const ABBR_TAIL = ['步', '摩', '机', '坦', '装', '炮', '骑', '山', '伞', '陆战'];
+
   /* ------------------------------------------------------------------ */
-  /* 编辑焦点：点击 / Ctrl 多选 / Shift 区间                             */
+  /* 编辑焦点：点击 / Ctrl 多选 / Shift 区间 / 点空格弹窗                 */
   /* ------------------------------------------------------------------ */
 
   /**
    * 点击槽位。
-   *   Ctrl  -> 加入 / 移出多选，不打开装备弹窗
+   *   Ctrl  -> 加入 / 移出多选，不打开任何弹窗
    *   Shift -> 从锚点选到当前槽位的连续区间
-   *   普通  -> 有选中单位就放置；已有营则打开装备弹窗
+   *   普通  -> 已有营：装备弹窗；有选中单位：放置；空格：就地弹出兵种选择窗
    */
   function handleCellClick(e, kind, a, b, unit) {
     const ctrl = !!(e && (e.ctrlKey || e.metaKey));
     const shift = !!(e && e.shiftKey);
-    activeCell = { kind, a, b };
+    const cell = { kind, a, b };
+    activeCell = cell;
+    hoverCell = null;
 
     if (ctrl) {
       const i = cellIndex(kind, a, b);
-      if (i >= 0) selectedCells.splice(i, 1); else selectedCells.push({ kind, a, b });
-      anchorCell = { kind, a, b };
+      if (i >= 0) selectedCells.splice(i, 1); else selectedCells.push(cell);
+      anchorCell = cell;
       refreshSelectionUI();
       return;
     }
     if (shift) {
-      selectRange(anchorCell || { kind, a, b }, { kind, a, b });
+      selectRange(anchorCell || cell, cell);
       refreshSelectionUI();
       return;
     }
 
     selectedCells = [];
-    anchorCell = { kind, a, b };
+    anchorCell = cell;
     if (unit) {
       refreshSelectionUI();
       openSlotDialog(kind, a, b);
@@ -492,8 +629,10 @@
       placeUnit(kind, a, b, selectedUnitId);
       return;
     }
+    // 空槽位：就地在格子旁边弹出兵种选择窗
     refreshSelectionUI();
-    UI.toast('请先在左侧选择一个单位，或用 Ctrl / Shift 点选多个槽位');
+    const anchor = q('[data-cell="' + cellKey(kind, a, b) + '"]');
+    if (anchor) openPicker(anchor, cell);
   }
 
   /** Shift 区间选择：按网格矩形（或支援槽位下标区间）选中范围内的槽位 */
@@ -522,7 +661,7 @@
   /** 只刷新选中态的样式与待选区，避免整页重绘 */
   function refreshSelectionUI() {
     for (const node of UI.$$('[data-cell]')) {
-      const k = node.dataset ? node.dataset.cell : '';
+      const k = node.getAttribute ? node.getAttribute('data-cell') : '';
       const parts = String(k || '').split(':');
       const on = parts.length === 3 && isCellSelected(parts[0], Number(parts[1]), Number(parts[2]));
       node.classList.toggle('sel', on);
@@ -665,6 +804,7 @@
     else if (kind === 'support') template.supports[a] = slot;
     else template.regSupports[a] = slot;
 
+    selectedUnitId = null;
     persist();
     renderAll();
   }
@@ -756,83 +896,73 @@
   }
 
   /* ------------------------------------------------------------------ */
-  /* 属性面板                                                           */
+  /* 属性面板：base / combat / equipment / 其它 四组属性栏                */
   /* ------------------------------------------------------------------ */
 
-  const STAT_ROWS = [
-    { group: '进攻', stats: [['soft_attack', '软攻'], ['hard_attack', '硬攻'], ['ap_attack', '穿甲'], ['air_attack', '对空攻击'], ['breakthrough', '突破']] },
-    { group: '防御', stats: [['defense', '防御'], ['armor_value', '装甲'], ['hardness', '硬度']] },
-    { group: '组织与兵力', stats: [['max_organisation', '组织度'], ['max_strength', '兵力(HP)'], ['manpower', '人力'], ['suppression', '镇压']] },
-    { group: '机动与后勤', stats: [['maximum_speed', '速度'], ['combat_width', '战斗宽度'], ['supply_consumption', '补给消耗'], ['weight', '重量'], ['reliability', '可靠性']] },
-  ];
+  const RES_NAMES = { steel: '钢', tungsten: '钨', chromium: '铬', aluminium: '铝', rubber: '橡胶', oil: '石油' };
+
+  function statCol(title, rows) {
+    const col = el('div', { class: 'stat-col' }, [el('h3', { text: title })]);
+    for (const [k, v, digits] of rows) {
+      col.appendChild(el('div', { class: 'stat-row' }, [
+        el('span', { class: 'k', text: k }),
+        el('span', { class: 'v hi', text: typeof v === 'string' ? v : fmt(v, digits === undefined ? 2 : digits) }),
+      ]));
+    }
+    return col;
+  }
 
   function renderStats() {
     const host = UI.$('#statsBody');
+    if (!host) return;
     clear(host);
 
     const r = DIV.computeDivision(template);
     lastResult = r;
     const s = r.stats;
 
-    // 概览
-    const overview = el('div', { class: 'stat-group' }, [el('h3', { text: '概览' })]);
-    const ov = [
-      ['战斗营', r.summary.battalionCount],
-      ['支援连', r.summary.supportCount],
-      ['团级支援', r.summary.regSupportCount],
-      ['单位总数', r.summary.totalUnits],
-      ['师宽度', fmt(s.combat_width, 0)],
+    // 资源需求（钢 / 钨 / 铬 / 铝 / 橡胶 / 石油）
+    const resRows = Object.keys(r.cost.resources).map((rk) => [RES_NAMES[rk] || rk, r.cost.resources[rk], 0]);
+
+    const base = statCol('基础属性', [
+      ['组织度', s.max_organisation], ['兵力(HP)', s.max_strength, 1],
+      ['人力', s.manpower, 0], ['宽度', s.combat_width, 1], ['速度', s.maximum_speed],
+    ]);
+    const combat = statCol('战斗属性', [
+      ['软攻', s.soft_attack], ['硬攻', s.hard_attack], ['穿甲', s.ap_attack],
+      ['防御', s.defense], ['突破', s.breakthrough], ['装甲', s.armor_value], ['硬度', s.hardness],
+    ]);
+    const equip = statCol('装备与后勤', [
+      ['补给消耗', s.supply_consumption], ['重量', s.weight], ['可靠性', s.reliability],
+      ['工业成本(IC)', r.cost.ic, 1],
+    ].concat(resRows));
+    const overview = statCol('编制概览', [
+      ['战斗营数', r.summary.battalionCount, 0], ['支援连数', r.summary.supportCount, 0],
+      ['团级支援数', r.summary.regSupportCount, 0], ['单位总数', r.summary.totalUnits, 0],
+      ['师宽度', s.combat_width, 1],
       ['最慢单位', r.summary.slowestUnit || '—'],
-    ];
-    for (const [k, v] of ov) {
-      overview.appendChild(el('div', { class: 'stat-row' }, [
-        el('span', { class: 'k', text: k }), el('span', { class: 'v', text: String(v) }),
-      ]));
-    }
-    host.appendChild(overview);
-
-    for (const g of STAT_ROWS) {
-      const box = el('div', { class: 'stat-group' }, [el('h3', { text: g.group })]);
-      for (const [key, label] of g.stats) {
-        const v = s[key];
-        box.appendChild(el('div', { class: 'stat-row' }, [
-          el('span', { class: 'k', text: label }),
-          el('span', { class: 'v hi', text: fmt(v, key === 'combat_width' || key === 'max_strength' ? 1 : 2) }),
-        ]));
-      }
-      host.appendChild(box);
-    }
-
-    // 成本
-    const costBox = el('div', { class: 'stat-group' }, [el('h3', { text: '生产需求（满编）' })]);
-    costBox.appendChild(el('div', { class: 'stat-row' }, [
-      el('span', { class: 'k', text: '工业产能 (IC)' }),
-      el('span', { class: 'v hi', text: fmt(r.cost.ic, 1) }),
-    ]));
-    const resNames = { steel: '钢', tungsten: '钨', chromium: '铬', aluminium: '铝', rubber: '橡胶', oil: '石油' };
-    for (const rk of Object.keys(r.cost.resources)) {
-      costBox.appendChild(el('div', { class: 'stat-row' }, [
-        el('span', { class: 'k', text: '资源：' + (resNames[rk] || rk) }),
-        el('span', { class: 'v', text: fmt(r.cost.resources[rk], 0) }),
-      ]));
-    }
-    host.appendChild(costBox);
+    ]);
 
     // 单位明细
-    const detail = el('div', { class: 'stat-group' }, [el('h3', { text: '单位明细（' + r.battalions.length + '）' })]);
+    const detail = el('div', { class: 'stat-col' }, [
+      el('h3', { text: '单位明细（' + r.battalions.length + '）' }),
+    ]);
     for (const b of r.battalions) {
       detail.appendChild(el('div', { class: 'mod-item' }, [
         el('span', { class: 'src', text: b.stats.name }),
         el('span', { class: 'val', text: '软攻 ' + fmt(b.stats.soft_attack, 1) }),
       ]));
     }
-    host.appendChild(detail);
+    overview.appendChild(detail);
+
+    host.appendChild(el('div', { class: 'stat-cols' }, [base, combat, equip, overview]));
 
     renderValidation(r);
   }
 
   function renderValidation(r) {
     const host = UI.$('#validationHost');
+    if (!host) return;
     clear(host);
     const v = DIV.validate(template);
     for (const e of v.errors) host.appendChild(el('div', { class: 'err', text: '✕ ' + e }));
@@ -845,7 +975,8 @@
   /* ------------------------------------------------------------------ */
 
   function renderAll() {
-    UI.$('#templateName').value = template.name || '';
+    const nameInput = UI.$('#templateName');
+    if (nameInput) nameInput.value = template.name || '';
     renderPalette();
     renderGrid();
     renderStats();
@@ -854,7 +985,7 @@
   function refresh() { renderAll(); }
 
   function getTemplate() { return template; }
-  function setTemplate(t) { template = sanitize(t); persist(); renderAll(); }
+  function setTemplate(t) { template = sanitize(t); selectedUnitId = null; clearSelection(); persist(); renderAll(); }
 
   global.HOI_UI_DESIGNER = { init, refresh, getTemplate, setTemplate, getResult: () => lastResult };
 })(typeof window !== 'undefined' ? window : globalThis);

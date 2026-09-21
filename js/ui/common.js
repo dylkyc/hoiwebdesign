@@ -123,6 +123,85 @@
     setTimeout(() => URL.revokeObjectURL(url), 1000);
   }
 
+  /* ---------------------------------------------------------------- */
+  /* 就地弹出选择窗（模拟游戏里点空格弹出的 catalog 窗）                  */
+  /* ---------------------------------------------------------------- */
+
+  /**
+   * 在某个锚点元素旁边弹出选择窗；点外部 / Esc / 选完即关闭。
+   *
+   * @param {object} cfg
+   *   anchor     锚点元素（通常是被点的槽位 / 网格单元）
+   *   title      标题
+   *   groups     [{ key, title, list, render(item) }]
+   *   onPick     (item, group) => void
+   *   emptyText  没有可选项时的提示
+   *   width      面板宽度（px）
+   */
+  function openPopover(cfg) {
+    const anchor = cfg.anchor;
+    const doc = anchor.ownerDocument || document;
+
+    // 关掉已有的
+    for (const old of Array.prototype.slice.call(doc.querySelectorAll('.popover-panel'))) {
+      if (old.parentNode) old.parentNode.removeChild(old.parentNode);
+    }
+
+    const overlay = el('div', { class: 'popover-layer' });
+    const panel = el('div', { class: 'popover-panel', style: { width: (cfg.width || 340) + 'px' } });
+    const head = el('div', { class: 'popover-head' });
+    head.appendChild(el('span', { class: 'popover-title', text: cfg.title || '' }));
+    const closeBtn = el('span', { class: 'popover-close', text: '×', title: '关闭' });
+    head.appendChild(closeBtn);
+    panel.appendChild(head);
+
+    const body = el('div', { class: 'popover-body' });
+    panel.appendChild(body);
+
+    function close() {
+      if (overlay.parentNode) overlay.parentNode.removeChild(overlay);
+      doc.removeEventListener('keydown', onKey);
+    }
+    function onKey(e) { if (e.key === 'Escape') close(); }
+
+    for (const g of (cfg.groups || [])) {
+      if (!g || !g.list || !g.list.length) continue;
+      if (g.title) {
+        body.appendChild(el('div', { class: 'popover-group', text: g.title + '（' + g.list.length + '）' }));
+      }
+      const grid = el('div', { class: 'popover-grid' });
+      for (const item of g.list) {
+        if (g.render) { grid.appendChild(g.render(item, close)); continue; }
+        grid.appendChild(el('div', { class: 'popover-item', text: String(item) }));
+      }
+      body.appendChild(grid);
+    }
+    if (!body.childNodes.length) {
+      body.appendChild(el('div', { class: 'empty-note', text: cfg.emptyText || '没有可选项。' }));
+    }
+
+    closeBtn.onclick = close;
+    overlay.onclick = (e) => { if (e.target === overlay) close(); };
+    doc.addEventListener('keydown', onKey);
+
+    overlay.appendChild(panel);
+    doc.body.appendChild(overlay);
+
+    // 贴着锚点定位，超出视口就夹回来
+    const r = anchor.getBoundingClientRect ? anchor.getBoundingClientRect() : { left: 0, top: 0, right: 0, bottom: 0, width: 0 };
+    const vw = global.innerWidth || 1200;
+    const vh = global.innerHeight || 800;
+    const pw = cfg.width || 340;
+    let left = r.right + 8;
+    if (left + pw > vw - 8) left = Math.max(8, r.left - pw - 8);
+    let top = r.top;
+    if (top + 320 > vh - 8) top = Math.max(8, vh - 8 - 320);
+    panel.style.left = left + 'px';
+    panel.style.top = top + 'px';
+
+    return { close, panel, body };
+  }
+
   /** 根据营的 types/categories 给出用于配色的类别 */
   function unitColorClass(unit) {
     if (!unit) return '';
@@ -558,6 +637,7 @@
   global.UI = {
     el, clear, $, $$, fmt, pct, signed, statLabel, toast, modal, download, unitColorClass,
     isCombatTrait, traitEffectLines, traitEffectLinesForRole, effectText, traitPicker, traitRow,
+    openPopover,
     TRAIT_CATEGORIES, traitOrigin, traitIsCategory, traitOriginLabel, traitCountries,
   };
 })(typeof window !== 'undefined' ? window : globalThis);

@@ -50,20 +50,13 @@
 
   <!-- ============ 编制设计 ============ -->
   <section class="view" id="view-designer">
-    <div class="designer-layout">
+    <div class="div-layout">
 
-      <aside class="panel palette">
-        <div class="panel-head">
-          <h2>可用单位</h2>
-          <input type="search" id="paletteSearch" placeholder="搜索单位…">
-        </div>
-        <div class="panel-body" id="paletteBody"></div>
-      </aside>
-
-      <div class="panel canvas-panel">
-        <div class="panel-head">
-          <h2>编制网格</h2>
-          <div class="toolbar">
+      <div class="panel div-canvas">
+        <div class="div-topbar">
+          <div class="div-emblem" title="师徽">师</div>
+          <input type="text" id="templateName" class="div-style-name" value="新编制" placeholder="师名">
+          <div class="toolbar" style="flex:1 1 auto; flex-wrap:wrap; justify-content:flex-end">
             <button class="btn small" id="btnPreset">载入预设</button>
             <button class="btn small" id="btnClear">清空</button>
             <button class="btn small" id="btnSave">保存</button>
@@ -71,21 +64,33 @@
             <button class="btn small" id="btnExport">导出 JSON</button>
             <button class="btn small" id="btnImport">导入 JSON</button>
           </div>
+          <div class="div-topbar-right" id="selectionStatus"></div>
         </div>
-        <div class="panel-body">
-          <div class="template-name-row">
-            <label>编制名称</label>
-            <input type="text" id="templateName" value="新编制">
+
+        <div class="div-workbench">
+          <div class="div-main">
+            <div id="gridHost"></div>
           </div>
-          <div id="gridHost"></div>
-          <div id="supportHost"></div>
-          <div id="regSupportHost"></div>
-          <div id="validationHost" class="validation"></div>
+          <div class="div-side">
+            <div class="slot-title">师级支援</div>
+            <div id="supportHost" class="div-slot-col"></div>
+          </div>
+        </div>
+
+        <div class="slot-title">团级支援（每个团需至少 3 个营）</div>
+        <div id="regSupportHost" class="div-support-strip"></div>
+
+        <div id="validationHost" class="validation"></div>
+
+        <!-- 兵种目录改成点空格弹出的选择窗；这两个宿主继续保留，供交互与自检使用 -->
+        <div class="palette-holder" hidden>
+          <input type="search" id="paletteSearch" placeholder="搜索单位…">
+          <div id="paletteBody"></div>
         </div>
       </div>
 
-      <aside class="panel stats">
-        <div class="panel-head"><h2>属性总览</h2></div>
+      <aside class="panel">
+        <div class="panel-head"><h2>师属性</h2></div>
         <div class="panel-body" id="statsBody"></div>
       </aside>
 

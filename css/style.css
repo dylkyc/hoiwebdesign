@@ -123,19 +123,15 @@ main { padding: 12px; height: calc(100vh - 46px); height: calc(100dvh - 46px); o
 .panel-body { padding: 10px; overflow: auto; flex: 1; min-height: 0; }
 
 /* ---------- 布局 ---------- */
-.designer-layout,
 .battle-layout,
-.leader-layout,
-.tank-layout {
+.leader-layout {
   display: grid;
   gap: 10px;
   height: 100%;
   min-height: 0;
 }
-.designer-layout { grid-template-columns: 268px minmax(520px, 1fr) 330px; }
 .battle-layout   { grid-template-columns: 320px minmax(420px, 1fr) 380px; }
 .leader-layout   { grid-template-columns: 340px minmax(380px, 1fr) 320px; }
-.tank-layout     { grid-template-columns: 300px minmax(420px, 1fr) 380px; }
 
 /* ---------- 坦克设计 ---------- */
 .tank-list { display: flex; flex-direction: column; gap: 4px; }
@@ -173,6 +169,292 @@ main { padding: 12px; height: calc(100vh - 46px); height: calc(100dvh - 46px); o
 .slot-row select { width: 100%; }
 .slot-mods { font-size: 10px; color: var(--text-dim); font-family: var(--mono); margin-top: 4px; }
 .tank-saved { display: flex; flex-direction: column; gap: 4px; }
+
+/* ---------- 就地弹出选择窗（模拟游戏 catalog 窗） ---------- */
+.popover-layer {
+  position: fixed;
+  inset: 0;
+  z-index: 300;
+}
+.popover-panel {
+  position: absolute;
+  background: var(--panel);
+  border: 1px solid var(--border-2);
+  border-radius: 4px;
+  box-shadow: 0 6px 22px rgba(0, 0, 0, .55);
+  display: flex;
+  flex-direction: column;
+  max-height: 78vh;
+  overflow: hidden;
+}
+.popover-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 6px 9px;
+  background: var(--panel-2);
+  border-bottom: 1px solid var(--border);
+}
+.popover-title { color: var(--accent-2); font-size: 12px; letter-spacing: .5px; }
+.popover-close { color: var(--text-faint); cursor: pointer; font-size: 14px; line-height: 1; padding: 0 2px; }
+.popover-close:hover { color: var(--bad); }
+.popover-body { padding: 7px; overflow: auto; }
+.popover-group {
+  font-size: 10px;
+  color: var(--text-dim);
+  text-transform: uppercase;
+  letter-spacing: .8px;
+  border-bottom: 1px solid var(--border);
+  padding-bottom: 2px;
+  margin: 6px 0 5px;
+}
+.popover-grid { display: flex; flex-wrap: wrap; gap: 4px; }
+.popover-item {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding: 3px 7px;
+  background: var(--bg-3);
+  border: 1px solid var(--border);
+  border-radius: 3px;
+  cursor: pointer;
+  font-size: 12px;
+  user-select: none;
+}
+.popover-item:hover { border-color: var(--accent); background: #2c323c; }
+.popover-item.on { border-color: var(--accent); background: rgba(200,160,74,.15); }
+.popover-item.armor { border-left: 2px solid #7a6a4a; }
+.popover-item.infantry { border-left: 2px solid #5f7a4a; }
+.popover-item.support { border-left: 2px solid #4a5f7a; }
+.popover-item.artillery { border-left: 2px solid #8a6a5a; }
+.popover-item.mobile { border-left: 2px solid #5a7a8a; }
+.popover-item .cw { font-family: var(--mono); font-size: 10px; color: var(--text-faint); }
+.popover-note { font-size: 11px; color: var(--text-faint); margin: 6px 0 2px; }
+
+/* ---------- 游戏化布局：坦克设计 ---------- */
+.tank-layout {
+  display: grid;
+  grid-template-columns: 250px minmax(460px, 1fr) 330px;
+  gap: 10px;
+  height: 100%;
+  min-height: 0;
+}
+.tank-family-row { display: flex; flex-wrap: wrap; gap: 3px; margin-bottom: 8px; }
+.tank-family-row .chip-filter { padding: 2px 7px; }
+
+/* 蓝图区：中间那张"图纸"，槽位图标钉在上面 */
+.tank-blueprint {
+  border: 1px solid var(--border-2);
+  border-radius: 4px;
+  background:
+    repeating-linear-gradient(0deg, rgba(255,255,255,.025) 0 1px, transparent 1px 22px),
+    repeating-linear-gradient(90deg, rgba(255,255,255,.025) 0 1px, transparent 1px 22px),
+    linear-gradient(180deg, #1d222a, #171b21);
+  padding: 10px;
+  margin-bottom: 10px;
+}
+.bp-title {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 8px;
+}
+.bp-title .bp-name { color: var(--accent-2); font-size: 14px; letter-spacing: .5px; }
+.bp-title .bp-hull { font-size: 11px; color: var(--text-faint); font-family: var(--mono); }
+.bp-slot-row { display: flex; flex-wrap: wrap; gap: 6px; }
+.bp-slot-row + .bp-slot-row { margin-top: 6px; }
+.bp-slot {
+  width: 104px;
+  min-height: 54px;
+  background: var(--bg-3);
+  border: 1px solid var(--border);
+  border-radius: 3px;
+  padding: 4px 6px;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  position: relative;
+}
+.bp-slot:hover { border-color: var(--accent); }
+.bp-slot.filled { border-color: var(--border-2); background: #262d36; }
+.bp-slot.optional { border-style: dashed; }
+.bp-slot.required { border-left: 2px solid var(--accent); }
+.bp-slot .bp-slot-label { font-size: 10px; color: var(--text-faint); text-transform: uppercase; letter-spacing: .5px; }
+.bp-slot .bp-slot-value { font-size: 11px; color: var(--text); line-height: 1.25; }
+.bp-slot .bp-slot-delta { font-size: 10px; font-family: var(--mono); color: var(--text-dim); }
+.bp-slot.empty .bp-slot-value { color: var(--text-faint); }
+/* 槽位里保留的下拉框只作为可编程换模块入口，视觉上不占位 */
+.bp-slot .slot-hidden-select { width: 100%; opacity: 0; height: 1px; padding: 0; border: 0; pointer-events: none; }
+.bp-hull-shape {
+  height: 46px;
+  margin: 4px 0 10px;
+  border: 1px solid var(--border-2);
+  border-radius: 6px 14px 6px 6px;
+  background: linear-gradient(180deg, rgba(200,160,74,.10), rgba(200,160,74,.02));
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 12px;
+  font-size: 11px;
+  color: var(--text-dim);
+}
+.bp-hull-shape .gun { font-family: var(--mono); color: var(--accent-2); }
+
+/* 三组属性栏：base / combat / misc */
+.stat-cols { display: grid; grid-template-columns: 1fr; gap: 8px; }
+.stat-col {
+  border: 1px solid var(--border);
+  border-radius: 3px;
+  background: var(--bg-2);
+}
+.stat-col > h3 {
+  margin: 0;
+  padding: 4px 8px;
+  font-size: 11px;
+  letter-spacing: .8px;
+  text-transform: uppercase;
+  color: var(--accent-2);
+  border-bottom: 1px solid var(--border);
+  background: var(--panel-2);
+}
+.stat-col .stat-row { padding: 2px 8px; }
+.stat-col .stat-row .v { font-family: var(--mono); }
+
+/* 底部生产条：消耗 + 资源 */
+.tank-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  flex-wrap: wrap;
+  border: 1px solid var(--border);
+  border-radius: 3px;
+  background: var(--panel-2);
+  padding: 6px 9px;
+  margin-top: 10px;
+}
+.tank-footer .fitem { display: flex; align-items: baseline; gap: 5px; font-size: 12px; }
+.tank-footer .fitem .k { color: var(--text-dim); font-size: 11px; }
+.tank-footer .fitem .v { font-family: var(--mono); color: var(--accent-2); }
+.tank-footer .res { display: flex; gap: 8px; flex-wrap: wrap; }
+.tank-footer .res .r { font-family: var(--mono); font-size: 11px; color: var(--text-dim); }
+
+/* ---------- 游戏化布局：编制设计 ---------- */
+.div-layout {
+  display: grid;
+  grid-template-columns: minmax(560px, 1fr) 300px;
+  gap: 10px;
+  height: 100%;
+  min-height: 0;
+}
+.div-canvas {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  overflow: auto;
+  padding: 8px 10px 10px;
+}
+.div-topbar-right { display: flex; align-items: center; gap: 6px; margin-left: auto; }
+.div-sel-status { display: flex; align-items: center; gap: 6px; }
+.div-sel-status .v { font-family: var(--mono); font-size: 11px; color: var(--accent-2); }
+.div-topbar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  padding: 6px 8px;
+  border-bottom: 1px solid var(--border);
+  background: var(--panel-2);
+}
+.div-emblem {
+  width: 34px;
+  height: 24px;
+  border: 1px solid var(--border-2);
+  border-radius: 3px;
+  background: linear-gradient(180deg, #2f3641, #232830);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 10px;
+  color: var(--accent-2);
+  letter-spacing: .5px;
+  flex: none;
+}
+.div-style-name { font-family: inherit; font-size: 13px; }
+.div-layout .grid-board { grid-template-columns: 22px repeat(5, minmax(74px, 1fr)); gap: 3px; }
+.div-layout .grid-cell { min-height: 42px; }
+.div-layout .support-slot { width: 82px; min-height: 40px; }
+.div-slot-col { display: flex; flex-direction: column; gap: 3px; }
+.div-support-strip { display: flex; gap: 3px; flex-wrap: wrap; }
+.slot-title {
+  font-size: 10px;
+  color: var(--text-faint);
+  text-transform: uppercase;
+  letter-spacing: .8px;
+  margin: 8px 0 3px;
+}
+.slot-title:first-child { margin-top: 0; }
+.div-workbench { display: flex; gap: 10px; align-items: flex-start; }
+.div-workbench .div-main { flex: 1; min-width: 0; }
+.div-workbench .div-side { flex: none; }
+/* 兵种目录改成弹出窗后，这个宿主只是数据与自检的锚点，不参与显示 */
+.palette-holder { display: none; }
+.palette-holder .hint { font-size: 11px; color: var(--text-dim); margin-bottom: 6px; }
+
+/* ---------- 兵牌（营 / 支援连的图形化表示） ---------- */
+.ub-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1px;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+.ub-abbr {
+  font-size: 13px;
+  font-weight: 700;
+  line-height: 1;
+  color: var(--text);
+}
+.ub-label {
+  font-size: 10px;
+  line-height: 1.1;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: var(--text-dim);
+}
+.ub-sub {
+  font-size: 9px;
+  color: var(--text-faint);
+  font-family: var(--mono);
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+/* 兵种配色：用左侧色条 + 缩写颜色区分 */
+.grid-cell .ub-card { border-left: 3px solid var(--border-2); }
+.grid-cell.infantry .ub-card { border-left-color: #5f7a4a; }
+.grid-cell.infantry .ub-abbr { color: #9ab97a; }
+.grid-cell.armor .ub-card { border-left-color: #8a7448; }
+.grid-cell.armor .ub-abbr { color: #d8b25f; }
+.grid-cell.artillery .ub-card { border-left-color: #8a6a5a; }
+.grid-cell.artillery .ub-abbr { color: #cf9a86; }
+.grid-cell.mobile .ub-card { border-left-color: #5a7a8a; }
+.grid-cell.mobile .ub-abbr { color: #86bcd4; }
+.support-slot.filled .ub-card { border-left: 3px solid #4a5f7a; }
+.support-slot.filled .ub-abbr { color: #8fb4dc; }
+/* 支援槽窄，徽标小一号 */
+.support-slot .ub-abbr { font-size: 12px; }
+.support-slot .ub-sub { display: none; }
 
 /* ---------- 通用控件 ---------- */
 button.btn, select, input[type=text], input[type=search], input[type=number] {

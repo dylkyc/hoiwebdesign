@@ -1,9 +1,11 @@
 /**
  * tankdesign.js — 坦克设计与装备科技解锁界面
  *
- * 左侧：按家族 / 变体 / 科技年份挑底盘（年份滑块就是"科技解锁选择"）
- * 中间：槽位模块配置（数据来自底盘 archetype 的 module_slots）
- * 右侧：实时属性 + 校验 + 导出（json / 游戏脚本 / 直接给编制页用）
+ * 结构照《钢铁雄心4》的坦克设计器来组织：
+ *   左栏：按家族 / 变体 / 科技年份挑底盘（年份滑块就是"科技解锁选择"）
+ *   中栏：一张"蓝图"底图，槽位以图标按钮钉在蓝图上；点上排 4 个可选特殊槽、
+ *         下排 5 个固定槽（炮塔 / 主炮 / 悬挂 / 装甲 / 引擎），点一下弹出模块选择窗
+ *   右栏：三组属性栏（基础 / 战斗 / 其它）+ 底部生产消耗与资源 + 校验 + 导出
  */
 (function (global) {
   'use strict';
@@ -75,12 +77,13 @@
     const host = UI.$('#tankChassis');
     clear(host);
 
-    // 家族
-    const famRow = el('div', { class: 'chip-row' });
+    // 家族（紧凑的 chip 按钮行）
+    const famRow = el('div', { class: 'tank-family-row' });
     for (const f of T.FAMILIES) {
       famRow.appendChild(el('button', {
         class: 'chip-filter' + (state.family === f.id ? ' on' : ''),
         text: f.name,
+        title: f.id,
         onclick: () => {
           state.family = f.id;
           const vs = T.listVariants(f.id);
@@ -93,7 +96,7 @@
 
     // 变体
     const variants = T.listVariants(state.family);
-    const vRow = el('div', { class: 'chip-row' });
+    const vRow = el('div', { class: 'tank-family-row' });
     for (const v of variants) {
       vRow.appendChild(el('button', {
         class: 'chip-filter' + (state.variant === v.key ? ' on' : ''),
@@ -101,9 +104,11 @@
         onclick: () => { state.variant = v.key; pickFirstChassis(); },
       }));
     }
-    host.appendChild(el('div', { class: 'field' }, [el('label', { text: '变体（歼击车 / 自行火炮 / 自行防空…）' }), vRow]));
+    host.appendChild(el('div', { class: 'field' }, [
+      el('label', { text: '变体（歼击车 / 自行火炮 / 自行防空…）' }), vRow,
+    ]));
 
-    // 科技解锁年份
+    // 科技解锁年份：滑块
     const years = T.listChassis({ family: state.family, variant: variantKey() }).map((c) => c.year);
     const minY = years.length ? Math.min.apply(null, years) : 1936;
     const maxY = years.length ? Math.max.apply(null, years) : 1948;
@@ -135,10 +140,52 @@
     }
     if (!list.length) box.appendChild(el('div', { class: 'empty-note', text: '这个变体没有可选底盘。' }));
     host.appendChild(box);
+
+    // 已保存的设计（列表 + 载入编辑 / 导出脚本 / 删除）
+    if (state.saved.length) host.appendChild(savedBox());
+  }
+
+  /** 已保存设计列表（沿用 .tank-saved / .tank-item） */
+  function savedBox() {
+    const list = el('div', { class: 'tank-saved' });
+    for (const s of state.saved) {
+      list.appendChild(el('div', { class: 'tank-item' + (s.id === state.editingId ? ' on' : '') }, [
+        el('div', { class: 'tname', text: s.name }, [
+          el('span', { class: 'tyear', text: (s.registered === false ? '未注册' : '编制页可用') }),
+        ]),
+        el('div', { class: 'tmods', text: HOI.locOf(s.chassisId, s.chassisId) + '　ID：' + s.id }),
+        el('div', { class: 'trait-panel-actions', style: { marginTop: '4px' } }, [
+          el('button', {
+            class: 'btn small', text: '载入编辑',
+            onclick: () => {
+              state.chassisId = s.chassisId;
+              state.design = T.cloneDesign({ chassisId: s.chassisId, modules: s.modules || {} });
+              state.name = s.name;
+              state.editingId = s.id;
+              render();
+            },
+          }),
+          el('button', {
+            class: 'btn small', text: '导出脚本', onclick: () => exportScript(s),
+          }),
+          el('button', {
+            class: 'btn small', text: '删除',
+            onclick: () => {
+              state.saved = state.saved.filter((x) => x.id !== s.id);
+              if (state.editingId === s.id) state.editingId = null;
+              persistSaved();
+              render();
+              UI.toast('已删除：' + s.name);
+            },
+          }),
+        ]),
+      ]));
+    }
+    return el('div', { class: 'mod-block' }, [el('h3', { text: '已保存的设计（' + state.saved.length + '）' }), list]);
   }
 
   /* ------------------------------------------------------------------ */
-  /* 中栏：槽位配置                                                      */
+  /* 中栏：蓝图区（槽位钉在蓝图上，点一下弹模块选择窗）                    */
   /* ------------------------------------------------------------------ */
 
   function renderSlots() {
@@ -146,75 +193,192 @@
     clear(host);
     if (!state.chassisId) { host.appendChild(el('div', { class: 'empty-note', text: '请先在左侧选择底盘。' })); return; }
 
-    const chassis = HOI.equipment[state.chassisId];
+    const chassis = HOI.equipment[state.chassisId] || {};
     const slots = T.slotsOf(state.chassisId);
     const computed = T.computeDesign(state.design);
+    const byId = {};
+    for (const s of slots) byId[s.id] = s;
 
-    host.appendChild(el('div', { class: 'hint', text: '底盘「' + (chassis.name || state.chassisId) + '」共 '
-      + slots.length + ' 个槽位（' + slots.filter((s) => s.required).length + ' 个必选）'
-      + '，属性由底盘固有值与所选模块叠加而成。' }));
+    const bp = el('div', { class: 'tank-blueprint' });
 
-    const required = slots.filter((s) => s.required);
-    const optional = slots.filter((s) => !s.required);
-    const section = (title, list) => {
-      if (!list.length) return null;
-      const box = el('div', { class: 'slot-section' }, [el('h3', { text: title })]);
-      for (const slot of list) box.appendChild(slotRow(slot, computed));
-      return box;
-    };
-    const a = section('必选槽位', required);
-    if (a) host.appendChild(a);
-    const b = section('可选特殊槽（特殊模块 / 电台 / 副炮塔）', optional);
-    if (b) host.appendChild(b);
+    // 标题：左中文名，右底盘 id 与年份
+    bp.appendChild(el('div', { class: 'bp-title' }, [
+      el('span', { class: 'bp-name', text: chassis.name || HOI.locOf(state.chassisId, state.chassisId) }),
+      el('span', { class: 'bp-hull', text: state.chassisId + '　' + (chassis.year || 0) + ' 年' }),
+    ]));
+
+    // 车体示意：纯 CSS/文字，不用图片
+    const turretName = moduleName(computed, 'turret_type_slot');
+    const gunName = moduleName(computed, 'main_armament_slot');
+    bp.appendChild(el('div', { class: 'bp-hull-shape' }, [
+      el('span', { text: '炮塔／主炮：' + turretName }),
+      el('span', { class: 'gun', text: gunName }),
+    ]));
+
+    // 第一行：可选特殊槽（游戏里在蓝图上排）
+    const optional = SPECIAL_SLOT_ORDER.map((id) => byId[id]).filter(Boolean);
+    bp.appendChild(el('div', { class: 'bp-slot-row' }, optional.map((s) => slotTile(s, computed))));
+
+    // 第二行：5 个必选槽（炮塔 / 主炮 / 悬挂 / 装甲 / 引擎）
+    const required = REQUIRED_SLOT_ORDER.map((id) => byId[id]).filter(Boolean);
+    bp.appendChild(el('div', { class: 'bp-slot-row' }, required.map((s) => slotTile(s, computed))));
+
+    // 兜底：万一底盘有不在已知顺序里的槽位，也要能改
+    const known = {};
+    for (const id of REQUIRED_SLOT_ORDER.concat(SPECIAL_SLOT_ORDER)) known[id] = true;
+    const rest = slots.filter((s) => !known[s.id]);
+    if (rest.length) bp.appendChild(el('div', { class: 'bp-slot-row' }, rest.map((s) => slotTile(s, computed))));
+
+    host.appendChild(bp);
+
+    const missing = required.filter((s) => !state.design.modules[s.id]).length;
+    host.appendChild(el('div', {
+      class: 'hint',
+      text: '共 ' + slots.length + ' 个槽位（' + required.length + ' 个必选）'
+        + (missing ? '，还有 ' + missing + ' 个必选槽没配' : '，必选槽已配齐')
+        + '；点击蓝图上的槽位即可更换模块。',
+    }));
   }
 
-  function slotRow(slot, computed) {
-    const current = state.design.modules[slot.id] || '';
-    const options = T.modulesForSlot(state.chassisId, slot.id);
-    const detail = computed.items.filter((it) => it.slotId === slot.id)[0];
+  /** 已装模块的中文名（没装则给空槽文案） */
+  function moduleName(computed, slotId) {
+    const it = computed.items.filter((x) => x.slotId === slotId)[0];
+    return it ? it.name : '（空）';
+  }
 
+  /**
+   * 蓝图上的一个槽位方块。
+   *
+   * 结构固定为 .bp-slot-label / .bp-slot-value / .bp-slot-delta，并额外挂
+   * required / optional / filled / empty 四个状态 class。
+   * 里面同时保留一个下拉框（视觉上隐藏、指针也不接收事件）：这是「槽位行 + select」
+   * 的既有交互契约，键盘/脚本都能直接换模块，方便回归测试。
+   */
+  function slotTile(slot, computed) {
+    const current = state.design.modules[slot.id] || '';
+    const filled = !!current;
+    const onChange = (value) => {
+      state.design.modules[slot.id] = value || null;
+      render();
+    };
+
+    const sel = slotSelect(slot, current, onChange);
+    sel.style.opacity = '0';
+    sel.style.height = '1px';
+    sel.style.padding = '0';
+    sel.style.border = '0';
+    sel.style.pointerEvents = 'none';
+
+    const tile = el('div', {
+      class: 'slot-row bp-slot'
+        + (slot.required ? ' required' : ' optional')
+        + (filled ? ' filled' : ' empty'),
+      title: slot.label + '（点击选择模块）',
+      onclick: () => openSlotPicker(slot, tile),
+    }, [
+      sel,
+      el('div', { class: 'bp-slot-label', text: slot.label }),
+      el('div', { class: 'bp-slot-value', text: filled ? HOI.locOf(current, current) : (slot.required ? '（未选择）' : '（空）') }),
+      el('div', { class: 'bp-slot-delta', text: slotDelta(slot, computed) }),
+    ]);
+    return tile;
+  }
+
+  /** 槽位下拉框：保留为可编程的换模块入口 */
+  function slotSelect(slot, current, onChange) {
+    const options = T.modulesForSlot(state.chassisId, slot.id);
     const sel = el('select', {
-      onchange: (e) => {
-        state.design.modules[slot.id] = e.target.value || null;
-        render();
-      },
+      class: 'slot-hidden-select',
+      onchange: (e) => onChange(e.target.value),
     });
     sel.appendChild(el('option', { value: '', text: slot.required ? '（未选择）' : '（空）' }));
     for (const m of options) {
-      const bits = [];
-      for (const k of ['soft_attack', 'hard_attack', 'ap_attack', 'air_attack', 'defense', 'breakthrough', 'armor_value']) {
-        if (m.addStats[k]) bits.push(STAT_SHORT[k] + ' ' + fmt(m.addStats[k], 0));
-      }
+      const bits = moduleBits(m.addStats, m.multiplyStats, 3);
       const o = el('option', {
         value: m.id,
-        text: m.name + (m.year ? '（' + m.year + '）' : '') + (bits.length ? '　' + bits.slice(0, 3).join(' ') : ''),
+        text: m.name + (m.year ? '（' + m.year + '）' : '') + (bits ? '　' + bits : ''),
       });
       if (m.id === current) o.selected = true;
       sel.appendChild(o);
     }
+    return sel;
+  }
 
-    // 模块效果明细
-    const modBox = el('div', { class: 'slot-mods' });
-    if (detail) {
-      const rows = [];
-      for (const k of Object.keys(detail.add)) rows.push(STAT_SHORT[k] + ' ' + signed(detail.add[k]));
-      for (const k of Object.keys(detail.mul)) rows.push(STAT_SHORT[k] + ' ×' + (1 + detail.mul[k]).toFixed(2));
-      modBox.textContent = rows.length ? rows.join('　') : '无属性影响';
-    } else {
-      modBox.textContent = slot.required ? '必选，未配置' : '空';
+  /** 槽位上显示的少量属性影响，如「软攻 +15　穿甲 +20」 */
+  function slotDelta(slot, computed) {
+    const it = computed.items.filter((x) => x.slotId === slot.id)[0];
+    const bits = it ? moduleBits(it.add, it.mul, 2) : '';
+    if (bits) return bits;
+    return slot.required ? '必选，未配置' : '空';
+  }
+
+  /** 从模块的加法 / 乘法属性里挑出少量可读条目 */
+  function moduleBits(add, mul, max) {
+    const out = [];
+    for (const k of STAT_PRIORITY) {
+      if (out.length >= max) break;
+      if (add && add[k]) out.push(STAT_SHORT[k] + ' ' + signed(add[k]));
     }
-    // 数量限制提示
-    const lim = (HOI.equipment[state.chassisId].limits || []).filter((l) => l.module === (current || ''))[0];
-    if (lim) modBox.textContent += '　（该底盘最多 ' + (lim.value - 1) + ' 个）';
+    for (const k of STAT_PRIORITY) {
+      if (out.length >= max) break;
+      if (mul && mul[k]) out.push(STAT_SHORT[k] + ' ×' + (1 + mul[k]).toFixed(2));
+    }
+    return out.join('　');
+  }
 
-    return el('div', { class: 'slot-row' + (slot.required ? ' required' : '') }, [
-      el('div', { class: 'slot-head' }, [
-        el('span', { class: 'slot-name', text: slot.label }),
-        el('span', { class: 'slot-cats', text: slot.categories.map((c) => SLOT_CAT_SHORT[c] || c).join(' / ') }),
-      ]),
-      sel,
-      modBox,
-    ]);
+  /** 点击槽位：在槽位旁弹出模块选择窗 */
+  function openSlotPicker(slot, anchor) {
+    const options = T.modulesForSlot(state.chassisId, slot.id);
+    const current = state.design.modules[slot.id] || '';
+    const chassisName = (HOI.equipment[state.chassisId] || {}).name || HOI.locOf(state.chassisId, state.chassisId);
+    const list = options.map((m) => ({ id: m.id, name: m.name, year: m.year, mod: m }));
+
+    const groups = [];
+    if (current) {
+      groups.push({
+        key: 'clear',
+        title: '卸下',
+        list: [{ id: '', name: slot.required ? '（未选择）' : '（空）' }],
+        render: (item, close) => el('div', {
+          class: 'popover-item',
+          text: item.name,
+          onclick: () => { close(); setSlotModule(slot.id, null); },
+        }),
+      });
+    }
+    groups.push({
+      key: 'modules',
+      title: '可选模块',
+      list: list,
+      render: (m, close) => {
+        const bits = moduleBits(m.mod.addStats, m.mod.multiplyStats, 3);
+        const node = el('div', {
+          class: 'popover-item' + (m.id === current ? ' on' : ''),
+          onclick: () => { close(); setSlotModule(slot.id, m.id); },
+        }, [
+          el('div', { text: m.name + (m.year ? '（' + m.year + '）' : '') }),
+          el('span', { class: 'cw', text: bits || '无属性影响' }),
+        ]);
+        // 测试与键盘脚本按 data-module 找条目；刻意用 setAttribute 写法
+        node.setAttribute('data-module', m.id);
+        return node;
+      },
+    });
+
+    UI.openPopover({
+      anchor: anchor,
+      title: slot.label + ' · ' + chassisName,
+      width: 380,
+      groups: groups,
+      emptyText: '该槽位没有可用模块',
+    });
+  }
+
+  /** 统一改模块入口：写进设计后重新渲染 */
+  function setSlotModule(slotId, moduleId) {
+    if (!state.design) return;
+    state.design.modules[slotId] = moduleId || null;
+    render();
   }
 
   const STAT_SHORT = {
@@ -235,14 +399,66 @@
     tank_radio_module: '电台', tank_secondary_turret: '副炮塔',
   };
 
+  /** 槽位显示顺序：蓝图下排 5 个必选槽 / 上排 4 个可选特殊槽 */
+  const REQUIRED_SLOT_ORDER = [
+    'turret_type_slot', 'main_armament_slot', 'suspension_type_slot',
+    'armor_type_slot', 'engine_type_slot',
+  ];
+  const SPECIAL_SLOT_ORDER = [
+    'special_type_slot_1', 'special_type_slot_2', 'special_type_slot_3', 'special_type_slot_4',
+  ];
+
+  /** 槽位 / 选择窗里优先展示的属性键 */
+  const STAT_PRIORITY = [
+    'soft_attack', 'hard_attack', 'ap_attack', 'air_attack', 'defense', 'breakthrough',
+    'armor_value', 'hardness', 'maximum_speed', 'reliability',
+  ];
+
   function signed(v) {
     const s = fmt(v, 1);
     return (v > 0 ? '+' : '') + s;
   }
 
   /* ------------------------------------------------------------------ */
-  /* 右栏：属性 + 校验 + 导出                                            */
+  /* 右栏：三组属性栏 + 底部资源 + 校验 + 导出                            */
   /* ------------------------------------------------------------------ */
+
+  /** 三组属性栏的分组与属性键（与游戏 tank_designer_view.gui 一致） */
+  const STAT_GROUPS = [
+    {
+      key: 'base', title: '基础属性', keys: [
+        { key: 'maximum_speed', label: '最大速度' },
+        { key: 'reliability', label: '可靠性' },
+      ],
+    },
+    {
+      key: 'combat', title: '战斗属性', keys: [
+        { key: 'soft_attack', label: '软攻' },
+        { key: 'hard_attack', label: '硬攻' },
+        { key: 'air_attack', label: '对空攻击' },
+        { key: 'ap_attack', label: '穿甲' },
+        { key: 'defense', label: '防御' },
+        { key: 'breakthrough', label: '突破' },
+        { key: 'armor_value', label: '装甲' },
+        { key: 'hardness', label: '硬度' },
+      ],
+    },
+    {
+      key: 'misc', title: '其它属性', keys: [
+        { key: 'build_cost_ic', label: '工业成本' },
+        { key: 'fuel_consumption', label: '燃料消耗' },
+        { key: 'entrenchment', label: '堑壕' },
+        { key: 'fuel_capacity', label: '燃料容量' },
+      ],
+    },
+  ];
+
+  /** 属性 / 资源的中文名与显示位数 */
+  const STAT_META = {};
+  for (const row of T.STAT_ROWS) STAT_META[row.key] = row;
+  const RES_NAMES = {
+    steel: '钢', tungsten: '钨', chromium: '铬', aluminium: '铝', rubber: '橡胶', oil: '石油',
+  };
 
   function renderStats() {
     const host = UI.$('#tankStats');
@@ -250,49 +466,35 @@
     if (!state.design) { host.appendChild(el('div', { class: 'empty-note', text: '请先选择底盘。' })); return; }
 
     const r = T.computeDesign(state.design);
-    const base = HOI.equipment[state.chassisId] || {};
-
-    // 属性表：底盘固有 → 设计后
-    const tbl = el('table', { class: 'data-table' });
-    const head = el('tr');
-    for (const label of ['属性', '底盘', '设计后', '差值']) head.appendChild(el('th', { text: label }));
-    tbl.appendChild(el('thead', {}, [head]));
-    const tb = el('tbody');
-    for (const row of T.STAT_ROWS) {
-      const b = typeof base[row.key] === 'number' ? base[row.key] : 0;
-      const v = typeof r.stats[row.key] === 'number' ? r.stats[row.key] : 0;
-      if (!b && !v) continue;
-      const diff = v - b;
-      const digits = row.digits;
-      tb.appendChild(el('tr', {}, [
-        el('td', { text: row.label }),
-        el('td', { class: 'num', text: fmt(b, digits) }),
-        el('td', { class: 'num', text: fmt(v, digits) }),
-        el('td', {
-          class: 'num',
-          style: { color: diff > 0.0001 ? 'var(--good)' : diff < -0.0001 ? 'var(--bad)' : 'var(--text-dim)' },
-          text: Math.abs(diff) < 0.0001 ? '—' : (diff > 0 ? '+' : '') + fmt(diff, digits),
-        }),
-      ]));
-    }
-    tbl.appendChild(tb);
-    host.appendChild(el('div', { class: 'mod-block' }, [el('h3', { text: '装备属性' }), tbl]));
-
-    // 资源
     const resKeys = Object.keys(r.resources || {}).filter((k) => r.resources[k]);
-    if (resKeys.length) {
-      const resNames = { steel: '钢', tungsten: '钨', chromium: '铬', aluminium: '铝', rubber: '橡胶', oil: '石油' };
-      const rbox = el('div', { class: 'mod-block' }, [el('h3', { text: '资源需求' })]);
-      for (const k of resKeys) {
-        rbox.appendChild(el('div', { class: 'mod-item' }, [
-          el('span', { class: 'src', text: resNames[k] || k }),
-          el('span', { class: 'val', text: fmt(r.resources[k], 0) }),
+
+    // 装备属性总标题（保持原本文案，便于阅读时一眼定位）
+    host.appendChild(el('h3', { class: 'slot-title', text: '装备属性' }));
+
+    // 1) 三组独立属性栏
+    const cols = el('div', { class: 'stat-cols' });
+    for (const g of STAT_GROUPS) {
+      const keys = g.keys.slice();
+      if (g.key === 'misc') for (const k of resKeys) keys.push({ key: k, label: RES_NAMES[k] || k });
+      const box = el('div', { class: 'stat-col' }, [el('h3', { text: g.title })]);
+      for (const item of keys) {
+        const v = r.stats[item.key];
+        if (typeof v !== 'number' || !Number.isFinite(v)) continue;
+        const row = T.STAT_ROWS.filter((x) => x.key === item.key)[0];
+        const digits = row ? row.digits : 1;
+        box.appendChild(el('div', { class: 'stat-row' }, [
+          el('span', { class: 'k', text: item.label }),
+          el('span', { class: 'v', text: fmt(v, digits) }),
         ]));
       }
-      host.appendChild(rbox);
+      cols.appendChild(box);
     }
+    host.appendChild(cols);
 
-    // 校验
+    // 2) 底部：生产消耗 + 资源需求
+    host.appendChild(footerBox(r));
+
+    // 3) 校验
     const vbox = el('div', { class: 'mod-block' }, [el('h3', { text: '校验' })]);
     if (!r.validity.errors.length && !r.validity.warns.length) {
       vbox.appendChild(el('div', { class: 'ok', text: '✓ 配置有效，可直接导出到游戏' }));
@@ -301,7 +503,7 @@
     for (const w of r.validity.warns) vbox.appendChild(el('div', { class: 'warn', text: '! ' + w }));
     host.appendChild(vbox);
 
-    // 模块明细
+    // 4) 模块明细
     const dbox = el('div', { class: 'mod-block' }, [el('h3', { text: '模块明细' })]);
     for (const it of r.items) {
       const bits = [];
@@ -315,8 +517,26 @@
     if (!r.items.length) dbox.appendChild(el('div', { class: 'hint', text: '未配置模块' }));
     host.appendChild(dbox);
 
-    // 导出
+    // 5) 保存与导出
     host.appendChild(exportBox());
+  }
+
+  /** 底部一行：左边生产消耗，右边资源需求 */
+  function footerBox(r) {
+    const foot = el('div', { class: 'tank-footer' });
+    const cost = typeof r.stats.build_cost_ic === 'number' ? r.stats.build_cost_ic : 0;
+    foot.appendChild(el('div', { class: 'fitem' }, [
+      el('span', { class: 'k', text: '生产消耗' }),
+      el('span', { class: 'v', text: fmt(cost, 2) + ' IC' }),
+    ]));
+    const res = el('div', { class: 'res' });
+    const keys = Object.keys(r.resources || {}).filter((k) => r.resources[k]);
+    for (const k of keys) {
+      res.appendChild(el('span', { class: 'r', text: (RES_NAMES[k] || k) + ' ' + fmt(r.resources[k], 0) }));
+    }
+    if (!keys.length) res.appendChild(el('span', { class: 'r', text: '无需战略资源' }));
+    foot.appendChild(res);
+    return foot;
   }
 
   function exportBox() {
@@ -353,45 +573,6 @@
 
     box.appendChild(el('div', { class: 'hint', text: '「导出游戏脚本」会生成 equipments 块，放到 <你的mod>/common/units/equipment/ 下即可；'
       + '本地化文件放到 <你的mod>/localisation/simp_chinese/（保存为 UTF-8 with BOM）。' }));
-
-    // 已保存列表
-    if (state.saved.length) {
-      const list = el('div', { class: 'tank-saved' });
-      for (const s of state.saved) {
-        list.appendChild(el('div', { class: 'tank-item' + (s.id === state.editingId ? ' on' : '') }, [
-          el('div', { class: 'tname', text: s.name }, [
-            el('span', { class: 'tyear', text: (s.registered === false ? '未注册' : '编制页可用') }),
-          ]),
-          el('div', { class: 'tmods', text: HOI.locOf(s.chassisId, s.chassisId) + '　ID：' + s.id }),
-          el('div', { class: 'trait-panel-actions', style: { marginTop: '4px' } }, [
-            el('button', {
-              class: 'btn small', text: '载入编辑',
-              onclick: () => {
-                state.chassisId = s.chassisId;
-                state.design = { chassisId: s.chassisId, modules: Object.assign({}, s.modules) };
-                state.name = s.name;
-                state.editingId = s.id;
-                render();
-              },
-            }),
-            el('button', {
-              class: 'btn small', text: '导出脚本', onclick: () => exportScript(s),
-            }),
-            el('button', {
-              class: 'btn small', text: '删除',
-              onclick: () => {
-                state.saved = state.saved.filter((x) => x.id !== s.id);
-                if (state.editingId === s.id) state.editingId = null;
-                persistSaved();
-                render();
-                UI.toast('已删除：' + s.name);
-              },
-            }),
-          ]),
-        ]));
-      }
-      box.appendChild(el('div', { class: 'mod-block' }, [el('h3', { text: '已保存的设计（' + state.saved.length + '）' }), list]));
-    }
     return box;
   }
 
