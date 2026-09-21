@@ -13,6 +13,8 @@
   const HOI = global.HOI;
   const T = global.HOI_TANK;
   const UI = global.UI;
+  /** 游戏设计器导出格式（base64）的读写；缺失时相关按钮会提示而不是报错 */
+  const BLOB = global.HOI_DESIGNER_BLOB;
   const el = UI.el, clear = UI.clear, fmt = UI.fmt, pct = UI.pct;
 
   const STORAGE_KEY = 'hoi4-designer.tanks.v1';
@@ -25,6 +27,12 @@
     /** 科技解锁年份：只显示这一年及以前能造的底盘 */
     techYear: 1939,
     name: '',
+    /** 游戏设计器代码里带的 2D 图标 sprite（不填就按家族给默认值） */
+    sprite: '',
+    /** 设计局（游戏导出里可能带），导入时保留、导出时原样写回 */
+    organization: null,
+    /** 装甲 / 引擎升级值（游戏里以 XP 数值保存；本页不建模，导入时保留） */
+    upgrades: {},
     saved: loadSaved(),
     /** 当前正在编辑的已保存设计 id（用于覆盖保存） */
     editingId: null,
@@ -66,6 +74,10 @@
     state.design = T.defaultDesign(id);
     state.editingId = null;
     state.name = HOI.locOf(id, id) + '（自定义）';
+    // 换底盘 = 新设计，重置游戏侧自带的那些字段
+    state.sprite = '';
+    state.organization = null;
+    state.upgrades = {};
     render();
   }
 
@@ -162,7 +174,14 @@
               state.design = T.cloneDesign({ chassisId: s.chassisId, modules: s.modules || {} });
               state.name = s.name;
               state.editingId = s.id;
+              // 游戏侧自带字段跟着一起载入，之后「导出游戏代码」能原样写回
+              state.sprite = s.sprite || '';
+              state.organization = s.organization || null;
+              state.upgrades = s.upgrades || {};
               render();
+              if (!HOI.equipment[s.chassisId]) {
+                UI.toast('这个底盘不在本地游戏数据里（' + s.chassisId + '），只能查看 / 原样导出');
+              }
             },
           }),
           el('button', {
@@ -312,7 +331,7 @@
     for (const slot of list) strip.appendChild(slotTile(slot, computed, chassis));
     if (withUpgrades) {
       for (const conf of UPGRADE_SLOTS) {
-        if (!T.modulesForSlot(state.chassisId, conf.id).length) continue;
+        if (!T.modulesForSlot(state.chassisId, conf.id, state.design.modules).length) continue;
         strip.appendChild(upgradeStepper(conf));
       }
     }
@@ -409,7 +428,7 @@
 
   /** 游戏里的引擎 / 装甲等级步进器：上行是名字，下行是 – 等级 + （照 equipment_upgrade_0 / _1） */
   function upgradeStepper(conf) {
-    const options = T.modulesForSlot(state.chassisId, conf.id);
+    const options = T.modulesForSlot(state.chassisId, conf.id, state.design.modules);
     const current = state.design.modules[conf.id] || '';
     let idx = -1;
     for (let i = 0; i < options.length; i++) if (options[i].id === current) { idx = i; break; }
@@ -489,7 +508,7 @@
 
   /** 槽位下拉框：保留为可编程的换模块入口 */
   function slotSelect(slot, current, onChange) {
-    const options = T.modulesForSlot(state.chassisId, slot.id);
+    const options = T.modulesForSlot(state.chassisId, slot.id, state.design.modules);
     const sel = el('select', {
       class: 'slot-hidden-select',
       onchange: (e) => onChange(e.target.value),
@@ -537,7 +556,7 @@
    * （游戏里也是先列类别条目，再列该类别下的模块）。
    */
   function openSlotPicker(slot, anchor) {
-    const options = T.modulesForSlot(state.chassisId, slot.id);
+    const options = T.modulesForSlot(state.chassisId, slot.id, state.design.modules);
     const current = state.design.modules[slot.id] || '';
     const chassisName = (HOI.equipment[state.chassisId] || {}).name || HOI.locOf(state.chassisId, state.chassisId);
 
@@ -731,7 +750,8 @@
     if (!r.items.length) dbox.appendChild(el('div', { class: 'hint', text: '未配置模块' }));
     host.appendChild(dbox);
 
-    // 5) 保存与导出
+    // 5) 游戏设计器代码（导入 / 导出）+ 保存与导出
+    host.appendChild(gameCodeBox());
     host.appendChild(exportBox());
   }
 
@@ -754,7 +774,7 @@
   }
 
   function exportBox() {
-    const box = el('div', { class: 'mod-block' }, [el('h3', { text: '保存与导出' })]);
+    const box = el('div', { class: 'mod-block' }, [el('h3', { text: '导出到 mod（新增装备型号）' })]);
 
     const nameInput = el('input', {
       type: 'text', value: state.name, placeholder: '设计名称（用于游戏内显示）',
@@ -786,8 +806,184 @@
     box.appendChild(actions);
 
     box.appendChild(el('div', { class: 'hint', text: '「导出游戏脚本」会生成 equipments 块，放到 <你的mod>/common/units/equipment/ 下即可；'
-      + '本地化文件放到 <你的mod>/localisation/simp_chinese/（保存为 UTF-8 with BOM）。' }));
+      + '本地化文件放到 <你的mod>/localisation/simp_chinese/（保存为 UTF-8 with BOM）。'
+      + '想让设计**直接出现在游戏设计器里**，用上面那个「游戏设计器代码」。' }));
     return box;
+  }
+
+  /* ------------------------------------------------------------------ */
+  /* 游戏设计器代码（base64）——和游戏里「导出/导入预设」完全同格式          */
+  /* ------------------------------------------------------------------ */
+
+  /** 当前编辑中的设计 → 游戏记录（图标 / 设计局 / 升级值都带上） */
+  function gameDesignRecord() {
+    const family = T.familyOf(state.chassisId) || 'medium_tank';
+    const sprite = state.sprite || (BLOB ? (BLOB.DEFAULT_SPRITE[family] || BLOB.DEFAULT_SPRITE.medium_tank) : '');
+    return {
+      name: state.name || designId(),
+      chassisId: state.chassisId,
+      family: family,
+      sprite: sprite,
+      organization: state.organization || null,
+      modules: Object.assign({}, state.design.modules),
+      upgrades: Object.assign({}, state.upgrades || {}),
+    };
+  }
+
+  /** 导入时：游戏记录 → 本页的「已保存设计」条目（默认不注册，免得刷满编制页下拉） */
+  function importedRecord(d) {
+    const slug = String(d.name || '').trim().replace(/[^A-Za-z0-9]+/g, '_').replace(/^_+|_+$/g, '');
+    const id = d.chassisId + '_' + (slug || 'game');
+    return {
+      id: id,
+      name: d.name || id,
+      chassisId: d.chassisId,
+      modules: Object.assign({}, d.modules || {}),
+      sprite: d.sprite || '',
+      organization: d.organization || null,
+      upgrades: Object.assign({}, d.upgrades || {}),
+      fromGame: true,
+      registered: false,
+    };
+  }
+
+  /** 游戏设计器代码面板：导出 / 导入 */
+  function gameCodeBox() {
+    const box = el('div', { class: 'mod-block' }, [el('h3', { text: '游戏设计器代码（直接粘进游戏）' })]);
+
+    const actions = el('div', { class: 'trait-panel-actions' });
+    actions.appendChild(el('button', {
+      class: 'btn small primary', text: '导出游戏设计器代码',
+      title: '生成和游戏「导出预设」一模一样的 base64，可直接在游戏里导入',
+      onclick: exportGameCode,
+    }));
+    actions.appendChild(el('button', {
+      class: 'btn small', text: '导入游戏设计器代码',
+      title: '把游戏里导出的那串代码粘进来，继续在网页上改',
+      onclick: importGameCode,
+    }));
+    box.appendChild(actions);
+
+    box.appendChild(el('div', {
+      class: 'hint',
+      text: '游戏里怎么用：坦克设计器 → 打开预设 / 历史设计窗口 → 点「导入」（Import）→ 粘贴这段代码。'
+        + '格式和游戏自己导出的一模一样（二进制 base64），已用游戏原始样本逐字节校验。',
+    }));
+    return box;
+  }
+
+  /** 导出当前设计：弹窗里给出 base64，可复制或存成 txt */
+  function exportGameCode() {
+    if (!BLOB) { UI.toast('缺少 js/engine/designerblob.js'); return; }
+    const r = T.computeDesign(state.design);
+    if (r.validity.errors.length) { UI.toast('还有配置问题：' + r.validity.errors[0]); return; }
+
+    const body = el('div');
+    const family = T.familyOf(state.chassisId) || 'medium_tank';
+    const spriteInput = el('input', {
+      type: 'text', value: gameDesignRecord().sprite,
+      placeholder: '装备 2D 图标 sprite',
+      oninput: (e) => { state.sprite = e.target.value.trim(); refresh(); },
+    });
+    body.appendChild(el('div', { class: 'field' }, [
+      el('label', { text: '装备 2D 图标（游戏里设计器右上角那张图）' }), spriteInput,
+    ]));
+    body.appendChild(el('div', { class: 'hint', text: '默认按家族给：' + (BLOB.DEFAULT_SPRITE[family] || '—')
+      + '；也可以换成国家专属的，例如 GFX_GER_improved_medium_tank_medium。' }));
+
+    const area = el('textarea', {
+      readonly: true,
+      style: {
+        width: '100%', height: '150px', marginTop: '6px', background: 'var(--bg-3)', color: 'var(--text)',
+        border: '1px solid var(--border)', fontFamily: 'var(--mono)', fontSize: '10px', wordBreak: 'break-all',
+      },
+    });
+    // 自检与脚本按这个属性找文本框
+    area.setAttribute('data-role', 'game-code');
+    body.appendChild(area);
+
+    function refresh() {
+      area.value = BLOB.build([gameDesignRecord()]);
+    }
+    refresh();
+
+    UI.modal('游戏设计器代码', body, [
+      {
+        label: '复制', primary: true,
+        onClick: () => { copyText(area.value); return false; },   // 不关窗，方便接着点「下载」
+      },
+      { label: '下载 .txt', onClick: () => UI.download(designId() + '_gamecode.txt', area.value) },
+      { label: '关闭' },
+    ]);
+  }
+
+  /** 复制到剪贴板（拿不到就提示手动复制） */
+  function copyText(text) {
+    try {
+      if (global.navigator && global.navigator.clipboard && global.navigator.clipboard.writeText) {
+        global.navigator.clipboard.writeText(text);
+        UI.toast('已复制，去游戏里粘贴到「导入」框');
+        return;
+      }
+    } catch (e) { /* 落到手动复制 */ }
+    UI.toast('请在上面的文本框里全选复制（Ctrl+A / Ctrl+C）');
+  }
+
+  /** 导入游戏导出的代码：解析 → 存进「已保存的设计」→ 载入第一条继续编辑 */
+  function importGameCode() {
+    if (!BLOB) { UI.toast('缺少 js/engine/designerblob.js'); return; }
+    const area = el('textarea', {
+      style: {
+        width: '100%', height: '180px', background: 'var(--bg-3)', color: 'var(--text)',
+        border: '1px solid var(--border)', fontFamily: 'var(--mono)', fontSize: '10px', wordBreak: 'break-all',
+      },
+      placeholder: '把游戏设计器里「导出」出来的那串代码粘到这里',
+    });
+    area.setAttribute('data-role', 'game-code-in');
+
+    UI.modal('导入游戏设计器代码', area, [
+      {
+        label: '导入', primary: true,
+        onClick: () => {
+          let designs;
+          try {
+            designs = BLOB.parse(area.value).designs;
+          } catch (e) {
+            UI.toast('解析失败：' + e.message);
+            return false;
+          }
+          if (!designs.length) { UI.toast('没有读到任何设计'); return false; }
+          applyImported(designs);
+        },
+      },
+      { label: '取消' },
+    ]);
+  }
+
+  /** 把导入的设计并入列表，并载入第一条 */
+  function applyImported(designs) {
+    let added = 0, replaced = 0;
+    for (const d of designs) {
+      const rec = importedRecord(d);
+      const i = indexOfSaved(rec.id);
+      if (i >= 0) { state.saved[i] = rec; replaced++; } else { state.saved.push(rec); added++; }
+    }
+    persistSaved();
+    loadIntoEditor(importedRecord(designs[0]));
+    render();
+    UI.toast('已导入 ' + designs.length + ' 条（新增 ' + added + '、覆盖 ' + replaced
+      + '），当前编辑：' + designs[0].name);
+  }
+
+  /** 把一条记录载入编辑器 */
+  function loadIntoEditor(rec) {
+    state.chassisId = rec.chassisId;
+    state.design = T.cloneDesign({ chassisId: rec.chassisId, modules: rec.modules || {} });
+    state.name = rec.name;
+    state.editingId = rec.id;
+    state.sprite = rec.sprite || '';
+    state.organization = rec.organization || null;
+    state.upgrades = rec.upgrades || {};
   }
 
   /** 装备 id：底盘 id + 名称 slug（保证稳定、可覆盖） */
@@ -805,6 +1001,9 @@
       name: state.name || id,
       chassisId: state.chassisId,
       modules: Object.assign({}, state.design.modules),
+      sprite: state.sprite || '',
+      organization: state.organization || null,
+      upgrades: Object.assign({}, state.upgrades || {}),
       stats: r.stats,
       resources: r.resources,
       validity: r.validity,

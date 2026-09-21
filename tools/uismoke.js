@@ -336,6 +336,7 @@ const SCRIPTS = [
   'js/engine/division.js',
   'js/engine/combat.js',
   'js/engine/tank.js',
+  'js/engine/designerblob.js',
   'js/ui/common.js',
   'js/ui/designer.js',
   'js/ui/battle.js',
@@ -666,6 +667,82 @@ check('坦克设计：蓝图零件类名没有外泄（否则会飘出面板）'
   if (!meta) throw new Error('标题条里没有底盘 id / 年份');
   if (!meta.textContent.trim()) throw new Error('底盘信息是空的');
   return '零件类都在蓝图内，标题条：' + meta.textContent.trim();
+});
+
+check('坦克设计：导出游戏设计器代码（导入框要粘的那串）', () => {
+  if (!global.HOI_DESIGNER_BLOB) throw new Error('没有加载 designerblob.js');
+  const btns = document.getElementById('tankStats').querySelectorAll('button');
+  const out = btns.find((b) => b.textContent === '导出游戏设计器代码');
+  if (!out) throw new Error('找不到「导出游戏设计器代码」按钮');
+  out.click();
+
+  const area = document.body.querySelectorAll('[data-role=game-code]')[0];
+  if (!area) throw new Error('没有弹出代码文本框');
+  const text = area.value;
+  if (!/^[A-Za-z0-9+/=]+$/.test(text || '')) throw new Error('导出的不是 base64：' + String(text).slice(0, 20));
+  const back = global.HOI_DESIGNER_BLOB.parse(text);
+  if (back.designs.length !== 1) throw new Error('读回 ' + back.designs.length + ' 条设计');
+  const d = back.designs[0];
+  if (!d.chassisId) throw new Error('读回的底盘为空');
+  if (!Object.keys(d.modules).length) throw new Error('读回的模块为空');
+
+  // 关掉弹窗（点「关闭」）
+  const close = document.body.querySelectorAll('.modal-overlay .btn').find((b) => b.textContent === '关闭');
+  if (close) close.click();
+  return text.length + ' 字符，读回 ' + d.name + ' / ' + d.chassisId + ' / ' + Object.keys(d.modules).length + ' 槽';
+});
+
+check('坦克设计：导入游戏设计器代码后能继续编辑并原样导出', () => {
+  const B = global.HOI_DESIGNER_BLOB;
+  const src = B.build([{
+    name: '导入测试', chassisId: 'medium_tank_chassis_2', family: 'medium_tank',
+    modules: global.HOI_TANK.defaultDesign('medium_tank_chassis_2').modules,
+  }]);
+  const btns = document.getElementById('tankStats').querySelectorAll('button');
+  const inBtn = btns.find((b) => b.textContent === '导入游戏设计器代码');
+  if (!inBtn) throw new Error('找不到「导入游戏设计器代码」按钮');
+  inBtn.click();
+
+  const area = document.body.querySelectorAll('[data-role=game-code-in]')[0];
+  if (!area) throw new Error('没有弹出粘贴框');
+  area.value = src;
+  const go = document.body.querySelectorAll('.modal-overlay .btn').find((b) => b.textContent === '导入');
+  if (!go) throw new Error('没有「导入」按钮');
+  go.click();
+
+  const names = global.HOI_UI_TANK.getDesigns().map((d) => d.name);
+  if (names.indexOf('导入测试') < 0) throw new Error('导入的设计没有进列表：' + names.join('、'));
+
+  // 重新导出当前编辑中的设计，再解析，模块应完全一致
+  const outBtn = document.getElementById('tankStats').querySelectorAll('button')
+    .find((b) => b.textContent === '导出游戏设计器代码');
+  outBtn.click();
+  const out = document.body.querySelectorAll('[data-role=game-code]')[0];
+  const back = B.parse(out.value).designs[0];
+  if (back.name !== '导入测试') throw new Error('导出回来的名字不对：' + back.name);
+  const want = B.parse(src).designs[0];
+  const keys = Object.keys(back.modules).sort().join(',');
+  if (keys !== Object.keys(want.modules).sort().join(',')) throw new Error('槽位不一致：' + keys);
+  for (const k of Object.keys(want.modules)) {
+    if (back.modules[k] !== want.modules[k]) throw new Error(k + ' 模块不一致');
+  }
+  const close = document.body.querySelectorAll('.modal-overlay .btn').find((b) => b.textContent === '关闭');
+  if (close) close.click();
+  return '导入 → 编辑 → 导出，' + Object.keys(back.modules).length + ' 个槽位完全一致';
+});
+
+check('坦克设计：底盘用游戏里的「框架」id，变体营也有型号', () => {
+  const list = global.HOI_TANK.listChassis();
+  const ids = list.map((c) => c.id);
+  // 设计器要设计的是框架（*_chassis_N）；x_tank_chassis.txt 里的 *_equipment_N 是造出来的装备
+  if (ids.some((i) => /_equipment/.test(i))) throw new Error('底盘列表里混进了 *_equipment_N');
+  const td = ids.find((i) => /destroyer_chassis_\d+$/.test(i));
+  if (!td) throw new Error('缺少变体框架 id（如 light_tank_destroyer_chassis_1）');
+  // 营的 need 用的就是框架 archetype 键，装备下拉必须有型号
+  const key = td.replace(/_\d+$/, '');
+  const models = global.HOI.equipmentModelsFor(key);
+  if (!models.length) throw new Error(key + ' 没有可选型号');
+  return list.length + ' 个底盘；' + key + ' → ' + models.length + ' 个型号';
 });
 
 check('编制设计：切换到 designer 并渲染', () => {

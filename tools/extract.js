@@ -251,6 +251,27 @@ function moduleLimitsOf(raw) {
   return out;
 }
 
+/**
+ * 把模块自己的 allowed_module_categories 规整成 { 槽位: [类别...] }。
+ *
+ * 游戏里炮塔就是靠这个给主炮槽解锁中型 / 重型主炮的：
+ *   tank_medium_three_man_tank_turret = {
+ *       allowed_module_categories = { main_armament_slot = { tank_medium_main_armament } }
+ *   }
+ * 底盘的槽位定义里只静态写着 tank_small_main_armament，所以不算上这层，
+ * 就会误判"中型加农炮不能装在主炮槽"。
+ */
+function slotCategoryMap(raw) {
+  const out = {};
+  if (!raw || typeof raw !== 'object') return out;
+  for (const k of Object.keys(raw)) {
+    if (k.startsWith('__')) continue;
+    const cats = cwt.asArray(raw[k]).map(String).filter((s) => s && s[0] !== '_');
+    if (cats.length) out[k] = cats;
+  }
+  return out;
+}
+
 function pickEquipment(id, def, file) {  const out = { id, sourceFile: file };
   for (const k of EQUIP_STAT_KEYS) {
     if (def[k] !== undefined) out[k] = def[k];
@@ -338,6 +359,42 @@ function extractEquipment() {
 
   for (const id of Object.keys(raw)) resolve(id);
 
+  /* --- duplicate_archetypes 的逐型号复制 ---
+     引擎会把基础底盘的每个可研究型号按变体原型复制一份：
+       变体原型 light_tank_destroyer_chassis（archetype = light_tank_chassis）
+       + 基础型号 light_tank_chassis_1  →  light_tank_destroyer_chassis_1
+     设计器里存的底盘、以及营的 need（`light_tank_destroyer_chassis = 50`）用的都是
+     这种 "框架" id；x_tank_chassis.txt 里手写的 *_equipment_N 是生产出来的装备，
+     两者不是一回事，缺了框架就会出现"变体坦克营没有可选型号"这种情况。 */
+  let dupFrames = 0;
+  const dupProtos = Object.keys(raw).filter((k) => /_chassis$/.test(k) && raw[k] && raw[k].archetype);
+  for (const dupId of dupProtos) {
+    const dup = raw[dupId];
+    const base = String(dup.archetype);
+    for (const id of Object.keys(resolved)) {
+      const rec = resolved[id];
+      if (!rec || !rec.year) continue;                                   // 只要可研究型号
+      const arch = (rec.inherits && rec.inherits.archetype) || rec.archetype;
+      if (arch !== base) continue;
+      const suffix = String(id).slice(base.length);
+      if (!/^_\d+$/.test(suffix)) continue;
+      const newId = dupId + suffix;
+      if (resolved[newId]) continue;
+      const copy = Object.assign({}, rec);
+      copy.id = newId;
+      copy.inherits = Object.assign({}, rec.inherits, { archetype: dupId });
+      copy.types = (dup.types || rec.types || []).slice();
+      for (const k of ['hardness', 'maximum_speed', 'build_cost_ic', 'armor_value', 'reliability']) {
+        if (dup[k] !== undefined && !(rec.inherits && rec.inherits[k] !== undefined)) copy[k] = dup[k];
+      }
+      copy.sourceFile = dup.sourceFile || rec.sourceFile;
+      copy.derivedFrame = dupId;
+      resolved[newId] = copy;
+      dupFrames++;
+    }
+  }
+  log(`duplicate_archetypes：${dupProtos.length} 个变体原型 → 生成 ${dupFrames} 个型号框架`);
+
   /* --- 把 module_slots = inherit 解开成真实槽位定义 ---
      可研究的底盘（如 light_tank_chassis_1）只写 module_slots = inherit，
      真正的槽位定义在 archetype（light_tank_chassis）上；duplicate_archetypes
@@ -424,6 +481,9 @@ function extractModules() {
          { module: 'x', 'count < 2': true } 或数组形式。 */
       const limits = moduleLimitsOf(def.module_count_limit);
       if (limits.length) o.limits = limits;
+      /* 模块给某些槽位追加的可选类别（炮塔解锁中型/重型主炮就靠这个） */
+      const adds = slotCategoryMap(def.allowed_module_categories);
+      if (Object.keys(adds).length) o.addsSlots = adds;
       modules[id] = o;
     });
   }

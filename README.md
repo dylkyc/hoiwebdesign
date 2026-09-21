@@ -48,7 +48,8 @@ python -m http.server 8080
 这一页对应游戏里的「坦克设计器」，布局也照原版排布，并且**能把设计导出成游戏可直接加载的脚本**。
 
 * 左侧选底盘：6 大基础家族（轻 / 中 / 重 / 现代 / 超重 / 两栖）× 变体
-  （基础型 / 歼击车 / 自行火炮 / 自行防空 / 两栖 / 喷火），共 83 个可选底盘
+  （基础型 / 歼击车 / 自行火炮 / 自行防空 / 两栖 / 喷火），共 81 个可选底盘
+  （id 就是游戏里那套 `*_chassis_N` 框架 id，导出的设计游戏直接认）
 * **科技解锁选择**：拖动年份滑块，只显示该年及以前解锁的型号，未解锁的置灰
 * 中间是**模块配置区**，排布照原版 `tank_designer_view.gui` 的 `equipment_modules` 容器：
   **上排 6 个槽位图标**（炮塔 / 主炮 / 特殊槽 1-4）→ **蓝图** → **下排 3 个槽位 + 引擎、装甲两个等级步进器**
@@ -67,9 +68,21 @@ python -m http.server 8080
   `forbid_equipment_type` 变体限制
 * 保存后的设计会注册到「编制设计」页，坦克营的装备下拉里直接可选，属性就是算好的值
 
-#### 导出到游戏
+#### 导出到游戏（两条路，用途不同）
 
-点「保存并注册到编制页」再点「导出游戏脚本 (.txt)」，会得到一个 `equipments = { ... }` 块：
+**A. 「游戏设计器代码」——想在游戏设计器里直接导入 / 编辑就用这个（推荐）**
+
+游戏设计器的「导出预设 / 导入预设」用的不是 Clausewitz 脚本，而是一段 **base64 编码的
+二进制属性树**。点右栏的「导出游戏设计器代码」会生成这种东西，复制后到游戏里：
+
+> 坦克设计器 → 打开预设 / 历史设计窗口 → 点「导入」（Import）→ 粘贴 → 确认
+
+反过来，把游戏里导出的那串代码用「导入游戏设计器代码」粘进网页，就能接着在网页上改。
+格式细节与如何验证见下面的「游戏设计器代码格式」一节。
+
+**B. 「导出游戏脚本 (.txt)」——想给 mod 新增一个装备型号时用**
+
+会得到一个 `equipments = { ... }` 块：
 
 ```clausewitz
 equipments = {
@@ -77,7 +90,7 @@ equipments = {
 		year = 1940
 		archetype = medium_tank_chassis_2     # 决定槽位、界面归类、营的 need 键
 		type = { armor }
-		module_slots = { ... }                # 槽位定义（从底盘带出来）
+		module_slots = { ... }                # 槽位定义（从底盘带出来，含炮塔解锁的类别）
 		default_modules = { ... }             # 你选的模块
 		soft_attack = 20                      # 已算好的最终属性
 		...
@@ -95,6 +108,35 @@ equipments = {
 
 `tools/uismoke.js` 里有一条回归用例：导出后用项目自带的 Clausewitz 解析器**回读**并比对属性，
 保证格式始终是游戏能解析的。设计也能导出 / 导入 JSON 备份。
+
+#### 游戏设计器代码格式
+
+`js/engine/designerblob.js` 负责这套二进制格式的读写，结构（逆向自游戏真实导出）：
+
+```
+文件  = { 0x00EE: <4 字节零> , 0x3285: <设计记录> × N }
+记录  = { 0x02BE: u16(0x2E94)                        # 记录种类
+        , 0x2F4E: { 0x001B: 名称
+                  , [0x4AD7 / 0x3AF1: 设计局 id]      # 可选
+                  , 0x3C92: 2D 图标 sprite
+                  , 0x2E61: 图纸模板（固定「陆军装甲设计模板」）
+                  , 0x3B88: { 0x36BE: i64(100000000)
+                            , 0x00E1: 底盘 id
+                            , 0x3B6B: { 槽位: 模块 }  # 按槽位名排序，空槽不写
+                            , 0x3069: { 装甲/引擎升级: i64 }
+                            } } }
+```
+
+值编码：`03 00 … 04 00` 对象 / `01 00 0F 00 <长> <字节>` 字符串 /
+`01 00 0D 00 <8 字节>` 64 位整数 / `01 00 0C 00 <4 字节>` 带类型的 4 字节 /
+`01 00 <4 字节>` 还有一种 2 字节无类型值——详见源码注释。
+
+**怎么确认是对的**：`tools/fixtures/game_designer_export.txt` 是从游戏里真实导出的一段
+（3 条记录，原样截取、没改一个字节），`tools/blobtest.js` 断言「解析 → 重新编码」逐字节一致；
+网页导出的新设计走同一套编码器，所以游戏看到的字节布局和它自己写出来的完全一样。
+
+> 装甲 / 引擎升级值：游戏把设计器里那两条升级滑条以 XP 数值（10 万的倍数）写进记录。
+> 本页不建模这两条滑条，导入时原样保留、新建时写 0（= 未升级）。
 
 ### 2. 编制设计
 
@@ -180,7 +222,8 @@ webdesign/
 │   │   ├── data.js         数据访问层（封装 HOI_DATA，含自定义装备注册表）
 │   │   ├── division.js     师编制与属性聚合引擎
 │   │   ├── combat.js       战斗修正与推演引擎
-│   │   └── tank.js         坦克模块化设计引擎与游戏脚本导出
+│   │   ├── tank.js         坦克模块化设计引擎与游戏脚本导出
+│   │   └── designerblob.js 游戏设计器导出格式（base64 二进制）的读写
 │   ├── ui/
 │   │   ├── common.js       DOM / 格式化工具
 │   │   ├── tankdesign.js   坦克设计视图（底盘 / 科技解锁 / 模块 / 导出）
@@ -199,6 +242,9 @@ webdesign/
     ├── selftest.js         编制引擎自检
     ├── combattest.js       战斗引擎自检
     ├── tanktest.js         坦克设计引擎与导出脚本自检
+    ├── blobtest.js         游戏设计器导出格式（base64）读写自检
+    ├── fixtures/
+    │   └── game_designer_export.txt  游戏真实导出样本（3 条记录，原样截取）
     └── uismoke.js          无浏览器环境下的界面渲染自检
 ```
 
@@ -217,8 +263,8 @@ node tools/extract.js
 | 输出 | 来源 |
 | --- | --- |
 | `units.json` | `game/common/units/*.txt` |
-| `equipment.json` | `game/common/units/equipment/*.txt`（已解析 archetype / parent 继承，含 `duplicate_archetypes` 派生原型与继承来的 `module_slots`） |
-| `modules.json` | `game/common/units/equipment/modules/*.txt` |
+| `equipment.json` | `game/common/units/equipment/*.txt`（已解析 archetype / parent 继承；含 `duplicate_archetypes` 派生原型 + 由它生成的 `*_chassis_N` 型号框架，以及继承来的 `module_slots`） |
+| `modules.json` | `game/common/units/equipment/modules/*.txt`（含 `module_count_limit` 与炮塔的 `allowed_module_categories`，后者用于"装炮塔才解锁中型/重型主炮"） |
 | `terrain.json` | `game/common/terrain/00_terrain.txt` |
 | `defines.json` | `game/common/defines/00_defines.lua` |
 | `traits.json` | `game/common/unit_leader/*.txt` |
@@ -233,12 +279,15 @@ node tools/extract.js
 node tools/selftest.js    # 编制属性聚合
 node tools/combattest.js  # 战斗修正与推演
 node tools/tanktest.js    # 坦克设计引擎与游戏脚本导出（含导出后回读比对）
+node tools/blobtest.js    # 游戏设计器导出格式（base64）读写（含真实样本逐字节比对）
 node tools/uismoke.js     # 界面渲染与交互（Node 端最小 DOM，无需浏览器）
 ```
 
 `uismoke.js` 里与坦克页有关的回归用例覆盖：默认设计可算、换模块会重算属性、
 模块配置的上排 6 槽 / 下排 3 槽 / 蓝图零件 / 两个升降级步进器都在位、
-点槽位弹出两列模块卡片且换装会同步到蓝图、引擎步进器能升降级。
+点槽位弹出两列模块卡片且换装会同步到蓝图、引擎步进器能升降级、
+蓝图零件类名没有外泄到面板外、**导出→读回**游戏设计器代码、
+**导入→编辑→再导出**模块完全一致、底盘用 `*_chassis_N` 框架 id 且变体营有可选型号。
 
 > 本环境跑不起浏览器（headless Edge 一启动就被杀），所以**页面外观没有自动化验证**，
 > 只能靠上面的 DOM 结构断言 + CSS 约定来保证。
@@ -300,6 +349,9 @@ node tools/uismoke.js     # 界面渲染与交互（Node 端最小 DOM，无需�
 * 战斗战术（Combat Tactics）的随机选取、天气、将领受伤
 * 飞机与军舰的模块设计器（数据已提取，界面目前只做了坦克）
 * 坦克设计器未模拟「同一模块组合的衍生变体」与 `can_convert_from` 改造链
+* 模块的 `forbid_equipment_type_exact_match_for_category`（例如"中型主炮只能配装甲型装备"）
+  未建模，只做了 `forbid_equipment_type` —— 所以网页可能允许游戏会拒绝的组合
+* 游戏设计器导出里的「装甲 / 引擎升级」XP 数值只做原样保留，未换算成滑条级别
 * 坦克蓝图是 CSS 画的示意图，不是游戏里的 `GFX_TM_*` 覆盖贴图（`.dds` 未做转换）
 * 增援机制与战斗中的装备损失分摊
 * 多方向进攻对要塞效果的削减（游戏内说明存在，但公式未公开）

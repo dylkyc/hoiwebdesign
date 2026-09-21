@@ -126,6 +126,13 @@
       if (!isTankEquipment(id, e)) continue;
       // 只要"实物"（可研究/可生产的），跳过纯原型
       if (e.is_archetype === true) continue;
+      // 底盘 id 形如 xxx_chassis_N；带不出年份的 duplicate_archetypes 原型
+      // （heavy_tank_destroyer_chassis 这种）不是可研究型号，不进列表。
+      if (!/_chassis_\d+$/.test(id)) continue;
+      // 设计器设计的是**框架**（*_chassis*）：游戏设计器导出的底盘 id、
+      // 以及营的 need 键都是这种形式；x_tank_chassis.txt 里手写的 *_equipment_N
+      // 是"生产出来的装备"，不能当底盘选（否则导出的设计游戏不认）。
+      if (/_equipment/.test(id)) continue;
       const fam = familyOf(id, e);
       if (!fam) continue;
       const v = variantOf(id);
@@ -174,25 +181,54 @@
   /* 槽位与可用模块                                                      */
   /* ------------------------------------------------------------------ */
 
-  /** 某底盘的槽位定义 */
-  function slotsOf(chassisId) {
+  /**
+   * 每个槽位"实际"可用的模块类别。
+   *
+   * 底盘槽位定义里只静态写着 tank_small_main_armament，中型/重型主炮是靠**炮塔**
+   * 自己的 allowed_module_categories 解锁的：
+   *   tank_medium_three_man_tank_turret = { allowed_module_categories =
+   *       { main_armament_slot = { tank_medium_main_armament } } }
+   * 而且必须先算炮塔再算主炮 —— equipment 文件开头的注释特意强调了"炮塔槽要写在前面"，
+   * SLOT_ORDER 就是按这个顺序排的，所以这里也按同样顺序逐个槽位累加。
+   */
+  function effectiveCategories(chassisId, modules) {
+    const e = HOI.equipment[chassisId];
+    const out = {};
+    if (!e || !e.module_slots || typeof e.module_slots !== 'object') return out;
+    const extra = {};
+    for (const slotId of SLOT_ORDER) {
+      const def = e.module_slots[slotId];
+      if (!def) continue;
+      out[slotId] = [].concat(def.allowed_module_categories || []).concat(extra[slotId] || []);
+      const modId = (modules || {})[slotId];
+      const m = modId ? HOI.modules[modId] : null;
+      if (m && m.addsSlots) {
+        for (const s of Object.keys(m.addsSlots)) extra[s] = (extra[s] || []).concat(m.addsSlots[s]);
+      }
+    }
+    return out;
+  }
+
+  /** 某底盘的槽位定义（带上已装模块解锁出来的类别） */
+  function slotsOf(chassisId, modules) {
     const e = HOI.equipment[chassisId];
     if (!e || !e.module_slots || typeof e.module_slots !== 'object') return [];
+    const cats = effectiveCategories(chassisId, modules);
     return SLOT_ORDER
       .filter((k) => e.module_slots[k])
       .map((k) => ({
         id: k,
         label: SLOT_LABELS[k] || k,
         required: !!e.module_slots[k].required,
-        categories: [].concat(e.module_slots[k].allowed_module_categories || []),
+        categories: cats[k] || [],
       }));
   }
 
-  /** 某槽位可用的模块（按年份、cost 排序） */
-  function modulesForSlot(chassisId, slotId) {
+  /** 某槽位可用的模块（按年份、cost 排序）；带上已装模块后中型/重型主炮才会出现 */
+  function modulesForSlot(chassisId, slotId, modules) {
     const e = HOI.equipment[chassisId];
     if (!e || !e.module_slots || !e.module_slots[slotId]) return [];
-    const cats = [].concat(e.module_slots[slotId].allowed_module_categories || []);
+    const cats = effectiveCategories(chassisId, modules)[slotId] || [];
     const out = [];
     for (const id of Object.keys(HOI.modules)) {
       const m = HOI.modules[id];
@@ -235,7 +271,9 @@
     for (const slot of slotsOf(chassisId)) {
       const raw = e.default_modules && e.default_modules[slot.id];
       let chosen = (raw && raw !== 'empty' && raw !== 'inherit') ? raw : null;
-      if (!chosen && slot.required) chosen = pickBasic(slot, e.year);
+      // 逐个槽位重算可用类别：炮塔的解锁要先生效，主炮才能选到中型/重型
+      const cats = effectiveCategories(chassisId, design.modules)[slot.id] || slot.categories;
+      if (!chosen && slot.required) chosen = pickBasic({ id: slot.id, categories: cats }, e.year);
       design.modules[slot.id] = chosen || null;
     }
     return design;
@@ -304,6 +342,7 @@
     for (const k of Object.keys(e.resources || {})) out.resources[k] = e.resources[k];
 
     const slots = slotsOf(design.chassisId);
+    const catsBySlot = effectiveCategories(design.chassisId, design.modules);
     const installed = [];
     for (const slot of slots) {
       const modId = design.modules[slot.id];
@@ -316,7 +355,7 @@
         out.validity.errors.push(slot.label + ' 的模块不存在：' + modId);
         continue;
       }
-      if (slot.categories.indexOf(m.category) < 0) {
+      if ((catsBySlot[slot.id] || []).indexOf(m.category) < 0) {
         out.validity.errors.push('「' + HOI.locOf(modId, modId) + '」不能装在' + slot.label);
         continue;
       }
@@ -442,7 +481,7 @@
       for (const t of VARIANT_TYPES[variant.key]) if (types.indexOf(t) < 0) types.push(t);
     }
 
-    const slotLines = slotsOf(baseId).map((slot) => {
+    const slotLines = slotsOf(baseId, design.modules).map((slot) => {
       const cats = slot.categories.map((c) => '\t\t\t\t\t' + c).join('\n');
       return '\t\t\t' + slot.id + ' = {\n'
         + '\t\t\t\trequired = ' + (slot.required ? 'yes' : 'no') + '\n'
@@ -538,7 +577,7 @@
     SLOT_LABELS, SLOT_ORDER, STAT_ROWS, STAT_KEYS, FAMILIES, VARIANT_TYPES,
     isTankEquipment, variantOf, familyOf, familyInfo,
     listChassis, listVariants, chassisByYear,
-    slotsOf, modulesForSlot,
+    effectiveCategories, slotsOf, modulesForSlot,
     defaultDesign, cloneDesign, computeDesign, isValid,
     toEquipment, exportDefinition, exportBundle,
   };

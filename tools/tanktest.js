@@ -136,6 +136,27 @@ check('forbid_equipment_type 会被检出', () => {
   return '固定战斗室炮塔 + 防空变体被拒绝';
 });
 
+check('炮塔解锁主炮槽的中型 / 重型主炮（和游戏一致）', () => {
+  const id = 'medium_tank_chassis_2';
+  const staticCats = T.effectiveCategories(id, {}).main_armament_slot;
+  if (staticCats.indexOf('tank_medium_main_armament') >= 0) {
+    throw new Error('底盘槽位里不该静态含中型主炮：' + staticCats.join('/'));
+  }
+  const turret = 'tank_medium_three_man_tank_turret';
+  const unlocked = T.effectiveCategories(id, { turret_type_slot: turret }).main_armament_slot;
+  if (unlocked.indexOf('tank_medium_main_armament') < 0) throw new Error('装了中型炮塔也没解锁中型主炮');
+  const ids = T.modulesForSlot(id, 'main_armament_slot', { turret_type_slot: turret }).map((m) => m.id);
+  if (ids.indexOf('tank_medium_cannon') < 0) throw new Error('中型主炮没出现在可选列表里');
+
+  // 校验也要按解锁后的类别放行（否则游戏里合法、这里却报错）
+  const d = T.defaultDesign(id);
+  d.modules.turret_type_slot = turret;
+  d.modules.main_armament_slot = 'tank_medium_cannon';
+  const r = T.computeDesign(d);
+  if (r.validity.errors.length) throw new Error('校验误报：' + r.validity.errors.join('；'));
+  return '中型炮塔解锁 ' + ids.length + ' 门主炮，校验通过';
+});
+
 check('必选槽留空会报错', () => {
   const d = T.defaultDesign('medium_tank_chassis_2');
   d.modules.engine_type_slot = null;
