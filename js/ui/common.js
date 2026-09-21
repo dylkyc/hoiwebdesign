@@ -321,13 +321,20 @@
   function traitPicker(cfg) {
     const config = cfg || {};
     const list = config.list || [];
+    const showOrigin = config.showOrigin !== false;
     let combatOnly = config.showFilters !== false ? config.combatOnly !== false : false;
     let filter = '';
+    /** 来源分类过滤：'all' 或 TRAIT_CATEGORIES 里的 id */
+    let category = 'all';
 
     // 列表本身很少变（只有军团长/元帅切换时才变），先把统计与每条的
-    // 「是否直接产生战斗修正」算好，避免每次点击都重算全表。
+    // 「是否直接产生战斗修正」「来源分类」算好，避免每次点击都重算全表。
     const combatFlags = new Map();
-    for (const t of list) combatFlags.set(t.id, isCombatTrait(t, false));
+    const originMap = new Map();
+    for (const t of list) {
+      combatFlags.set(t.id, isCombatTrait(t, false));
+      originMap.set(t.id, showOrigin ? traitOrigin(t).id : null);
+    }
     const combatCount = list.filter((t) => combatFlags.get(t.id)).length;
 
     const search = el('input', { type: 'search', placeholder: '搜索特质名称或 ID…' });
@@ -339,7 +346,16 @@
     const countEl = el('span', { class: 'pill', text: '' });
     const listBox = el('div', { class: 'trait-list' });
     const head = el('div', { class: 'picker-head' }, [search, allBtn, countEl]);
+    const catRow = el('div', { class: 'chip-row' });
     const foot = el('div', { class: 'picker-foot' });
+
+    function visible(t) {
+      const f = String(filter || '').trim().toLowerCase();
+      if (f && (String(t.name || '') + ' ' + t.id).toLowerCase().indexOf(f) < 0) return false;
+      if (combatOnly && !combatFlags.get(t.id)) return false;
+      if (category !== 'all' && originMap.get(t.id) !== category) return false;
+      return true;
+    }
 
     function selectedCount() {
       let n = 0;
@@ -347,35 +363,66 @@
       return n;
     }
 
+    function drawChips() {
+      clear(catRow);
+      if (!showOrigin) return;
+      const counts = {};
+      for (const t of list) {
+        const key = originMap.get(t.id);
+        if (key) counts[key] = (counts[key] || 0) + 1;
+      }
+      const add = (value, label, count) => {
+        catRow.appendChild(el('button', {
+          class: 'chip-filter' + (category === value ? ' on' : ''),
+          text: label + '（' + count + '）',
+          onclick: () => { category = value; sync(); },
+        }));
+      };
+      add('all', '全部来源', list.length);
+      for (const c of TRAIT_CATEGORIES) {
+        if (counts[c.id]) add(c.id, c.label, counts[c.id]);
+      }
+    }
+
     function draw() {
       clear(listBox);
-      const f = String(filter || '').trim().toLowerCase();
-      for (const t of list) {
-        if (f && (String(t.name || '') + ' ' + t.id).toLowerCase().indexOf(f) < 0) continue;
-        if (combatOnly && !combatFlags.get(t.id)) continue;
-        const on = !!config.isSelected(t.id);
-        listBox.appendChild(traitRow(t, on, () => {
-          config.onToggle(t.id);
-          if (config.onRefresh) config.onRefresh();
-          draw();
-        }));
+      let shown = 0;
+      for (const c of TRAIT_CATEGORIES) {
+        if (category !== 'all' && category !== c.id) continue;
+        const rows = list.filter((t) => (!showOrigin || originMap.get(t.id) === c.id) && visible(t));
+        if (!rows.length) continue;
+        shown += rows.length;
+        if (showOrigin) {
+          listBox.appendChild(el('div', { class: 'trait-group-head', text: c.label + '（' + rows.length + '）', title: c.hint }));
+        }
+        for (const t of rows) {
+          const on = !!config.isSelected(t.id);
+          listBox.appendChild(traitRow(t, on, () => {
+            config.onToggle(t.id);
+            if (config.onRefresh) config.onRefresh();
+            draw();
+          }));
+        }
       }
-      if (!listBox.childNodes.length) {
-        listBox.appendChild(el('div', { class: 'empty-note', text: f ? '没有匹配的特质。' : '没有对战斗有效的特质。' }));
+      if (!shown) {
+        listBox.appendChild(el('div', { class: 'empty-note', text: filter ? '没有匹配的特质。' : '这个分类下没有对战斗有效的特质。' }));
       }
       countEl.textContent = '已选 ' + selectedCount() + ' 个';
     }
 
     function updateFoot() {
       clear(foot);
+      const cat = category === 'all' ? null : TRAIT_CATEGORIES.filter((c) => c.id === category)[0];
       foot.appendChild(el('div', {
         text: '共 ' + list.length + ' 个可用特质，其中 ' + combatCount + ' 个会直接产生战斗数值修正。'
-          + (combatOnly ? '当前只列出这 ' + combatCount + ' 个。' : '当前列出全部。'),
+          + (combatOnly ? '当前只列出这 ' + combatCount + ' 个。' : '当前列出全部。')
+          + (cat ? '　分类：' + cat.label + ' —— ' + cat.hint : ''),
       }));
     }
 
     function sync() {
       if (allBtn) allBtn.textContent = combatOnly ? '显示全部特质' : '只看对战斗有效的';
+      drawChips();
       draw();
       updateFoot();
     }
@@ -383,8 +430,9 @@
     search.addEventListener('input', (e) => { filter = e.target.value; draw(); });
 
     const box = el('div', {}, [
-      el('div', { class: 'hint', text: '点击条目切换选中状态，关闭窗口即生效。' }),
+      el('div', { class: 'hint', text: '点击条目切换选中状态，关闭窗口即生效。按来源分类可以直接筛掉与战斗无关的政治 / 状态类特质。' }),
       head,
+      showOrigin ? catRow : null,
       listBox,
       foot,
     ]);
@@ -412,6 +460,85 @@
     return base.filter((l) => !(isFieldMarshal ? ccOnly.has(l[3]) : fmOnly.has(l[3])));
   }
 
+  /* ---------------------------------------------------------------- */
+  /* 将领特质：来源分类                                                */
+  /* ---------------------------------------------------------------- */
+
+  /**
+   * 特质来源分类。
+   *
+   * 游戏里「怎么拿到这个特质」由几个字段决定：
+   *   gain_xp = { always = no }  -> 不能靠打仗攒经验，只能花指挥官点数（CP）解锁
+   *   trait_type = assignable*   -> CP 解锁（cost 就是点数，500 / 700 / 1000 / 2000）
+   *   trait_type = personality / basic / basic_terrain -> 靠 gain_xp 阈值在战斗中练出来
+   *   allowed = { FROM = { original_tag = JAP } } -> 只有特定国家能拿到
+   *   trait_type = status_trait  -> 受伤 / 患病 / 被贬职这类事件状态
+   *   trait_type = exile          -> 流亡将领
+   */
+  const TRAIT_CATEGORIES = [
+    { id: 'cp', label: '指挥官点解锁（CP）', hint: '花指挥官点数解锁，如进攻大师、后勤奇才' },
+    { id: 'xp', label: '战斗经验获得', hint: '靠 gain_xp 阈值在战斗中练出来，如地形专精、老派将官' },
+    { id: 'country', label: '国家限定', hint: '只有特定国家能获得，通常是政治 / 忠诚类' },
+    { id: 'status', label: '事件与状态', hint: '负伤、患病、被贬职等由事件赋予的状态' },
+    { id: 'special', label: '特殊 / 其他', hint: '流亡将领等特殊来源，或数据里没有来源标记的特质' },
+  ];
+  const TRAIT_CATEGORY_IDS = TRAIT_CATEGORIES.map((c) => c.id);
+  const TRAIT_CATEGORY_LABEL = {};
+  for (const c of TRAIT_CATEGORIES) TRAIT_CATEGORY_LABEL[c.id] = c.label;
+
+  /** 递归收集 allowed 块里的国家代码（tag / original_tag） */
+  function traitCountries(t) {
+    const out = new Set();
+    const walk = (obj) => {
+      if (!obj || typeof obj !== 'object') return;
+      if (Array.isArray(obj)) { for (const v of obj) walk(v); return; }
+      for (const k of Object.keys(obj)) {
+        if (k === 'tag' || k === 'original_tag') {
+          const v = obj[k];
+          for (const x of (Array.isArray(v) ? v : [v])) out.add(String(x));
+        } else {
+          walk(obj[k]);
+        }
+      }
+    };
+    walk(t && t.allowed);
+    return Array.from(out).sort();
+  }
+
+  /**
+   * 特质的来源分类。
+   * @returns {{id:string, label:string, countries:string[], slot:string}}
+   */
+  function traitOrigin(t) {
+    const type = (t && t.trait_type) || '';
+    const countries = traitCountries(t);
+    const slot = t && t.slot ? String(t.slot) : '';
+    const mk = (id) => ({ id, label: TRAIT_CATEGORY_LABEL[id], countries, slot });
+    if (/^assignable/.test(type)) return mk('cp');
+    if (type === 'exile') return mk('special');
+    if (type === 'status_trait') return mk('status');
+    if (/^(basic|personality)/.test(type)) return mk(countries.length ? 'country' : 'xp');
+    // 1.19 里 organizer / infantry_leader 这类基础指挥官特质没有 trait_type，
+    // 但带 cost（和 high_command 参谋槽位），同样是花指挥官点数解锁的
+    if (t && t.cost !== undefined) return mk('cp');
+    return mk('special');
+  }
+
+  /** 某个特质是否属于某来源分类 */
+  function traitIsCategory(t, categoryId) {
+    return traitOrigin(t).id === categoryId;
+  }
+
+  /** 特质条目的来源小标签，如「CP 1000」「战斗经验」「日本 JAP」 */
+  function traitOriginLabel(t) {
+    const o = traitOrigin(t);
+    if (o.id === 'cp') return 'CP' + (t && t.cost !== undefined ? ' ' + t.cost : '');
+    if (o.id === 'country') return o.countries.length ? o.countries.join('/') : '国家限定';
+    if (o.id === 'status') return '事件状态';
+    if (o.id === 'special') return o.slot ? '参谋部 ' + o.slot : '特殊';
+    return '战斗经验';
+  }
+
   /** 特质条目（将领页特质库与选择器共用同一套标记） */
   function traitRow(t, on, onClick) {
     const lines = traitEffectLines(t);
@@ -421,6 +548,7 @@
       onclick: onClick,
     }, [
       el('div', { class: 'tname', text: t.name + ' ', title: t.id }, [
+        el('span', { class: 'tag-origin', text: traitOriginLabel(t) }),
         el('span', { class: 'ttype', text: (t.trait_type || '') + (Array.isArray(t.type) ? ' · ' + t.type.join('/') : (t.type ? ' · ' + t.type : '')) }),
       ]),
       el('div', { class: 'tmods', text: modText || '（无战斗数值修正）' }),
@@ -430,5 +558,6 @@
   global.UI = {
     el, clear, $, $$, fmt, pct, signed, statLabel, toast, modal, download, unitColorClass,
     isCombatTrait, traitEffectLines, traitEffectLinesForRole, effectText, traitPicker, traitRow,
+    TRAIT_CATEGORIES, traitOrigin, traitIsCategory, traitOriginLabel, traitCountries,
   };
 })(typeof window !== 'undefined' ? window : globalThis);

@@ -16,6 +16,39 @@
   let lastResult = null;
   let filter = '';
 
+  /* ---------------- 编辑焦点与多选 ---------------- */
+  /** 当前获得焦点的槽位 {kind,a,b}：左侧待选区按它的列 / 行来过滤 */
+  let activeCell = null;
+  /** 多选集合（Ctrl 点选、Shift 区间选择） */
+  let selectedCells = [];
+  /** Shift 区间选择的锚点 */
+  let anchorCell = null;
+  /** 悬停到某个槽位时，用它的列来过滤左侧（优先于 activeCell） */
+  let hoverCell = null;
+  /** 折叠的待选分组（不持久化） */
+  const collapsedGroups = [];
+
+  const cellKey = (kind, a, b) => kind + ':' + a + ':' + b;
+  const sameCell = (x, p) => !!x && !!p && x.kind === p.kind && x.a === p.a && x.b === p.b;
+  const cellIndex = (kind, a, b) => {
+    for (let i = 0; i < selectedCells.length; i++) {
+      if (selectedCells[i].kind === kind && selectedCells[i].a === a && selectedCells[i].b === b) return i;
+    }
+    return -1;
+  };
+  const isCellSelected = (kind, a, b) => cellIndex(kind, a, b) >= 0;
+
+  /** 当前用于过滤待选区的槽位：悬停优先，其次是上一次点击的槽位 */
+  const focusCell = () => hoverCell || activeCell;
+
+  /** 清空编辑焦点（清空编制 / 载入预设时用） */
+  function clearSelection() {
+    selectedCells = [];
+    activeCell = null;
+    anchorCell = null;
+    hoverCell = null;
+  }
+
   /* ------------------------------------------------------------------ */
   /* 初始化                                                             */
   /* ------------------------------------------------------------------ */
@@ -66,6 +99,7 @@
     UI.$('#btnClear').addEventListener('click', () => {
       template = DIV.emptyTemplate(template.name);
       selectedUnitId = null;
+      clearSelection();
       persist(); renderAll(); UI.toast('已清空');
     });
     UI.$('#btnPreset').addEventListener('click', showPresets);
@@ -173,38 +207,145 @@
     const host = UI.$('#paletteBody');
     clear(host);
 
-    const groups = [
-      { title: '步兵 / 骑兵', list: HOI.battalions.filter((u) => isCat(u, ['infantry', 'cavalry'])) },
-      { title: '机动 / 装甲', list: HOI.battalions.filter((u) => isCat(u, ['armor', 'motorized', 'mechanized'])) },
-      { title: '炮兵 / 支援营', list: HOI.battalions.filter((u) => isCat(u, ['artillery'])) },
-      { title: '师级支援连', list: HOI.supports },
-      { title: '团级支援', list: HOI.regimentalSupports },
-    ];
+    const groups = paletteGroups();
+    const focus = focusCell();
+    const prof = focus ? columnProfile(focus) : null;
 
+    // 顶部提示：当前按哪一列过滤 / 多选状态
+    host.appendChild(paletteStatus(prof));
+
+    let shownTotal = 0;
     for (const g of groups) {
+      if (prof && prof.filterable && prof.classes.indexOf(g.cls) < 0) continue;
       let list = g.list;
       if (filter) list = list.filter((u) => (u.name + ' ' + u.id).toLowerCase().indexOf(filter) >= 0);
       if (!list.length) continue;
-      const box = el('div', { class: 'palette-group' }, [el('h3', { text: g.title + '（' + list.length + '）' })]);
-      const chips = el('div', { class: 'unit-chips' });
-      for (const u of list) {
-        chips.appendChild(el('div', {
-          class: 'chip ' + UI.unitColorClass(u) + (u.id === selectedUnitId ? ' on' : ''),
-          style: u.id === selectedUnitId ? { borderColor: 'var(--accent)', background: 'rgba(200,160,74,.15)' } : null,
-          title: u.id,
+      shownTotal += list.length;
+
+      const expanded = filter ? true : collapsedGroups.indexOf(g.cls) < 0;
+      const box = el('div', { class: 'palette-group' }, [
+        el('h3', {
+          title: '点击折叠 / 展开',
           onclick: () => {
-            selectedUnitId = (selectedUnitId === u.id) ? null : u.id;
+            const i = collapsedGroups.indexOf(g.cls);
+            if (i >= 0) collapsedGroups.splice(i, 1); else collapsedGroups.push(g.cls);
             renderPalette();
           },
         }, [
+          el('span', { class: 'caret', text: expanded ? '▾' : '▸' }),
+          el('span', { text: g.title + '（' + list.length + '）' }),
+        ]),
+      ]);
+      if (!expanded) { host.appendChild(box); continue; }
+
+      const chips = el('div', { class: 'unit-chips' });
+      for (const u of list) {
+        const selectedOn = u.id === selectedUnitId;
+        const chip = el('div', {
+          class: 'chip ' + UI.unitColorClass(u) + (selectedOn ? ' on' : ''),
+          style: selectedOn ? { borderColor: 'var(--accent)', background: 'rgba(200,160,74,.15)' } : null,
+          title: u.id + (selectedCells.length ? '\n点击：填入选中的 ' + selectedCells.length + ' 个槽位' : '\n点击选中，再点网格空位放置'),
+          onclick: () => pickUnit(u.id),
+        }, [
           el('span', { text: u.name }),
           el('span', { class: 'cw', text: '宽' + fmt(u.combat_width, 0) }),
-        ]));
+        ]);
+        chips.appendChild(chip);
       }
       box.appendChild(chips);
       host.appendChild(box);
     }
-    if (!host.childNodes.length) host.appendChild(el('div', { class: 'empty-note', text: '没有匹配的单位。' }));
+    if (!shownTotal) {
+      host.appendChild(el('div', {
+        class: 'empty-note',
+        text: prof && prof.filterable
+          ? '这一列用到的兵种（' + prof.labels.join('、') + '）里没有匹配的单位。点其它列或改搜索词。'
+          : '没有匹配的单位。',
+      }));
+    }
+  }
+
+  /** 待选区分组（按兵种大类，与网格每列的过滤一致） */
+  function paletteGroups() {
+    return [
+      { cls: 'infantry', title: '步兵 / 骑兵', list: HOI.battalions.filter((u) => UI.unitColorClass(u) === 'infantry') },
+      { cls: 'armor', title: '装甲 / 机动', list: HOI.battalions.filter((u) => UI.unitColorClass(u) === 'armor' || UI.unitColorClass(u) === 'mobile') },
+      { cls: 'artillery', title: '炮兵 / 支援营', list: HOI.battalions.filter((u) => UI.unitColorClass(u) === 'artillery') },
+      { cls: 'support', title: '师级支援连', list: HOI.supports },
+      { cls: 'regimental', title: '团级支援', list: HOI.regimentalSupports },
+    ];
+  }
+
+  const CLASS_LABELS = { infantry: '步兵', armor: '装甲', mobile: '机动', artillery: '炮兵', support: '师级支援', regimental: '团级支援' };
+
+  /**
+   * 某一列（槽位）当前用到的兵种类别。
+   * 编制网格按「团」分列，同一列通常放同一兵种，所以这里按列聚合：
+   * 结果只有一类时，左侧就只列这一类；空列或混编时不做限制。
+   */
+  function columnProfile(cell) {
+    const out = { classes: [], labels: [], filterable: false, mixed: false, empty: true };
+    const counts = {};
+    const bump = (unit) => {
+      if (!unit) return;
+      out.empty = false;
+      const cls = cell.kind === 'grid'
+        ? UI.unitColorClass(unit)
+        : (cell.kind === 'support' ? 'support' : 'regimental');
+      counts[cls] = (counts[cls] || 0) + 1;
+    };
+    if (cell.kind === 'grid') {
+      // 网格是 grid[行][列]：按「团」（列）聚合，所以每一步取 row[cell.b]
+      for (let r = 0; r < template.grid.length; r++) {
+        const row = template.grid[r];
+        const slot = row && row[cell.b];
+        bump(slot && HOI.units[slot.unitId]);
+      }
+    } else {
+      const arr = cell.kind === 'support' ? template.supports : template.regSupports;
+      for (let i = 0; i < arr.length; i++) {
+        const slot = arr[i];
+        bump(slot && HOI.units[slot.unitId]);
+      }
+    }
+    out.classes = Object.keys(counts);
+    out.labels = out.classes.map((c) => CLASS_LABELS[c] || c);
+    out.mixed = out.classes.length > 1;
+    out.filterable = !out.empty && out.classes.length === 1;
+    return out;
+  }
+
+  /** 待选面板顶部的状态条：列过滤 + 多选操作 */
+  function paletteStatus(prof) {
+    const box = el('div', { class: 'palette-status' });
+    if (prof && prof.filterable) {
+      box.appendChild(el('div', { class: 'hint', text: '按列过滤：' + prof.labels[0] + '（' + (prof.mixed ? '混编' : '该列现有兵种') + '）' }));
+    } else if (prof && prof.mixed) {
+      box.appendChild(el('div', { class: 'hint', text: '这一列混编了 ' + prof.labels.join(' / ') + '，暂不过滤。' }));
+    } else if (prof && prof.empty) {
+      box.appendChild(el('div', { class: 'hint', text: '空列：显示全部兵种。' }));
+    } else {
+      box.appendChild(el('div', { class: 'hint', text: '把鼠标移到网格上，左侧会按那一列的兵种过滤。' }));
+    }
+
+    if (selectedCells.length) {
+      box.appendChild(el('div', { class: 'palette-status-actions' }, [
+        el('span', { class: 'v', text: '已选 ' + selectedCells.length + ' 个槽位' }),
+        el('button', { class: 'btn small', text: '取消选择', onclick: () => { selectedCells = []; renderAll(); } }),
+      ]));
+      box.appendChild(el('div', { class: 'hint', text: '点左侧任意单位 = 一次填入这 ' + selectedCells.length + ' 个槽位；Ctrl 点选，Shift 选连续区间。' }));
+    }
+    return box;
+  }
+
+  /** 点击待选单位：有选中槽位就批量填入，否则仅选中该单位 */
+  function pickUnit(unitId) {
+    if (selectedCells.length) {
+      batchFill(unitId, selectedCells.slice());
+      return;
+    }
+    selectedUnitId = (selectedUnitId === unitId) ? null : unitId;
+    renderPalette();
   }
 
   function isCat(u, cats) {
@@ -271,14 +412,25 @@
     else { slot = template.regSupports[a]; cls = 'support-slot'; }
 
     const unit = slot && HOI.units[slot.unitId];
+    const sel = isCellSelected(kind, a, b);
     const node = el('div', {
-      class: cls + (unit ? ' filled ' + UI.unitColorClass(unit) : ''),
-      title: unit ? unit.name + '（' + unit.id + '）\n点击配置装备；点 × 移除' : '点击放置当前选中单位',
+      class: cls + (unit ? ' filled ' + UI.unitColorClass(unit) : '') + (sel ? ' sel' : ''),
+      'data-cell': cellKey(kind, a, b),
+      title: (unit ? unit.name + '（' + unit.id + '）\n点击配置装备；点 × 移除' : '点击放置当前选中的单位')
+        + '\nCtrl 点击：加入多选　Shift 点击：选中连续区间',
+      onmouseenter: () => {
+        if (hoverCell && sameCell(hoverCell, { kind, a, b })) return;
+        hoverCell = { kind, a, b };
+        renderPalette();
+      },
+      onmouseleave: () => {
+        if (!hoverCell || !sameCell(hoverCell, { kind, a, b })) return;
+        hoverCell = null;
+        renderPalette();
+      },
       onclick: (e) => {
         if (e.target.classList.contains('cell-remove')) return;
-        if (unit) openSlotDialog(kind, a, b);
-        else if (selectedUnitId) placeUnit(kind, a, b, selectedUnitId);
-        else UI.toast('请先在左侧选择一个单位');
+        handleCellClick(e, kind, a, b, unit);
       },
     });
 
@@ -299,6 +451,152 @@
       node.appendChild(el('div', { class: 'cell-sub', text: '+' }));
     }
     return node;
+  }
+
+  /* ------------------------------------------------------------------ */
+  /* 编辑焦点：点击 / Ctrl 多选 / Shift 区间                             */
+  /* ------------------------------------------------------------------ */
+
+  /**
+   * 点击槽位。
+   *   Ctrl  -> 加入 / 移出多选，不打开装备弹窗
+   *   Shift -> 从锚点选到当前槽位的连续区间
+   *   普通  -> 有选中单位就放置；已有营则打开装备弹窗
+   */
+  function handleCellClick(e, kind, a, b, unit) {
+    const ctrl = !!(e && (e.ctrlKey || e.metaKey));
+    const shift = !!(e && e.shiftKey);
+    activeCell = { kind, a, b };
+
+    if (ctrl) {
+      const i = cellIndex(kind, a, b);
+      if (i >= 0) selectedCells.splice(i, 1); else selectedCells.push({ kind, a, b });
+      anchorCell = { kind, a, b };
+      refreshSelectionUI();
+      return;
+    }
+    if (shift) {
+      selectRange(anchorCell || { kind, a, b }, { kind, a, b });
+      refreshSelectionUI();
+      return;
+    }
+
+    selectedCells = [];
+    anchorCell = { kind, a, b };
+    if (unit) {
+      refreshSelectionUI();
+      openSlotDialog(kind, a, b);
+      return;
+    }
+    if (selectedUnitId) {
+      placeUnit(kind, a, b, selectedUnitId);
+      return;
+    }
+    refreshSelectionUI();
+    UI.toast('请先在左侧选择一个单位，或用 Ctrl / Shift 点选多个槽位');
+  }
+
+  /** Shift 区间选择：按网格矩形（或支援槽位下标区间）选中范围内的槽位 */
+  function selectRange(from, to) {
+    const keys = [];
+    if (from.kind === 'grid' && to.kind === 'grid') {
+      const r0 = Math.min(from.a, to.a); const r1 = Math.max(from.a, to.a);
+      const c0 = Math.min(from.b, to.b); const c1 = Math.max(from.b, to.b);
+      for (let r = r0; r <= r1; r++) for (let c = c0; c <= c1; c++) keys.push({ kind: 'grid', a: r, b: c });
+    } else if (from.kind === 'grid' && to.kind !== 'grid') {
+      // 跨越网格与支援区：先把整列选上，再把支援槽位补上
+      const c0 = Math.min(from.b, to.b); const c1 = Math.max(from.b, to.b);
+      for (let r = 0; r < DIV.GRID_H; r++) for (let c = c0; c <= c1; c++) keys.push({ kind: 'grid', a: r, b: c });
+      const arr = to.kind === 'support' ? template.supports : template.regSupports;
+      for (let i = 0; i < arr.length; i++) keys.push({ kind: to.kind, a: i, b: 0 });
+    } else if (from.kind !== 'grid' && to.kind !== 'grid' && from.kind === to.kind) {
+      const i0 = Math.min(from.a, to.a); const i1 = Math.max(from.a, to.a);
+      for (let i = i0; i <= i1; i++) keys.push({ kind: from.kind, a: i, b: 0 });
+    } else {
+      selectRange(to, from);
+      return;
+    }
+    selectedCells = keys;
+  }
+
+  /** 只刷新选中态的样式与待选区，避免整页重绘 */
+  function refreshSelectionUI() {
+    for (const node of UI.$$('[data-cell]')) {
+      const k = node.dataset ? node.dataset.cell : '';
+      const parts = String(k || '').split(':');
+      const on = parts.length === 3 && isCellSelected(parts[0], Number(parts[1]), Number(parts[2]));
+      node.classList.toggle('sel', on);
+    }
+    renderPalette();
+  }
+
+  /**
+   * 批量填充：给一组槽位放置同一个单位。
+   *
+   * 支援连同类型唯一，所以批量操作里最多只会真正放下一个支援槽位，
+   * 其余位置跳过并提示 —— 避免"点了 5 个格子结果只生效 1 个"的困惑。
+   */
+  function batchFill(unitId, cells) {
+    const unit = HOI.units[unitId];
+    if (!unit || !cells || !cells.length) return;
+
+    const isGrid = unit.kind === 'battalion';
+    const valid = cells.filter((c) => c.kind === 'grid' ? isGrid : !isGrid)
+      .filter((c) => (c.kind === 'grid'
+        ? c.a >= 0 && c.a < DIV.GRID_H && c.b >= 0 && c.b < DIV.GRID_W
+        : c.a >= 0 && c.a < (c.kind === 'support' ? DIV.SUPPORT_H : DIV.REG_SUPPORT_W)));
+
+    const skippedWrongKind = cells.length - cells.filter((c) => c.kind === 'grid' ? isGrid : !isGrid).length;
+    if (!valid.length) {
+      UI.toast(unit.kind === 'battalion'
+        ? '战斗营只能放在网格里，或者选中了不存在的槽位'
+        : '支援单位只能放在支援槽位，或者选中了不存在的槽位');
+      return;
+    }
+    if (skippedWrongKind) {
+      UI.toast(unit.kind === 'battalion'
+        ? '战斗营只能放网格，已跳过 ' + skippedWrongKind + ' 个支援槽位'
+        : '支援单位只能放支援槽位，已跳过 ' + skippedWrongKind + ' 个网格格');
+    }
+
+    const key = unit.same_support_type || unit.id;
+    const supportTargets = valid.filter((c) => c.kind !== 'grid');
+    if (supportTargets.length) {
+      const already = template.supports.concat(template.regSupports).some((s) => {
+        const u = s && HOI.units[s.unitId];
+        return u && (u.same_support_type || u.id) === key;
+      });
+      if (already) {
+        // 只有"正好点在它自己身上"才允许原地保留，否则直接拒绝
+        const only = supportTargets[0];
+        const slot = only.kind === 'support' ? template.supports[only.a] : template.regSupports[only.a];
+        const old = slot && HOI.units[slot.unitId];
+        const same = old && (old.same_support_type || old.id) === key;
+        if (!(supportTargets.length === 1 && same)) {
+          UI.toast('「' + unit.name + '」已经在此编制中，支援连不能重复');
+          return;
+        }
+      }
+      if (supportTargets.length > 1) UI.toast('支援连不能重复，只放第一个槽位');
+      return fillSlots(unit, valid.filter((c) => c.kind === 'grid').concat(supportTargets.slice(0, 1)));
+    }
+    return fillSlots(unit, valid);
+  }
+
+  /** 实际写入槽位 */
+  function fillSlots(unit, cells) {
+    let n = 0;
+    for (const c of cells) {
+      if (c.kind === 'grid') { template.grid[c.a][c.b] = { unitId: unit.id, models: {} }; n++; continue; }
+      if (c.kind === 'support') template.supports[c.a] = { unitId: unit.id, models: {} };
+      else template.regSupports[c.a] = { unitId: unit.id, models: {} };
+      n++;
+    }
+    selectedCells = [];
+    selectedUnitId = null;
+    persist();
+    renderAll();
+    UI.toast('已放置「' + unit.name + '」到 ' + n + ' 个槽位');
   }
 
   /** 槽位的装备摘要文字 */

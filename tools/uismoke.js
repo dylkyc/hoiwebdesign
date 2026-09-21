@@ -106,6 +106,11 @@ class Element extends Node {
     if (k === 'style') return;
     if (k === 'value') { this._value = String(v); return; }
     if (k === 'checked' || k === 'selected' || k === 'disabled' || k === 'readonly') { this[k] = true; return; }
+    // data-* 需要同步到 dataset，真实浏览器里 dataset.cell 与 data-cell 是同一份数据
+    if (k.startsWith('data-')) {
+      const camel = k.slice(5).replace(/-([a-z])/g, (m, c) => c.toUpperCase());
+      this.dataset[camel] = String(v);
+    }
     // 常见属性直接映射到元素属性，便于测试代码读取 el.type 等
     try { this[k] = v; } catch (e) { /* ignore */ }
   }
@@ -390,6 +395,71 @@ check('编制设计：保存 / 读取', () => {
   return 'localStorage 键: ' + keys.join(', ');
 });
 
+check('编制设计：待选区按所在列的兵种过滤', () => {
+  document.getElementById('btnClear').click();
+
+  // 先在网格里放两个装甲营，制造一个"装甲列"
+  const armorUnit = global.HOI.battalions.find((u) => u.types.indexOf('armor') >= 0);
+  if (!armorUnit) throw new Error('找不到装甲营');
+  const template = global.HOI_UI_DESIGNER.getTemplate();
+  template.grid[0][0] = { unitId: armorUnit.id, models: {} };
+  template.grid[1][0] = { unitId: armorUnit.id, models: {} };
+  global.HOI_UI_DESIGNER.setTemplate(template);
+
+  const cells = document.getElementById('gridHost').querySelectorAll('.grid-cell');
+  const c0 = cells.find((c) => c.dataset && c.dataset.cell === 'grid:0:0');
+  if (!c0) throw new Error('找不到 grid:0:0');
+  c0.dispatchEvent({ type: 'mouseenter' });
+  const palette = document.getElementById('paletteBody');
+  const status = palette.textContent;
+  if (status.indexOf('按列过滤') < 0) throw new Error('没有按列过滤：' + status.slice(0, 120));
+  if (palette.querySelectorAll('.chip').length === 0) throw new Error('过滤后待选区为空');
+
+  // 换到一个空列应恢复全部兵种
+  const c4 = document.getElementById('gridHost').querySelectorAll('.grid-cell')
+    .find((c) => c.dataset && c.dataset.cell === 'grid:0:4');
+  if (!c4) throw new Error('找不到 grid:0:4');
+  c4.dispatchEvent({ type: 'mouseenter' });
+  const reloaded = document.getElementById('paletteBody');
+  if (reloaded.textContent.indexOf('空列') < 0) throw new Error('空列没有回退到全部兵种：' + reloaded.textContent.slice(0, 120));
+  const total = reloaded.querySelectorAll('.chip').length;
+  if (total < 20) throw new Error('空列显示的单位太少：' + total);
+  return '装甲列只列装甲类，空列恢复 ' + total + ' 个单位';
+});
+
+check('编制设计：Ctrl 多选 + Shift 区间 + 批量填充', () => {
+  document.getElementById('btnClear').click();
+  const cells = document.getElementById('gridHost').querySelectorAll('.grid-cell');
+  const at = (k) => {
+    const n = cells.find((c) => c.dataset && c.dataset.cell === k);
+    if (!n) throw new Error('找不到槽位 ' + k);
+    return n;
+  };
+
+  at('grid:0:0').dispatchEvent({ type: 'click', ctrlKey: true });
+  at('grid:1:0').dispatchEvent({ type: 'click', ctrlKey: true });
+  const selCount = document.getElementById('gridHost').querySelectorAll('.grid-cell.sel').length;
+  if (selCount !== 2) throw new Error('Ctrl 多选应选中 2 格，实际 ' + selCount);
+  const statusTxt = document.getElementById('paletteBody').textContent;
+  if (statusTxt.indexOf('已选 2 个槽位') < 0) throw new Error('状态条没有显示多选数量：' + statusTxt.slice(0, 120));
+
+  // 点左侧单位 -> 一次填入两个格子
+  const inf = document.getElementById('paletteBody').querySelectorAll('.chip')
+    .find((c) => c.textContent.indexOf('步兵') >= 0);
+  if (!inf) throw new Error('待选区里找不到步兵');
+  inf.click();
+  const filled = document.getElementById('gridHost').querySelectorAll('.grid-cell.filled').length;
+  if (filled !== 2) throw new Error('批量填充后应有 2 个营，实际 ' + filled);
+  if (document.getElementById('gridHost').querySelectorAll('.grid-cell.sel').length) throw new Error('填充后选中态没有清空');
+
+  // Shift 区间：从 3:0 拖到 4:2 应选中 2×3 = 6 格
+  at('grid:3:0').dispatchEvent({ type: 'click' });
+  at('grid:4:2').dispatchEvent({ type: 'click', shiftKey: true });
+  const rangeCount = document.getElementById('gridHost').querySelectorAll('.grid-cell.sel').length;
+  if (rangeCount !== 6) throw new Error('Shift 区间应选中 6 格，实际 ' + rangeCount);
+  return 'Ctrl 多选 2 格 → 批量填充成功；Shift 区间 6 格';
+});
+
 let battleState = null;
 check('战斗模拟：切换到 battle 并渲染', () => {
   const tabsEls = document.getElementById('tabs').querySelectorAll('.tab');
@@ -607,7 +677,16 @@ check('将领：默认只列对战斗有效的特质', () => {
   box2.dispatchEvent({ type: 'change' });
   const back = document.getElementById('traitLibrary').querySelectorAll('.trait-item').length;
   if (back !== items.length) throw new Error('关闭开关后没有恢复默认列表：' + back + ' vs ' + items.length);
-  return '默认 ' + items.length + ' 个 → 全部 ' + all.length + ' 个';
+
+  // 来源分类必须覆盖全部特质（不能有特质因为没归类而从库里消失）
+  const heads = document.getElementById('traitLibrary').querySelectorAll('.trait-group-head');
+  if (!heads.length) throw new Error('特质库没有按来源分组');
+  const summed = heads.reduce((n, h) => {
+    const m = /(\d+)\s*个/.exec(h.textContent);
+    return n + (m ? Number(m[1]) : 0);
+  }, 0);
+  if (summed !== items.length) throw new Error('分组计数 ' + summed + ' 与列表 ' + items.length + ' 不一致');
+  return '默认 ' + items.length + ' 个 → 全部 ' + all.length + ' 个，分 ' + heads.length + ' 组';
 });
 
 check('将领：特质选择器模态框可用', () => {

@@ -20,6 +20,10 @@
     river: 'none',
     /** 特质库默认只列出对战斗有效的特质 */
     showAllTraits: false,
+    /** 展开的来源分组（默认全展开，搜索时也会自动展开） */
+    expandedGroups: ['cp', 'xp', 'country', 'status', 'special'],
+    /** 只看某个来源分类：'all' 或分类 id */
+    categoryFilter: 'all',
   };
 
   /** 判定是否为陆军将领特质（引擎角色判据 + 排除海军 / 特工专属） */
@@ -276,7 +280,10 @@
 
     const list = traitsForMarshal(state.isFieldMarshal);
     const combatList = list.filter((t) => UI.isCombatTrait(t, false));
-    const shownList = state.showAllTraits ? list : combatList;
+    const baseList = state.showAllTraits ? list : combatList;
+    const shownList = state.categoryFilter === 'all'
+      ? baseList
+      : baseList.filter((t) => UI.traitIsCategory(t, state.categoryFilter));
 
     // 过滤开关 + 搜索
     const toggle = el('label', { class: 'picker-filter' + (state.showAllTraits ? ' on' : '') }, [
@@ -288,6 +295,23 @@
     ]);
     const search = el('input', { type: 'search', placeholder: '搜索特质…' });
     host.appendChild(el('div', { class: 'picker-head' }, [search, toggle]));
+
+    // 来源分类筛选
+    const catRow = el('div', { class: 'chip-row' });
+    const catCount = (id) => baseList.filter((t) => UI.traitIsCategory(t, id)).length;
+    const addChip = (value, label, count) => {
+      catRow.appendChild(el('button', {
+        class: 'chip-filter' + (state.categoryFilter === value ? ' on' : ''),
+        text: label + '（' + count + '）',
+        onclick: () => { state.categoryFilter = value; renderLibrary(); },
+      }));
+    };
+    addChip('all', '全部来源', baseList.length);
+    for (const c of UI.TRAIT_CATEGORIES) {
+      const n = catCount(c.id);
+      if (n) addChip(c.id, c.label, n);
+    }
+    host.appendChild(catRow);
 
     // 已选特质摘要（点击 × 可移除）
     if (state.traits.length) {
@@ -315,19 +339,44 @@
     const box = el('div');
     host.appendChild(box);
 
+    // 按来源分类分组：CP 解锁 / 战斗经验 / 国家限定 / 事件状态 / 特殊
+    const groups = UI.TRAIT_CATEGORIES.map((c) => ({
+      cat: c,
+      rows: shownList.filter((t) => UI.traitIsCategory(t, c.id)),
+    })).filter((g) => g.rows.length);
+
     function draw(filter) {
       clear(box);
       const f = (filter || '').trim().toLowerCase();
       let shown = 0;
-      for (const t of shownList) {
-        if (f && (t.name + ' ' + t.id).toLowerCase().indexOf(f) < 0) continue;
-        shown++;
-        const on = state.traits.indexOf(t.id) >= 0;
-        box.appendChild(UI.traitRow(t, on, () => {
-          const i = state.traits.indexOf(t.id);
-          if (i >= 0) state.traits.splice(i, 1); else state.traits.push(t.id);
-          render();
-        }));
+      for (const g of groups) {
+        const rows = f ? g.rows.filter((t) => (t.name + ' ' + t.id).toLowerCase().indexOf(f) >= 0) : g.rows;
+        if (!rows.length) continue;
+        shown += rows.length;
+        // 搜索时自动展开，避免"搜到了却看不到"
+        const expanded = !!f || state.expandedGroups.indexOf(g.cat.id) >= 0;
+        box.appendChild(el('div', {
+          class: 'trait-group-head' + (expanded ? ' open' : ''),
+          title: g.cat.hint,
+          onclick: () => {
+            const i = state.expandedGroups.indexOf(g.cat.id);
+            if (i >= 0) state.expandedGroups.splice(i, 1); else state.expandedGroups.push(g.cat.id);
+            renderLibrary();
+          },
+        }, [
+          el('span', { class: 'caret', text: expanded ? '▾' : '▸' }),
+          el('span', { text: g.cat.label }),
+          el('span', { class: 'count', text: rows.length + ' 个' }),
+        ]));
+        if (!expanded) continue;
+        for (const t of rows) {
+          const on = state.traits.indexOf(t.id) >= 0;
+          box.appendChild(UI.traitRow(t, on, () => {
+            const i = state.traits.indexOf(t.id);
+            if (i >= 0) state.traits.splice(i, 1); else state.traits.push(t.id);
+            render();
+          }));
+        }
       }
       if (!shown) box.appendChild(el('div', { class: 'empty-note', text: '没有匹配的特质。' }));
     }
@@ -335,14 +384,14 @@
     draw('');
 
     host.appendChild(el('div', { class: 'hint', text: '当前列出 ' + shownList.length + ' / ' + list.length + ' 个适用于'
-      + (state.isFieldMarshal ? '陆军元帅' : '军团长/陆军') + '的特质；其中 ' + combatList.length
+      + (state.isFieldMarshal ? '陆军元帅' : '军团长/陆军') + '的特质，按来源分成 ' + groups.length + ' 组；其中 ' + combatList.length
       + ' 个会直接产生战斗数值修正（另有 '
       + list.filter((t) => !UI.isCombatTrait(t, false) && UI.isCombatTrait(t, true)).length
-      + ' 个只间接影响战斗，勾选后仍会进入战斗模拟）。点击条目切换选中状态。' }));
+      + ' 个只间接影响战斗，勾选后仍会进入战斗模拟）。点击分组标题折叠 / 展开，点击条目切换选中状态。' }));
     host.appendChild(el('div', {
       class: 'btn small',
       style: { marginTop: '8px' },
-      text: '打开特质选择器（带搜索）',
+      text: '打开特质选择器（按来源分类 + 搜索）',
       onclick: () => UI.traitPicker({
         list: list,
         title: '挑选将领特质',

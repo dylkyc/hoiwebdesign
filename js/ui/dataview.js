@@ -132,18 +132,23 @@
       const cols = [
         { label: '名称', get: (t) => t.name },
         { label: 'ID', get: (t) => t.id },
+        { label: '来源', get: (t) => UI.traitOrigin(t).label },
+        { label: '国家', get: (t) => UI.traitCountries(t).join('/') || '—' },
+        { label: '解锁点数', get: (t) => t.cost === undefined ? '—' : fmt(t.cost, 0), num: true },
         { label: '适用', get: (t) => Array.isArray(t.type) ? t.type.join('/') : (t.type || '') },
         { label: '类别', get: (t) => t.trait_type || '' },
         { label: '对战斗有效', get: (t) => UI.isCombatTrait(t, false) ? '是' : '否' },
-        { label: '解锁经验', get: (t) => t.cost === undefined ? '—' : fmt(t.cost, 0), num: true },
         { label: '修正', get: (t) => describeTrait(t) },
       ];
       wrap.appendChild(traitFilterBar());
       wrap.appendChild(table(cols, list));
+      const byCat = UI.TRAIT_CATEGORIES.map((c) => c.label + ' ' + list.filter((t) => UI.traitIsCategory(t, c.id)).length).join('　');
       wrap.appendChild(el('div', {
         class: 'hint',
         text: '陆军相关特质共 ' + all.length + ' 个，其中 ' + all.filter((t) => UI.isCombatTrait(t, false)).length
-          + ' 个会产生战斗数值修正。当前显示 ' + list.length + ' 个。在「将领与技能」页可选中并预览实际效果。',
+          + ' 个会产生战斗数值修正。当前显示 ' + list.length + ' 个。'
+          + (traitFilter === 'all' ? '来源分布：' + byCat + '。' : '')
+          + '在「将领与技能」页可选中并预览实际效果。',
       }));
     }
 

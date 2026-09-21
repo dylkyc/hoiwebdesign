@@ -184,7 +184,32 @@ input:focus, select:focus { outline: none; border-color: var(--accent); }
   letter-spacing: .8px;
   border-bottom: 1px solid var(--border);
   padding-bottom: 3px;
+  cursor: pointer;
+  user-select: none;
+  display: flex;
+  align-items: center;
+  gap: 4px;
 }
+.palette-group > h3:hover { color: var(--accent-2); }
+.palette-group > h3 .caret { color: var(--text-faint); font-size: 10px; }
+
+/* 待选区顶部的状态条：按列过滤 / 多选操作 */
+.palette-status {
+  border: 1px solid var(--border);
+  border-radius: 3px;
+  background: var(--bg-2);
+  padding: 5px 7px;
+  margin-bottom: 10px;
+}
+.palette-status .hint { margin: 0; }
+.palette-status-actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin: 5px 0 3px;
+}
+.palette-status-actions .v { font-family: var(--mono); font-size: 11px; color: var(--accent-2); }
 .unit-chips { display: flex; flex-wrap: wrap; gap: 4px; }
 .chip {
   display: inline-flex;
@@ -239,6 +264,13 @@ input:focus, select:focus { outline: none; border-color: var(--accent); }
   text-align: center;
 }
 .grid-cell:hover { border-color: var(--accent); }
+/* 多选中的槽位（Ctrl 点选 / Shift 区间） */
+.grid-cell.sel,
+.support-slot.sel {
+  border-color: var(--accent) !important;
+  box-shadow: inset 0 0 0 1px var(--accent), 0 0 6px rgba(200,160,74,.35);
+  background: rgba(200,160,74,.12);
+}
 .grid-cell.filled {
   border-style: solid;
   background: #2a3038;
@@ -478,6 +510,47 @@ table.data-table td.num { font-family: var(--mono); }
 .trait-list .empty-note { padding: 10px; }
 .trait-list .trait-item .tmods { white-space: normal; word-break: break-word; }
 .picker-foot { font-size: 11px; color: var(--text-faint); margin-top: 6px; }
+
+/* 来源分类：芯片行 + 分组标题 */
+.chip-row { display: flex; flex-wrap: wrap; gap: 4px; margin-bottom: 8px; }
+.chip-filter {
+  background: var(--bg-3);
+  border: 1px solid var(--border);
+  color: var(--text-dim);
+  border-radius: 10px;
+  padding: 2px 9px;
+  font-size: 11px;
+  font-family: inherit;
+  cursor: pointer;
+}
+.chip-filter:hover { border-color: var(--accent); color: var(--accent-2); }
+.chip-filter.on { border-color: var(--accent); background: rgba(200,160,74,.14); color: var(--accent-2); }
+.trait-group-head {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin: 8px 4px 4px;
+  padding-bottom: 3px;
+  border-bottom: 1px solid var(--border);
+  font-size: 11px;
+  color: var(--text-dim);
+  letter-spacing: .5px;
+  cursor: pointer;
+  user-select: none;
+}
+.trait-group-head:hover { color: var(--accent-2); }
+.trait-group-head .caret { color: var(--text-faint); font-size: 10px; }
+.trait-group-head .count { margin-left: auto; font-family: var(--mono); color: var(--text-faint); }
+.trait-list .trait-group-head { margin-left: 4px; margin-right: 4px; }
+.trait-item .tag-origin {
+  display: inline-block;
+  font-size: 10px;
+  padding: 0 4px;
+  margin-right: 4px;
+  border-radius: 2px;
+  border: 1px solid var(--border-2);
+  color: var(--text-faint);
+}
 
 /* ---------- 说明 ---------- */
 .prose { max-width: 900px; font-size: 13px; line-height: 1.75; }
