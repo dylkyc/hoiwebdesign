@@ -83,8 +83,13 @@ html, body {
 .meta { font-size: 11px; color: var(--text-faint); font-family: var(--mono); white-space: nowrap; }
 
 /* ---------- 视图 ---------- */
-main { padding: 12px; height: calc(100vh - 46px); overflow: hidden; }
-.view { display: none; height: 100%; }
+/*
+ * 布局约定：每个视图自身就是滚动容器（overflow:auto），三个面板在视口够高时
+ * 各占满一列、内部各自滚动；视口变矮或变窄时整页可滚动，内容永远不会被裁掉。
+ * 注意不要在这里加 overflow:hidden —— 那会让矮窗口下的内容彻底无法访问。
+ */
+main { padding: 12px; height: calc(100vh - 46px); height: calc(100dvh - 46px); overflow: hidden; }
+.view { display: none; height: 100%; overflow: auto; }
 .view.active { display: block; }
 
 /* ---------- 面板 ---------- */
@@ -355,6 +360,7 @@ input:focus, select:focus { outline: none; border-color: var(--accent); }
 
 table.data-table {
   width: 100%;
+  max-width: 100%;
   border-collapse: collapse;
   font-size: 12px;
 }
@@ -403,6 +409,75 @@ table.data-table td.num { font-family: var(--mono); }
 .trait-item .tname { color: var(--text); }
 .trait-item .ttype { font-size: 10px; color: var(--text-faint); }
 .trait-item .tmods { font-size: 11px; color: var(--text-dim); font-family: var(--mono); }
+
+/* 特质选择面板（将领页 / 战斗模拟页共用） */
+.trait-panel {
+  border: 1px solid var(--border);
+  border-radius: 3px;
+  background: var(--bg-3);
+  padding: 6px 8px;
+  margin-bottom: 8px;
+}
+.trait-panel-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 6px;
+  flex-wrap: wrap;
+  margin-bottom: 5px;
+}
+.trait-panel-head .k { color: var(--text-dim); font-size: 11px; }
+.trait-panel-head .v { font-family: var(--mono); font-size: 11px; color: var(--accent-2); }
+.trait-panel-actions { display: flex; gap: 5px; flex-wrap: wrap; }
+.selected-trait {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 6px;
+  font-size: 12px;
+  padding: 2px 0;
+  border-bottom: 1px solid rgba(255,255,255,.04);
+}
+.selected-trait .rm {
+  color: var(--text-faint);
+  cursor: pointer;
+  font-size: 12px;
+  line-height: 1;
+  padding: 0 2px;
+}
+.selected-trait .rm:hover { color: var(--bad); }
+.selected-trait .tag-indirect { color: var(--text-faint); font-size: 10px; }
+
+/* 挑选特质的模态框（common.js UI.traitPicker） */
+.picker-head { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 8px; }
+.picker-head input[type=search] { flex: 1; min-width: 150px; width: auto; }
+.picker-filter {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  white-space: nowrap;
+  cursor: pointer;
+  font-size: 11px;
+  color: var(--text-dim);
+  border: 1px solid var(--border);
+  border-radius: 3px;
+  padding: 3px 7px;
+  background: var(--bg-3);
+}
+.picker-filter input { accent-color: var(--accent); }
+.picker-filter.on { border-color: var(--accent); color: var(--accent-2); }
+.trait-list {
+  height: 46vh;
+  overflow: auto;
+  padding: 1px;
+  border: 1px solid var(--border);
+  border-radius: 3px;
+  background: var(--bg-2);
+}
+.trait-list .trait-item { margin: 4px; }
+.trait-list .empty-note { padding: 10px; }
+.trait-list .trait-item .tmods { white-space: normal; word-break: break-word; }
+.picker-foot { font-size: 11px; color: var(--text-faint); margin-top: 6px; }
 
 /* ---------- 说明 ---------- */
 .prose { max-width: 900px; font-size: 13px; line-height: 1.75; }

@@ -9,6 +9,8 @@
   const el = UI.el, clear = UI.clear, fmt = UI.fmt, pct = UI.pct;
 
   let currentSheet = 'battalions';
+  /** 将领特质表：默认只看对战斗有效的，可切换为全部 */
+  let traitFilter = 'combat';
 
   function init() {
     const tabs = UI.$$('#dataTabs .subtab');
@@ -21,6 +23,20 @@
       });
     }
     render();
+  }
+
+  /** 过滤按钮（放在表格上方，避免动 index.html 与各工具里的 DOM 桩） */
+  function traitFilterBar() {
+    const bar = UI.el('div', { class: 'picker-head' });
+    for (const [v, label] of [['combat', '只显示对战斗有效的'], ['all', '显示全部']]) {
+      bar.appendChild(UI.el('button', {
+        class: 'btn small' + (traitFilter === v ? ' primary' : ''),
+        text: label,
+        onclick: () => { traitFilter = v; render(); },
+      }));
+    }
+    bar.appendChild(UI.el('span', { class: 'hint', style: { marginLeft: '6px' }, text: '对战斗有效 = 勾选后会影响战斗计算里的攻/防/组织度/突破等数值。' }));
+    return bar;
   }
 
   function table(columns, rows) {
@@ -107,21 +123,28 @@
     }
 
     if (currentSheet === 'traits') {
-      const list = HOI.traitList.filter((t) => {
+      const all = HOI.traitList.filter((t) => {
         const ty = t.type;
         const arr = Array.isArray(ty) ? ty : [ty];
         return arr.some((x) => ['land', 'all', 'corps_commander', 'field_marshal'].indexOf(x) >= 0);
       });
+      const list = traitFilter === 'all' ? all : all.filter((t) => UI.isCombatTrait(t, false));
       const cols = [
         { label: '名称', get: (t) => t.name },
         { label: 'ID', get: (t) => t.id },
         { label: '适用', get: (t) => Array.isArray(t.type) ? t.type.join('/') : (t.type || '') },
         { label: '类别', get: (t) => t.trait_type || '' },
+        { label: '对战斗有效', get: (t) => UI.isCombatTrait(t, false) ? '是' : '否' },
         { label: '解锁经验', get: (t) => t.cost === undefined ? '—' : fmt(t.cost, 0), num: true },
         { label: '修正', get: (t) => describeTrait(t) },
       ];
+      wrap.appendChild(traitFilterBar());
       wrap.appendChild(table(cols, list));
-      wrap.appendChild(el('div', { class: 'hint', text: '共 ' + list.length + ' 个陆军相关特质。在「将领与技能」页可选中并预览实际效果。' }));
+      wrap.appendChild(el('div', {
+        class: 'hint',
+        text: '陆军相关特质共 ' + all.length + ' 个，其中 ' + all.filter((t) => UI.isCombatTrait(t, false)).length
+          + ' 个会产生战斗数值修正。当前显示 ' + list.length + ' 个。在「将领与技能」页可选中并预览实际效果。',
+      }));
     }
 
     if (currentSheet === 'defines') {

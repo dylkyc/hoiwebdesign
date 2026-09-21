@@ -18,33 +18,23 @@
     terrain: 'plains',
     fort: 0,
     river: 'none',
+    /** 特质库默认只列出对战斗有效的特质 */
+    showAllTraits: false,
   };
 
-  /** 判定是否为陆军将领特质 */
+  /** 判定是否为陆军将领特质（引擎角色判据 + 排除海军 / 特工专属） */
   function isArmyTrait(t) {
     const ty = t.type;
-    if (typeof ty === 'string') {
-      if (ty === 'navy' || ty === 'operative') return false;
-      if (ty === 'land' || ty === 'all' || ty === 'corps_commander' || ty === 'field_marshal') return true;
-      return false;
-    }
-    if (Array.isArray(ty)) {
-      if (ty.indexOf('navy') >= 0 && ty.indexOf('land') < 0) return false;
-      return ty.indexOf('land') >= 0 || ty.indexOf('all') >= 0 || ty.indexOf('corps_commander') >= 0 || ty.indexOf('field_marshal') >= 0;
-    }
-    return false;
+    if (typeof ty === 'string' && (ty === 'navy' || ty === 'operative')) return false;
+    if (Array.isArray(ty) && ty.indexOf('navy') >= 0 && ty.indexOf('land') < 0) return false;
+    return CB.traitFitsRole(t, false) || CB.traitFitsRole(t, true);
   }
 
   const ARMY_TRAITS = HOI.traitList.filter(isArmyTrait);
 
+  /** 军团长 / 陆军元帅各自可用的特质池，与引擎 collectLeaderModifiers 的判据一致 */
   function traitsForMarshal(isFM) {
-    return ARMY_TRAITS.filter((t) => {
-      const ty = t.type;
-      const arr = Array.isArray(ty) ? ty : [ty];
-      if (arr.indexOf('field_marshal') >= 0 && !isFM) return false;
-      if (arr.indexOf('corps_commander') >= 0 && isFM) return false;
-      return true;
-    });
+    return ARMY_TRAITS.filter((t) => CB.traitFitsRole(t, isFM));
   }
 
   function init() { render(); }
@@ -149,21 +139,35 @@
       distanceFactor: state.distanceFactor,
     };
 
-    // 技能带来的基础效果
+    // 技能带来的基础效果（含特质附带的技能点，与战斗引擎的算法保持一致）
     const sbox = el('div', { class: 'mod-block' }, [el('h3', { text: '技能产生的修正（作用于全师）' })]);
+    const skillBonus = CB.traitSkillBonus(state.traits);
+    const effSkills = {
+      attack: state.skills.attack + skillBonus.attack,
+      defense: state.skills.defense + skillBonus.defense,
+      planning: state.skills.planning + skillBonus.planning,
+      logistics: state.skills.logistics + skillBonus.logistics,
+    };
+    if (skillBonus.any) {
+      const parts = [];
+      for (const [k, label] of [['attack', '进攻'], ['defense', '防御'], ['planning', '计划'], ['logistics', '后勤']]) {
+        if (skillBonus[k]) parts.push(label + (skillBonus[k] > 0 ? ' +' : ' ') + skillBonus[k]);
+      }
+      sbox.appendChild(el('div', { class: 'hint', text: '特质附带技能点：' + parts.join('，') + '（已计入下表）' }));
+    }
     const skillEffects = [];
     const atkPer = perLevel('attack', 'offence') || 0.025;
     const defPer = perLevel('defense', 'defence') || 0.025;
     const planSpeedPer = perLevel('planning', 'planning_speed') || 0.05;
     const maxPlanPer = perLevel('planning', 'max_planning') || 0.02;
     const logiPer = perLevel('logistics', 'supply_consumption_factor') || -0.025;
-    if (state.skills.attack) skillEffects.push(['进攻（offence）', atkPer * state.skills.attack]);
-    if (state.skills.defense) skillEffects.push(['防御（defence）', defPer * state.skills.defense]);
-    if (state.skills.planning) {
-      skillEffects.push(['计划速度', planSpeedPer * state.skills.planning]);
-      skillEffects.push(['计划上限', maxPlanPer * state.skills.planning]);
+    if (effSkills.attack) skillEffects.push(['进攻（offence）· 有效等级 ' + effSkills.attack, atkPer * effSkills.attack]);
+    if (effSkills.defense) skillEffects.push(['防御（defence）· 有效等级 ' + effSkills.defense, defPer * effSkills.defense]);
+    if (effSkills.planning) {
+      skillEffects.push(['计划速度 · 有效等级 ' + effSkills.planning, planSpeedPer * effSkills.planning]);
+      skillEffects.push(['计划上限 · 有效等级 ' + effSkills.planning, maxPlanPer * effSkills.planning]);
     }
-    if (state.skills.logistics) skillEffects.push(['补给消耗', logiPer * state.skills.logistics]);
+    if (effSkills.logistics) skillEffects.push(['补给消耗 · 有效等级 ' + effSkills.logistics, logiPer * effSkills.logistics]);
     if (!skillEffects.length) sbox.appendChild(el('div', { class: 'hint', text: '尚未分配技能点' }));
     for (const [k, v] of skillEffects) {
       sbox.appendChild(el('div', { class: 'mod-item' }, [
@@ -173,24 +177,25 @@
     }
     host.appendChild(sbox);
 
-    // 特质原始 modifier
+    // 特质原始 modifier（技能点类单独提出来，避免显示成百分比）
     const tbox = el('div', { class: 'mod-block' }, [el('h3', { text: '特质提供的修正' })]);
     if (!state.traits.length) tbox.appendChild(el('div', { class: 'hint', text: '未选择特质' }));
     const fmRatio = state.isFieldMarshal ? 0.5 : 1;
     for (const id of state.traits) {
       const t = HOI.traits[id];
       if (!t) continue;
-      const lines = [];
-      collectTraitLines(t, state.isFieldMarshal, fmRatio, lines);
+      const lines = UI.traitEffectLinesForRole(t, state.isFieldMarshal);
       tbox.appendChild(el('div', { class: 'mod-item', style: { marginTop: '4px' } }, [
         el('span', { class: 'src', text: t.name || id, style: { color: 'var(--accent-2)' } }),
         el('span', { class: 'val', text: '' }),
       ]));
       if (!lines.length) tbox.appendChild(el('div', { class: 'hint', style: { paddingLeft: '12px' }, text: '（无战斗数值修正）' }));
       for (const l of lines) {
+        const isSkill = l[2] === 'skill';
+        const v = isSkill ? l[1] : l[1] * fmRatio;
         tbox.appendChild(el('div', { class: 'mod-item', style: { paddingLeft: '12px', opacity: '.85' } }, [
-          el('span', { class: 'src', text: '· ' + l[0] }),
-          el('span', { class: 'val', text: pct(l[1], 2) }),
+          el('span', { class: 'src', text: '· ' + l[0] + (state.isFieldMarshal && !isSkill ? '（元帅 ×0.5）' : '') }),
+          el('span', { class: 'val', text: isSkill ? ((v > 0 ? '+' : '') + String(v) + ' 点') : pct(v, 2) }),
         ]));
       }
     }
@@ -265,35 +270,48 @@
     return g.entries['1'].modifier[name];
   }
 
-  function collectTraitLines(t, isFM, fmRatio, out) {
-    const blocks = [{ obj: t.modifier, ratio: fmRatio, label: '' }];
-    if (isFM && t.fieldMarshalModifier) blocks.push({ obj: t.fieldMarshalModifier, ratio: 1, label: '（元帅）' });
-    if (!isFM && t.corpsCommanderModifier) blocks.push({ obj: t.corpsCommanderModifier, ratio: 1, label: '（军团长）' });
-    for (const blk of blocks) {
-      if (!blk.obj) continue;
-      for (const k of Object.keys(blk.obj)) {
-        const v = blk.obj[k];
-        if (typeof v === 'number') out.push([HOI.modifierLabel ? (HOI.modifierLabel(k) || k) : k, v * blk.ratio]);
-        else if (v && typeof v === 'object') {
-          for (const s of Object.keys(v)) {
-            if (typeof v[s] === 'number') out.push([HOI.locOf(k, k) + '.' + s, v[s] * blk.ratio]);
-          }
-        }
-      }
-    }
-    const sk = ['attack_skill', 'defense_skill', 'logistics_skill', 'planning_skill'];
-    for (const k of sk) {
-      if (typeof t[k] === 'number' && t[k] !== 0) out.push([k.replace('_skill', '') + ' 技能点', t[k]]);
-    }
-  }
-
   function renderLibrary() {
     const host = UI.$('#traitLibrary');
     clear(host);
 
     const list = traitsForMarshal(state.isFieldMarshal);
-    const search = el('input', { type: 'search', placeholder: '搜索特质…', style: { marginBottom: '8px' } });
-    host.appendChild(search);
+    const combatList = list.filter((t) => UI.isCombatTrait(t, false));
+    const shownList = state.showAllTraits ? list : combatList;
+
+    // 过滤开关 + 搜索
+    const toggle = el('label', { class: 'picker-filter' + (state.showAllTraits ? ' on' : '') }, [
+      el('input', {
+        type: 'checkbox', checked: state.showAllTraits,
+        onchange: (e) => { state.showAllTraits = e.target.checked; renderLibrary(); },
+      }),
+      el('span', { text: '显示全部特质（含对战斗无影响的）' }),
+    ]);
+    const search = el('input', { type: 'search', placeholder: '搜索特质…' });
+    host.appendChild(el('div', { class: 'picker-head' }, [search, toggle]));
+
+    // 已选特质摘要（点击 × 可移除）
+    if (state.traits.length) {
+      const sel = el('div', { class: 'trait-panel' });
+      sel.appendChild(el('div', { class: 'trait-panel-head' }, [
+        el('span', { class: 'k', text: '已选特质' }),
+        el('span', { class: 'v', text: state.traits.length + ' 个' }),
+      ]));
+      for (const id of state.traits) {
+        const t = HOI.traits[id];
+        const isIndirect = t && !UI.isCombatTrait(t, false);
+        sel.appendChild(el('div', { class: 'selected-trait' }, [
+          el('span', { text: (t && t.name) || id, title: id }, [
+            isIndirect ? el('span', { class: 'tag-indirect', text: '（间接影响）' }) : null,
+          ]),
+          el('span', {
+            class: 'rm', text: '×', title: '移除',
+            onclick: () => { state.traits = state.traits.filter((x) => x !== id); render(); },
+          }),
+        ]));
+      }
+      host.appendChild(sel);
+    }
+
     const box = el('div');
     host.appendChild(box);
 
@@ -301,30 +319,42 @@
       clear(box);
       const f = (filter || '').trim().toLowerCase();
       let shown = 0;
-      for (const t of list) {
+      for (const t of shownList) {
         if (f && (t.name + ' ' + t.id).toLowerCase().indexOf(f) < 0) continue;
         shown++;
         const on = state.traits.indexOf(t.id) >= 0;
-        const lines = [];
-        collectTraitLines(t, state.isFieldMarshal, state.isFieldMarshal ? 0.5 : 1, lines);
-        const modText = lines.slice(0, 3).map((l) => l[0] + ' ' + pct(l[1], 1)).join('；');
-        box.appendChild(el('div', {
-          class: 'trait-item' + (on ? ' on' : ''),
-          onclick: () => {
-            const i = state.traits.indexOf(t.id);
-            if (i >= 0) state.traits.splice(i, 1); else state.traits.push(t.id);
-            render();
-          },
-        }, [
-          el('div', { class: 'tname', text: t.name + ' ', title: t.id }, [el('span', { class: 'ttype', text: t.trait_type || t.type || '' })]),
-          el('div', { class: 'tmods', text: modText || '（无战斗数值修正）' }),
-        ]));
+        box.appendChild(UI.traitRow(t, on, () => {
+          const i = state.traits.indexOf(t.id);
+          if (i >= 0) state.traits.splice(i, 1); else state.traits.push(t.id);
+          render();
+        }));
       }
       if (!shown) box.appendChild(el('div', { class: 'empty-note', text: '没有匹配的特质。' }));
     }
     search.addEventListener('input', (e) => draw(e.target.value));
     draw('');
-    host.appendChild(el('div', { class: 'hint', text: '共 ' + list.length + ' 个适用于' + (state.isFieldMarshal ? '陆军元帅' : '军团长/陆军') + '的特质。点击切换选中状态。' }));
+
+    host.appendChild(el('div', { class: 'hint', text: '当前列出 ' + shownList.length + ' / ' + list.length + ' 个适用于'
+      + (state.isFieldMarshal ? '陆军元帅' : '军团长/陆军') + '的特质；其中 ' + combatList.length
+      + ' 个会直接产生战斗数值修正（另有 '
+      + list.filter((t) => !UI.isCombatTrait(t, false) && UI.isCombatTrait(t, true)).length
+      + ' 个只间接影响战斗，勾选后仍会进入战斗模拟）。点击条目切换选中状态。' }));
+    host.appendChild(el('div', {
+      class: 'btn small',
+      style: { marginTop: '8px' },
+      text: '打开特质选择器（带搜索）',
+      onclick: () => UI.traitPicker({
+        list: list,
+        title: '挑选将领特质',
+        isSelected: (id) => state.traits.indexOf(id) >= 0,
+        onToggle: (id) => {
+          const i = state.traits.indexOf(id);
+          if (i >= 0) state.traits.splice(i, 1); else state.traits.push(id);
+        },
+        onRefresh: render,
+        combatOnly: !state.showAllTraits,
+      }),
+    }));
   }
 
   global.HOI_UI_LEADER = { init, render, getLeader: () => ({ skills: state.skills, traits: state.traits, isFieldMarshal: state.isFieldMarshal, distanceFactor: state.distanceFactor }) };

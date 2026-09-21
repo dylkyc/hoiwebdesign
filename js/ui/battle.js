@@ -103,6 +103,68 @@
     ]);
   }
 
+  /** 某个特质是否适用于该方的将领类型（军团长 / 陆军元帅），与引擎同一判据 */
+  const traitApplies = (t, isFM) => CB.traitFitsRole(t, isFM);
+
+  /**
+   * 攻守双方各自的将领特质面板。
+   * 之前这里是一个不可交互的空下拉框，双方无法分别配置特质。
+   */
+  function traitPanel(side) {
+    const cfg = state[side];
+    const isFM = !!cfg.leader.isFieldMarshal;
+    const list = HOI.traitList.filter((t) => traitApplies(t, isFM));
+    const box = el('div', { class: 'trait-panel' });
+
+    box.appendChild(el('div', { class: 'trait-panel-head' }, [
+      el('span', { class: 'k', text: '将领特质' }),
+      el('span', { class: 'v', text: cfg.leader.traits.length + ' 个' }),
+    ]));
+
+    if (!cfg.leader.traits.length) {
+      box.appendChild(el('div', { class: 'hint', text: '（未选择特质）' }));
+    }
+    for (const id of cfg.leader.traits) {
+      const t = HOI.traits[id];
+      const lines = t ? UI.traitEffectLines(t) : [];
+      const isIndirect = t && !UI.isCombatTrait(t, false);
+      box.appendChild(el('div', { class: 'selected-trait' }, [
+        el('span', { text: (t && t.name) || id, title: id }, [
+          isIndirect ? el('span', { class: 'tag-indirect', text: '（间接影响）' }) : null,
+        ]),
+        el('span', { class: 'val', text: lines.length ? UI.effectText(lines[0]) : '' }),
+        el('span', {
+          class: 'rm', text: '×', title: '移除',
+          onclick: () => { cfg.leader.traits = cfg.leader.traits.filter((x) => x !== id); render(); },
+        }),
+      ]));
+    }
+
+    box.appendChild(el('div', { class: 'trait-panel-actions', style: { marginTop: '6px' } }, [
+      el('button', {
+        class: 'btn small', text: '选择特质…',
+        onclick: () => UI.traitPicker({
+          list: list,
+          title: (side === 'attacker' ? '进攻方' : '防守方') + ' · 挑选将领特质',
+          isSelected: (id) => cfg.leader.traits.indexOf(id) >= 0,
+          onToggle: (id) => {
+            const i = cfg.leader.traits.indexOf(id);
+            if (i >= 0) cfg.leader.traits.splice(i, 1); else cfg.leader.traits.push(id);
+          },
+          onRefresh: render,
+          combatOnly: true,
+        }),
+      }),
+      el('button', {
+        class: 'btn small', text: '清空',
+        onclick: () => { cfg.leader.traits = []; render(); },
+      }),
+    ]));
+
+    box.appendChild(el('div', { class: 'hint', text: '候选 ' + list.length + ' 个（' + (isFM ? '陆军元帅' : '军团长') + '，默认只列对战斗有效的）。' }));
+    return box;
+  }
+
   function renderConditions() {
     const host = UI.$('#battleConditions');
     clear(host);
@@ -149,9 +211,7 @@
         host.appendChild(numberField(label, sk[key] || 0, 0, 10, 1, (v) => { sk[key] = v; }));
       }
 
-      host.appendChild(selectField(cn + ' 将领特质（可多选见「将领」页）', [
-        { value: '', label: cfg.leader.traits.length ? '已选 ' + cfg.leader.traits.length + ' 个' : '（无）' },
-      ], '', () => { }));
+      host.appendChild(traitPanel(side));
 
       if (side === 'attacker') {
         host.appendChild(numberField('计划度', Math.round(cfg.planning * 100), 0, 100, 5, (v) => { cfg.planning = v / 100; }));

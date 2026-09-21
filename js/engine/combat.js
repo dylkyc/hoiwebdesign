@@ -205,6 +205,80 @@
   /* ------------------------------------------------------------------ */
 
   /**
+   * 特质附带的技能点（如「进攻大师」+1 进攻、「热血青年」类状态特质）。
+   *
+   * 游戏里这些点数会直接加到将领技能等级上，因此必须并进等级再按每级系数折算；
+   * 特质自身的 modifier 块里没有数值，光看 modifier 会漏掉它们。
+   *
+   * @param {string[]} traitIds
+   * @returns {{attack:number, defense:number, planning:number, logistics:number, any:boolean}}
+   */
+  function traitSkillBonus(traitIds) {
+    const out = { attack: 0, defense: 0, planning: 0, logistics: 0, any: false };
+    for (const id of (traitIds || [])) {
+      const t = HOI.traits[id];
+      if (!t) continue;
+      const map = {
+        attack_skill: 'attack', defense_skill: 'defense',
+        planning_skill: 'planning', logistics_skill: 'logistics',
+      };
+      for (const k of Object.keys(map)) {
+        const v = t[k];
+        if (typeof v === 'number' && v) { out[map[k]] += v; out.any = true; }
+      }
+    }
+    return out;
+  }
+
+  /** 技能等级显示：整数不带小数点 */
+  function fmtSkill(v) {
+    return Number.isInteger(v) ? String(v) : v.toFixed(1);
+  }
+
+  /** 特质里作为技能点来源的键 */
+  const SKILL_POINT_KEYS = ['attack_skill', 'defense_skill', 'planning_skill', 'logistics_skill'];
+
+  /**
+   * 该特质是否适用于这个角色。
+   *
+   * 游戏里特质分 corps_commander（军团长）与 field_marshal（陆军元帅）两套池子
+   * （129 个陆军特质里 37 个仅军团长、10 个仅元帅），所以元帅不能选军团长的地形特质，
+   * 反之亦然；type = land / all 的通用特质两者都能用。
+   */
+  function traitFitsRole(trait, isFM) {
+    if (!trait) return false;
+    const arr = Array.isArray(trait.type) ? trait.type : [trait.type];
+    if (arr.indexOf('navy') >= 0 && arr.indexOf('land') < 0) return false;
+    if (arr.indexOf('field_marshal') >= 0 && !isFM) return false;
+    if (arr.indexOf('corps_commander') >= 0 && isFM) return false;
+    return arr.some((x) => ['land', 'all', 'corps_commander', 'field_marshal'].indexOf(x) >= 0);
+  }
+
+  /** 取调制块里所有键，用于判断两个块是不是同一批修正 */
+  function keysOf(obj) {
+    return (obj && typeof obj === 'object') ? Object.keys(obj).sort().join('|') : '';
+  }
+
+  /** 两个调制块的键集合是否一致（1.19 里不少特质把同一批修正同时写进通用块与将领类型块） */
+  function sameKeys(a, b) {
+    return !!a && a === b;
+  }
+
+  /** 单个特质里所有会生效的修正块：通用块 + 当前角色专属块 */
+  function traitBlocks(trait, isFM, fmRatio) {
+    const baseKeys = keysOf(trait.modifier);
+    const blocks = [];
+    if (trait.modifier) blocks.push({ obj: trait.modifier, ratio: fmRatio, label: '' });
+    if (isFM && trait.fieldMarshalModifier && !sameKeys(keysOf(trait.fieldMarshalModifier), baseKeys)) {
+      blocks.push({ obj: trait.fieldMarshalModifier, ratio: 1, label: '（元帅）' });
+    }
+    if (!isFM && trait.corpsCommanderModifier && !sameKeys(keysOf(trait.corpsCommanderModifier), baseKeys)) {
+      blocks.push({ obj: trait.corpsCommanderModifier, ratio: 1, label: '' });
+    }
+    return blocks;
+  }
+
+  /**
    * 把将领（技能 + 特质）拆成修正列表。
    * @param {object} leader { skills:{attack,defense,planning,logistics}, traits:[id], isFieldMarshal, distanceFactor }
    * @param {string} terrainId
@@ -222,20 +296,30 @@
 
     // --- 技能：每点进攻 +2.5% offence；每点防御 +2.5% defence ---
     const sk = leader.skills || {};
+    // 部分特质直接给技能点（如「进攻大师」+1 进攻）；这类特质本身不会产生
+    // modifier 事件，只有把技能点加到等级里才能体现出来。
+    const traitSkill = traitSkillBonus(leader.traits);
+    const eff = {
+      attack: num(sk.attack, 0) + traitSkill.attack,
+      defense: num(sk.defense, 0) + traitSkill.defense,
+      planning: num(sk.planning, 0) + traitSkill.planning,
+      logistics: num(sk.logistics, 0) + traitSkill.logistics,
+    };
     const atkPer = num(perLevel('attack', 'offence'), 0.025);
     const defPer = num(perLevel('defense', 'defence'), 0.025);
     const planSpeedPer = num(perLevel('planning', 'planning_speed'), 0.05);
     const maxPlanPer = num(perLevel('planning', 'max_planning'), 0.02);
     const logiPer = num(perLevel('logistics', 'supply_consumption_factor'), -0.025);
     const skillScale = num(leader.distanceFactor, 1);
+    const approx = traitSkill.any ? '（含特质技能点，近似）' : '';
 
-    if (sk.attack) add('attack', atkPer * sk.attack * skillScale, `进攻技能 ${sk.attack} 级`);
-    if (sk.defense) add('defence', defPer * sk.defense * skillScale, `防御技能 ${sk.defense} 级`);
-    if (sk.planning) {
-      add('planning_speed', planSpeedPer * sk.planning * skillScale, `计划技能 ${sk.planning} 级`);
-      add('max_planning', maxPlanPer * sk.planning * skillScale, `计划技能 ${sk.planning} 级`);
+    if (eff.attack) add('attack', atkPer * eff.attack * skillScale, `进攻技能 ${fmtSkill(eff.attack)} 级${approx}`);
+    if (eff.defense) add('defence', defPer * eff.defense * skillScale, `防御技能 ${fmtSkill(eff.defense)} 级${approx}`);
+    if (eff.planning) {
+      add('planning_speed', planSpeedPer * eff.planning * skillScale, `计划技能 ${fmtSkill(eff.planning)} 级${approx}`);
+      add('max_planning', maxPlanPer * eff.planning * skillScale, `计划技能 ${fmtSkill(eff.planning)} 级${approx}`);
     }
-    if (sk.logistics) add('supply_consumption_factor', logiPer * sk.logistics * skillScale, `后勤技能 ${sk.logistics} 级`);
+    if (eff.logistics) add('supply_consumption_factor', logiPer * eff.logistics * skillScale, `后勤技能 ${fmtSkill(eff.logistics)} 级${approx}`);
 
     // --- 特质 ---
     const isFM = !!leader.isFieldMarshal;
@@ -245,14 +329,11 @@
     for (const traitId of (leader.traits || [])) {
       const trait = HOI.traits[traitId];
       if (!trait) continue;
+      if (!traitFitsRole(trait, isFM)) continue;
       const traitName = HOI.locOf(traitId, traitId);
+      const thisTraitSkill = traitSkillBonus([traitId]);
 
-      const blocks = [{ obj: trait.modifier, ratio: fmRatio, label: '' }];
-      if (isFM && trait.fieldMarshalModifier) blocks.push({ obj: trait.fieldMarshalModifier, ratio: 1, label: '（元帅）' });
-      if (!isFM && trait.corpsCommanderModifier) blocks.push({ obj: trait.corpsCommanderModifier, ratio: 1, label: '' });
-
-      for (const blk of blocks) {
-        if (!blk.obj) continue;
+      for (const blk of traitBlocks(trait, isFM, fmRatio)) {
         for (const key of Object.keys(blk.obj)) {
           const v = blk.obj[key];
           if (v === null || v === undefined) continue;
@@ -272,8 +353,9 @@
               add(stat, v[s] * blk.ratio * dist, `${traitName}${blk.label} · ${label}`);
             }
           } else if (typeof v === 'number') {
-            // 技能点类（attack_skill = 1 等）已由 skills 处理，这里跳过
+            // 技能点类（attack_skill = 1 等）已在上面并进技能等级，这里跳过
             if (/^_(attack|defense|logistics|planning|maneuvering|coordination)_skill$/.test('_' + key)) continue;
+            if (thisTraitSkill.any && SKILL_POINT_KEYS.indexOf(key) >= 0) continue;
             add(key, v * blk.ratio * dist, `${traitName}${blk.label}`);
           }
         }
@@ -896,6 +978,9 @@
     collectLeaderModifiers, resolveModifier, battleStats, widthModel,
     analyze, hourlyDamage, simulate, compareTerrain,
     piercingFactor, hasArmorAdvantage,
+    traitSkillBonus, traitFitsRole,
+    /** modifier 名的类型作用域前缀（infantry / armor / artillery …），供 UI 判定特质影响面 */
+    TYPE_MATCHERS,
     constants: {
       HIT_CHANCE_WITH_DEF, HIT_CHANCE_NO_DEF, ORG_DICE, STR_DICE,
       ORG_DICE_ARMOR, STR_DICE_ARMOR, ORG_DICE_AVG, STR_DICE_AVG,

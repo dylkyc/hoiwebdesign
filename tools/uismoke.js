@@ -204,6 +204,7 @@ function mk(tag, attrs, parent) {
   return e;
 }
 
+const mainEl = mk('main', {}, document.body);
 const tabs = mk('nav', { id: 'tabs' });
 for (const [view, label] of [['designer', '编制设计'], ['battle', '战斗模拟'], ['leader', '将领与技能'], ['data', '数据浏览'], ['about', '说明']]) {
   const b = mk('button', { class: 'tab' + (view === 'designer' ? ' active' : '') }, tabs);
@@ -222,7 +223,7 @@ const views = {
 };
 
 for (const view of Object.keys(views)) {
-  const sec = mk('section', { class: 'view' + (view === 'designer' ? ' active' : ''), id: 'view-' + view });
+  const sec = mk('section', { class: 'view' + (view === 'designer' ? ' active' : ''), id: 'view-' + view }, mainEl);
   for (const id of views[view]) {
     if (id === 'dataTabs') {
       const nav = mk('nav', { class: 'subtabs', id: 'dataTabs' }, sec);
@@ -271,6 +272,7 @@ console.error = function (...a) { errors.push(a.map(String).join(' ')); origErro
 /* ------------------------------------------------------------------ */
 
 const path = require('path');
+const fs = require('fs');
 const BASE = path.resolve(__dirname, '..');
 const SCRIPTS = [
   'data/bundle.js',
@@ -481,6 +483,215 @@ check('说明页渲染', () => {
   const txt = document.getElementById('aboutBody').textContent;
   if (txt.indexOf('装备') < 0) throw new Error('说明页内容异常');
   return txt.length + ' 字符';
+});
+
+/* ------------------------------------------------------------------ */
+/* 布局：矮窗口 / 窄窗口下内容必须仍然可达                             */
+/* ------------------------------------------------------------------ */
+
+/** 极简 CSS 解析：只取“选择器 -> 合并后的声明”映射，够用来检查溢出链 */
+function parseCssRules(text) {
+  const out = new Map();
+  const clean = text.replace(/\/\*[\s\S]*?\*\//g, '');
+  const re = /([^{}]+)\{([^{}]*)\}/g;
+  let m;
+  while ((m = re.exec(clean))) {
+    const sels = m[1].trim().replace(/\s+/g, ' ').split(',').map((s) => s.trim());
+    const decls = {};
+    for (const part of m[2].split(';')) {
+      const i = part.indexOf(':');
+      if (i < 0) continue;
+      decls[part.slice(0, i).trim()] = part.slice(i + 1).trim();
+    }
+    // 同一选择器可能出现多条规则（如三个 layout 共用的 grid 规则 + 各自的列宽），
+    // 浏览器的层叠会合并它们，这里也必须合并，否则会误判。
+    for (const sel of sels) out.set(sel, Object.assign(out.get(sel) || {}, decls));
+  }
+  return out;
+}
+
+check('布局：视图是滚动容器，矮窗口下内容不会被裁掉', () => {
+  const css = parseCssRules(fs.readFileSync(path.join(BASE, 'css/style.css'), 'utf8'));
+  const problems = [];
+
+  // main 负责留出 100vh - 顶栏 的高度，但必须把滚动交给 .view
+  const main = css.get('main') || {};
+  if (!/hidden/.test(main.overflow || '')) problems.push('main 没有 overflow:hidden 时高度控制会失效');
+
+  const view = css.get('.view') || {};
+  if (!/auto|scroll/.test(view.overflow || '')) {
+    problems.push('.view 没有 overflow:auto/scroll —— 矮窗口下三个面板整体被压扁且无法滚动');
+  }
+
+  // 隐藏的视图不应拦截事件；active 必须是 block
+  if (!/block/.test((css.get('.view.active') || {}).display || '')) problems.push('.view.active 丢了 display:block');
+
+  // 面板内部仍然要能各自滚动
+  const body = css.get('.panel-body') || {};
+  if (!/auto|scroll/.test(body.overflow || '')) problems.push('.panel-body 没有 overflow:auto');
+
+  const panel = css.get('.panel') || {};
+  if (/hidden/.test(panel.overflow || '') && !/flex/.test(panel.display || '')) {
+    problems.push('.panel 同时是 overflow:hidden 又非 flex 容器，内部滚动会失效');
+  }
+
+  for (const sel of ['.designer-layout', '.battle-layout', '.leader-layout']) {
+    const r = css.get(sel) || {};
+    if (!/grid/.test(r.display || '')) problems.push(sel + ' 应该是 grid 布局');
+    if ((r.height || '') !== '100%') problems.push(sel + ' 的 height 应为 100%');
+    if ((r['min-height'] || '') !== '0') problems.push(sel + ' 缺少 min-height:0，面板会被内容顶高');
+  }
+
+  // 数据表在窄窗口下不能撑破面板
+  if (!(css.get('table.data-table') || {})['max-width']) problems.push('table.data-table 缺少 max-width:100%');
+
+  if (problems.length) throw new Error(problems.join('；'));
+  return '.view 可滚动 / .panel-body 内部滚动 / 三个布局容器高度受控';
+});
+
+check('布局：各视图的滚动结构完整', () => {
+  // Node 端的 DOM 桩只还原每个视图里各 panel 的宿主节点（真实结构见 index.html），
+  // 因此这里检查的是「每个视图都有可滚动的宿主」而不是真实层级。
+  const expect = {
+    designer: 'designer-layout', battle: 'battle-layout', leader: 'leader-layout',
+    data: 'panel', about: 'panel',
+  };
+  const hosts = {
+    designer: ['gridHost', 'paletteBody', 'statsBody'],
+    battle: ['battleConditions', 'battleResult', 'terrainCompare'],
+    leader: ['leaderConfig', 'leaderPreview', 'traitLibrary'],
+    data: ['dataBody'],
+    about: ['aboutBody'],
+  };
+  const tabsEls = document.getElementById('tabs').querySelectorAll('.tab');
+  const report = [];
+  for (const view of Object.keys(expect)) {
+    tabsEls.find((t) => t.dataset.view === view).click();
+    const sec = document.getElementById('view-' + view);
+    if (!sec) throw new Error('缺少视图 ' + view);
+    for (const id of hosts[view]) {
+      const node = document.getElementById(id);
+      if (!node) throw new Error(view + ' 缺少宿主节点 #' + id);
+    }
+    report.push(view + ':' + hosts[view].length + ' 个面板宿主');
+  }
+  return report.join(' ');
+});
+
+check('将领：默认只列对战斗有效的特质', () => {
+  const tabsEls = document.getElementById('tabs').querySelectorAll('.tab');
+  tabsEls.find((t) => t.dataset.view === 'leader').click();
+  // 上一个用例把将领切成了陆军元帅，这里先切回军团长（同 00_traits 里的沙漠之狐只在军团长可用）
+  const cfg = document.getElementById('leaderConfig');
+  const fmBox = cfg.querySelectorAll('input').find((i) => i.type === 'checkbox');
+  if (fmBox && fmBox.checked) { fmBox.checked = false; fmBox.dispatchEvent({ type: 'change' }); }
+
+  const lib = document.getElementById('traitLibrary');
+  const items = lib.querySelectorAll('.trait-item').map((i) => i.textContent);
+  if (items.some((t) => t.indexOf('忠于不列颠') >= 0)) throw new Error('默认列表里仍有无战斗效果的特质');
+  if (!items.some((t) => t.indexOf('沙漠之狐') >= 0)) throw new Error('默认列表缺少地形类战斗特质');
+  const hint = lib.textContent;
+  if (hint.indexOf('会直接产生战斗数值修正') < 0) throw new Error('缺少过滤说明');
+
+  // 打开「显示全部」开关后应能看到无战斗效果的特质
+  const box = lib.querySelectorAll('input').find((i) => i.type === 'checkbox');
+  if (!box) throw new Error('缺少「显示全部特质」开关');
+  box.checked = true;
+  box.dispatchEvent({ type: 'change' });
+  const all = document.getElementById('traitLibrary').querySelectorAll('.trait-item').map((i) => i.textContent);
+  if (!all.some((t) => t.indexOf('忠于不列颠') >= 0)) throw new Error('显示全部后仍看不到非战斗特质');
+
+  // 关回默认，顺便验证过滤可逆
+  const box2 = document.getElementById('traitLibrary').querySelectorAll('input').find((i) => i.type === 'checkbox');
+  box2.checked = false;
+  box2.dispatchEvent({ type: 'change' });
+  const back = document.getElementById('traitLibrary').querySelectorAll('.trait-item').length;
+  if (back !== items.length) throw new Error('关闭开关后没有恢复默认列表：' + back + ' vs ' + items.length);
+  return '默认 ' + items.length + ' 个 → 全部 ' + all.length + ' 个';
+});
+
+check('将领：特质选择器模态框可用', () => {
+  const lib = document.getElementById('traitLibrary');
+  const items = lib.querySelectorAll('.trait-item').map((i) => i.textContent);
+  const picker = lib.querySelectorAll('.btn').find((b) => b.textContent.indexOf('特质选择器') >= 0);
+  if (!picker) throw new Error('找不到打开选择器的按钮');
+  picker.click();
+  const overlay = document.querySelector('.modal-overlay');
+  if (!overlay) throw new Error('模态框没有打开');
+  const rows = overlay.querySelectorAll('.trait-item');
+  if (!rows.length) throw new Error('选择器里没有特质');
+  if (rows.some((r) => r.textContent.indexOf('忠于不列颠') >= 0)) throw new Error('选择器默认应只看战斗相关特质');
+  if (overlay.textContent.indexOf('只看对战斗有效的') >= 0) throw new Error('默认开关文案不对');
+  const target = rows.find((r) => r.textContent.indexOf('沙漠之狐') >= 0);
+  if (!target) throw new Error('选择器里找不到沙漠之狐');
+  target.click();
+  const prev = document.getElementById('leaderPreview').textContent;
+  if (prev.indexOf('沙漠之狐') < 0) throw new Error('在模态框里勾选后预览没有更新');
+  overlay.parentNode.removeChild(overlay);
+  return rows.length + ' 个候选，勾选后预览已更新（库内共 ' + items.length + ' 个）';
+});
+
+check('战斗模拟：攻守双方可分别勾选将领特质', () => {
+  const tabsEls = document.getElementById('tabs').querySelectorAll('.tab');
+  tabsEls.find((t) => t.dataset.view === 'battle').click();
+  const host = document.getElementById('battleConditions');
+  const panels = host.querySelectorAll('.trait-panel');
+  if (panels.length !== 2) throw new Error('应有两套特质面板，实际 ' + panels.length);
+
+  const openBtn = panels[0].querySelectorAll('.btn').find((b) => b.textContent.indexOf('选择特质') >= 0);
+  if (!openBtn) throw new Error('攻方面板缺少「选择特质」按钮');
+  openBtn.click();
+  const overlay = document.querySelector('.modal-overlay');
+  if (!overlay) throw new Error('特质选择模态框没有打开');
+  const target = overlay.querySelectorAll('.trait-item').find((r) => r.textContent.indexOf('沙漠之狐') >= 0);
+  if (!target) throw new Error('选择器里找不到沙漠之狐');
+  target.click();
+  overlay.parentNode.removeChild(overlay);
+
+  const B = global.HOI_UI_BATTLE;
+  const atk = B.getState().attacker.leader.traits;
+  const def = B.getState().defender.leader.traits;
+  if (atk.length !== 1) throw new Error('攻方应选中 1 个特质，实际 ' + atk.length);
+  if (def.length !== 0) throw new Error('守方特质被误改：' + def.join(','));
+
+  // 独立生效：攻方勾选后攻击修正应发生变化（沙漠之狐只在沙漠地形生效，
+  // 因此这里把地形也切到沙漠，验证特质确实进入了战斗计算）
+  B.getState().terrain = 'desert';
+  B.render();
+  const noTrait = {
+    skills: { attack: 0, defense: 0, planning: 0, logistics: 0 },
+    traits: [], isFieldMarshal: false, distanceFactor: 1,
+  };
+  const optsBase = B.buildOpts();
+  optsBase.attacker.leader = noTrait;
+  const before = global.HOI_COMBAT.analyze(optsBase).attacker.stats._attackMul;
+  const after = global.HOI_COMBAT.analyze(B.buildOpts()).attacker.stats._attackMul;
+  if (!(after > before)) throw new Error('攻方特质没有影响战斗结果：' + before + ' -> ' + after);
+
+  // 清空按钮只影响本侧
+  const clearBtn = document.getElementById('battleConditions').querySelectorAll('.trait-panel')[0]
+    .querySelectorAll('.btn').find((b) => b.textContent === '清空');
+  clearBtn.click();
+  if (B.getState().attacker.leader.traits.length !== 0) throw new Error('清空失败');
+  return '攻方 +1 特质 → 攻击乘数 ' + before.toFixed(3) + ' → ' + after.toFixed(3) + '，守方未受影响';
+});
+
+check('数据浏览：将领特质表可切换过滤', () => {
+  const tabsEls = document.getElementById('tabs').querySelectorAll('.tab');
+  tabsEls.find((t) => t.dataset.view === 'data').click();
+  const sheets = document.getElementById('dataTabs').querySelectorAll('.subtab');
+  sheets.find((s) => s.dataset.sheet === 'traits').click();
+  const body = document.getElementById('dataBody');
+  const combatRows = body.querySelectorAll('tbody tr').length;
+  const btns = body.querySelectorAll('.btn');
+  const allBtn = btns.find((b) => b.textContent.indexOf('显示全部') >= 0);
+  if (!allBtn) throw new Error('缺少「显示全部」按钮');
+  allBtn.click();
+  const allRows = document.getElementById('dataBody').querySelectorAll('tbody tr').length;
+  if (!(allRows > combatRows)) throw new Error('显示全部后行数没有增加：' + combatRows + ' -> ' + allRows);
+  const header = document.getElementById('dataBody').textContent;
+  if (header.indexOf('对战斗有效') < 0) throw new Error('缺少「对战斗有效」列');
+  return '战斗相关 ' + combatRows + ' 行 → 全部 ' + allRows + ' 行';
 });
 
 hr('结果');
